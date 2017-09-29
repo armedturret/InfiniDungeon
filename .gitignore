@@ -31,9 +31,13 @@
 *.out
 *.app
 
-# Visual Studio Stuff
+# visual studio
 *.tlog
 *.log
 *.pdb
+*.iobj
+*.ipdb
+*.ilk
+*.idb
 
 .vs/
