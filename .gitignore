@@ -31,4 +31,9 @@
 *.out
 *.app
 
+# Visual Studio Stuff
+*.tlog
+*.log
+*.pdb
+
 .vs/
