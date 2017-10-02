@@ -39,5 +39,6 @@
 *.ipdb
 *.ilk
 *.idb
+*.ipdb
 
 .vs/
