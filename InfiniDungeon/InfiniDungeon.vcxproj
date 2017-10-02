@@ -124,11 +124,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="App.cpp" />
+    <ClCompile Include="Creature.cpp" />
+    <ClCompile Include="GameplayScreen.cpp" />
+    <ClCompile Include="InitGameScreen.cpp" />
+    <ClCompile Include="Level.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="PreAllocate.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="App.h" />
+    <ClInclude Include="Creature.h" />
+    <ClInclude Include="GameplayScreen.h" />
+    <ClInclude Include="InitGameScreen.h" />
+    <ClInclude Include="Level.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="PreAllocate.h" />
+    <ClInclude Include="ScreenIndicies.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
