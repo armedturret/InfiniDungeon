@@ -85,7 +85,7 @@ void GameplayScreen::onEntry()
 	m_camera.init(m_window->getScreenWidth(), m_window->getScreenHeight());
 	m_camera.setScale(1.0f/1.5f);
 
-	m_player.init("Data/Textures/Characters/Mage.png", glm::ivec2(2, 2), &m_game->inputManager, 2.0f);
+	m_player.init("Data/Textures/Characters/Mage.png", glm::ivec2(2, 2), &m_game->inputManager, &m_camera, 2.0f);
 
 	m_level.init(1);
 }
@@ -101,7 +101,7 @@ void GameplayScreen::onExit()
 void GameplayScreen::update(){
 	m_player.update(0.0f);
 
-	m_camera.setPosition(glm::vec2(0.0f));
+	m_camera.setPosition(m_player.getPosition());
 
 	m_camera.update();
 	checkInput();

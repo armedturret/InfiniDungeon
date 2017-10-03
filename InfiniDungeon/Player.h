@@ -1,7 +1,7 @@
 #pragma once
 
 #include <DPE/InputManager.h>
-#include <DPE/Window.h>
+#include <DPE/Camera2D.h>
 
 #include "Creature.h"
 
@@ -13,10 +13,12 @@ public:
 
 	virtual void update(float deltaTime)override;
 
-	void init(std::string texturePath, glm::ivec2 tileSheetSize, DPE::InputManager* inputManager, DPE::Window* window,float speed);
+	void init(std::string texturePath, glm::ivec2 tileSheetSize, DPE::InputManager* inputManager, DPE::Camera2D* camera,float speed);
 
 private:
 	DPE::InputManager* m_inputManager;
-	DPE::Window* m_window;
+	DPE::Camera2D* m_camera;
+
+	bool m_wasMouseDownPreviously = false;
 };
 

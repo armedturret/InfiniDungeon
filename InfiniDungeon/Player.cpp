@@ -14,15 +14,29 @@ Player::~Player()
 
 void Player::update(float deltaTime)
 {
-	m_position = glm::vec2(128.0f / 2.0f);
+	if (m_inputManager->isKeyDown(SDL_BUTTON_LEFT) && !m_wasMouseDownPreviously) {
+		glm::vec2 worldCoords = m_camera->convertScreenToWorld(m_inputManager->getMouseCoords());
+		glm::vec2 tileClicked;
+		tileClicked.x = floor(worldCoords.x / TILE_SIZE) + 1;
+		tileClicked.y = floor(worldCoords.y / TILE_SIZE) + 1;
+		
+		//Test if coordinates are in map
+		if (tileClicked.x > 0 && tileClicked.y > 0) {
+			std::cout << tileClicked.x << " " << tileClicked.y << std::endl;
 
-	if (m_inputManager->isKeyPressed(SDL_BUTTON_LEFT)) {
-		glm::vec2 mouseCoords = m_inputManager->getMouseCoords();
-		m_inputManager->
+			m_position.x = tileClicked.x * TILE_SIZE - TILE_SIZE / 2.0f;
+			m_position.y = tileClicked.y * TILE_SIZE - TILE_SIZE / 2.0f;
+		}
+
+		//custom "press" rejection because the engine is buggy
+		m_wasMouseDownPreviously = true;
+	}
+	else if(!m_inputManager->isKeyDown(SDL_BUTTON_LEFT)) {
+		m_wasMouseDownPreviously = false;
 	}
 }
 
-void Player::init(std::string texturePath, glm::ivec2 tileSheetSize, DPE::InputManager* inputManager, float speed)
+void Player::init(std::string texturePath, glm::ivec2 tileSheetSize, DPE::InputManager* inputManager, DPE::Camera2D* camera, float speed)
 {
 	m_speed = speed;
 
@@ -31,4 +45,7 @@ void Player::init(std::string texturePath, glm::ivec2 tileSheetSize, DPE::InputM
 
 	m_inputManager = inputManager;
 
+	m_camera = camera;
+
+	m_position = glm::vec2(TILE_SIZE / 2.0f);
 }

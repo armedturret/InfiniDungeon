@@ -18,6 +18,8 @@ public:
 
 	glm::vec2 getPosition() const { return m_position; }
 
+	const int TILE_SIZE = 128;
+
 private:
 	float m_animTime = 0;
 
