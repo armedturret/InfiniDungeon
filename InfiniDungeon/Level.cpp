@@ -2,6 +2,14 @@
 
 #include <DPE/ResourceManager.h>
 
+#include <iostream>
+#include <fstream>
+#include <random>
+#include <ctime>
+
+#include <JSON\reader.h>
+#include <JSON\value.h>
+
 Level::Level()
 {
 }
@@ -11,8 +19,30 @@ Level::~Level()
 {
 }
 
-void Level::init()
+void Level::init(int difficulty)
 {
+	Json::Value themeSelectRoot;
+	
+	std::ifstream themes_file("Data/Textures/Themes/Themes.json", std::ios::binary);
+	themes_file >> themeSelectRoot;
+
+	//choose a theme of matching difficulty
+	if (difficulty == 1) {
+		const Json::Value difficultyOne = themeSelectRoot["DifficultyOne"];
+
+		static std::mt19937 randomEngine(time(nullptr));
+		std::uniform_int_distribution<int> randInt(0, difficultyOne.size() - 1);
+		//choose random theme
+		int index = randInt(randomEngine);
+
+		std::cout << difficultyOne[index].asString()<<std::endl;
+
+		m_theme = difficultyOne[index].asString();
+	}
+	else {
+		std::cout << "difficulty not valid" << std::endl;
+	}
+
 	int rows = 10;
 	int columns = 10;
 
@@ -31,7 +61,7 @@ void Level::init()
 			destRect.w = TILE_SIZE;
 			float angle = 0.0f;
 			std::string texture;
-			texture = "Data/Textures/Floor.png";
+			texture = "Data/Textures/Themes/"+m_theme+"/Floor.png";
 
 			m_spriteBatch.draw(destRect, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), DPE::ResourceManager::getTexture(texture).id, 0.0f, DPE::ColorRGBA8(255, 255, 255, 255), angle);
 			m_debugRenderer.drawBox(destRect, DPE::ColorRGBA8(255, 255, 255, 255), angle);

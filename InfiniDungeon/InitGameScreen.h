@@ -8,8 +8,6 @@
 #include <DPE/GLTexture.h>
 #include <DPE/DebugRender.h>
 
-#include "PreAllocate.h"
-
 class InitGameScreen : public DPE::IGameScreen
 {
 public:
@@ -41,8 +39,6 @@ private:
 	DPE::GLTexture m_texture;
 	DPE::SpriteBatch m_spriteBatch;
 	DPE::GLSLProgram m_textureProgram;
-	
-	PreAllocate m_preAllocate;
 
 	float m_animTime = 0.0f;
 };

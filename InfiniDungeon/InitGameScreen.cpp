@@ -76,8 +76,6 @@ void InitGameScreen::onEntry()
 	m_window->changeWindowSettings("Infini-Dungeon",1024,768);
 	m_window->toggleSettings(DPE::VSYNC);
 
-	m_preAllocate.loadTextures();
-
 	m_textureProgram.compileShadersFromSource(INIT_VERT_SRC, INIT_FRAG_SRC);
 	m_textureProgram.addAttribute("vertexPosition");
 	m_textureProgram.addAttribute("vertexColor");
