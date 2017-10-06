@@ -65,7 +65,9 @@ void PathFinderTest::printPath(std::unordered_map<glm::ivec2, Node, KeyFuncs, Ke
 	
 	for (int r = 0; r < m_maze.size(); r++) {
 		for (std::string::size_type c = 0; c < m_maze[r].length(); c++) {
-			if (path.find(glm::ivec2(c, r)) != path.end() && path.find(glm::ivec2(c, r))->second.getPosition() == finish) {
+			if (start.y == r && start.x == c) {
+				std::cout << '0';
+			}else if (path.find(glm::ivec2(c, r)) != path.end() && path.find(glm::ivec2(c, r))->second.getPosition() == finish) {
 				std::cout << 'G';
 			}else if (path.find(glm::ivec2(c,r))!=path.end()) {
 				std::cout << 'P';
