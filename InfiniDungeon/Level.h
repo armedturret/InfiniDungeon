@@ -19,6 +19,8 @@ public:
 
 	void dispose();
 
+	std::vector<std::vector<int>> getMap() const { return m_map; };
+
 private:
 
 	DPE::SpriteBatch m_spriteBatch;

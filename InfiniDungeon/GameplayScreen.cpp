@@ -99,7 +99,7 @@ void GameplayScreen::onExit()
 }
 
 void GameplayScreen::update(){
-	m_player.update(0.0f);
+	m_player.update(0.0f, m_level.getMap());
 
 	m_camera.setPosition(m_player.getPosition());
 

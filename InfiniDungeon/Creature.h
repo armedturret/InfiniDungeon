@@ -10,7 +10,7 @@ class Creature
 public:
 	Creature();
 	~Creature();
-	virtual void update(float deltaTime) {
+	virtual void update(float deltaTime, std::vector<std::vector<int>> level) {
 		std::cout << "Creature given no update behavior" << std::endl;
 	};
 

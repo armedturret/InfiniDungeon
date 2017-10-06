@@ -12,7 +12,7 @@ Player::~Player()
 {
 }
 
-void Player::update(float deltaTime)
+void Player::update(float deltaTime, std::vector<std::vector<int>> level)
 {
 	if (m_inputManager->isKeyDown(SDL_BUTTON_LEFT) && !m_wasMouseDownPreviously) {
 		glm::vec2 worldCoords = m_camera->convertScreenToWorld(m_inputManager->getMouseCoords());
@@ -21,7 +21,7 @@ void Player::update(float deltaTime)
 		tileClicked.y = floor(worldCoords.y / TILE_SIZE) + 1;
 		
 		//Test if coordinates are in map
-		if (tileClicked.x > 0 && tileClicked.y > 0) {
+		if (tileClicked.x > 0.0f && tileClicked.y > 0.0f && tileClicked.x <= level.size() && tileClicked.y <= level[0].size()) {
 			std::cout << tileClicked.x << " " << tileClicked.y << std::endl;
 
 			m_position.x = tileClicked.x * TILE_SIZE - TILE_SIZE / 2.0f;

@@ -130,6 +130,8 @@
     <ClCompile Include="InitGameScreen.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Node.cpp" />
+    <ClCompile Include="PathFinder.cpp" />
     <ClCompile Include="Player.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -138,6 +140,8 @@
     <ClInclude Include="GameplayScreen.h" />
     <ClInclude Include="InitGameScreen.h" />
     <ClInclude Include="Level.h" />
+    <ClInclude Include="Node.h" />
+    <ClInclude Include="PathFinder.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ScreenIndicies.h" />
   </ItemGroup>

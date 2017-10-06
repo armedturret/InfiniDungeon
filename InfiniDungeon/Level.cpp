@@ -53,6 +53,8 @@ void Level::init(int difficulty)
 
 	m_spriteBatch.begin();
 	for (int x = 0; x < rows; x++) {
+		std::vector<int> nestedVector;
+
 		for (int y = 0; y < columns; y++) {
 			glm::vec4 destRect;
 			destRect.x = x*TILE_SIZE;
@@ -61,11 +63,14 @@ void Level::init(int difficulty)
 			destRect.w = TILE_SIZE;
 			float angle = 0.0f;
 			std::string texture;
+			nestedVector.push_back(0);
 			texture = "Data/Textures/Themes/"+m_theme+"/Floor.png";
 
 			m_spriteBatch.draw(destRect, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), DPE::ResourceManager::getTexture(texture).id, 0.0f, DPE::ColorRGBA8(255, 255, 255, 255), angle);
 			m_debugRenderer.drawBox(destRect, DPE::ColorRGBA8(255, 255, 255, 255), angle);
 		}
+		m_map.push_back(nestedVector);
+		nestedVector.clear();
 	}
 	m_spriteBatch.end();
 	m_debugRenderer.end();
