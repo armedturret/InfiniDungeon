@@ -40,8 +40,6 @@ private:
 
 	std::vector<std::string> m_maze;
 
-	int m_iteration = 0;
-
 	int m_counter;
 };
 

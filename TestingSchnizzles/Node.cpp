@@ -25,6 +25,7 @@ float Node::calculateFScore(const glm::vec2& goal)
 	//we will use diagonal distance
 	//use diagonal distance for main game
 	float h = sqrt(pow(goal.x - m_position.x, 2.0f) + pow(goal.y - m_position.y, 2.0f));
+	h *= 2.0f;
 	h = floor(h);
 	
 	//slight nudge to break ties

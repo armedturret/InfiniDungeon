@@ -1,6 +1,5 @@
 #include "PathFinderTest.h"
 #include <iostream>
-#include <ctime>
 
 PathFinderTest::PathFinderTest()
 {
@@ -30,15 +29,13 @@ void PathFinderTest::Run()
 	//this list contains the goal node, and which one leads to it
 	std::unordered_map<glm::ivec2, Node, KeyFuncs, KeyFuncs> closedNodes;
 	printPath(closedNodes);
+
+	m_maze.clear();
 	
 }
 
 void PathFinderTest::printPath(std::unordered_map<glm::ivec2, Node, KeyFuncs, KeyFuncs>& nodeMap)
 {	
-	std::clock_t  startTime;
-
-	startTime = std::clock();
-	
 	glm::vec2 start;
 	glm::vec2 finish;
 
@@ -65,7 +62,7 @@ void PathFinderTest::printPath(std::unordered_map<glm::ivec2, Node, KeyFuncs, Ke
 		currentNode = nodeMap.find(currentNode.getPosition())->second;
 	}
 
-	std::cout << "Found goal in " << (std::clock() - startTime) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << std::endl;
+	
 	for (int r = 0; r < m_maze.size(); r++) {
 		for (std::string::size_type c = 0; c < m_maze[r].length(); c++) {
 			if (path.find(glm::ivec2(c, r)) != path.end() && path.find(glm::ivec2(c, r))->second.getPosition() == finish) {
