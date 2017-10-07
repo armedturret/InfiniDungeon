@@ -3,7 +3,9 @@
 #include <DPE/ResourceManager.h>
 
 
-Player::Player():m_target(0.0f)
+Player::Player():
+			m_target(0.0f),
+			m_nextTile(0.0f)
 {
 }
 
@@ -25,11 +27,10 @@ void Player::update(float deltaTime, std::vector<std::vector<int>> level)
 				std::cout << m_target.x << " " << m_target.y << std::endl;
 				m_moving = true;
 				
-				glm::vec2 startPosition;
-				startPosition.x = (m_position.x - TILE_SIZE / 2.0f) / TILE_SIZE;
-				startPosition.y = (m_position.y - TILE_SIZE / 2.0f) / TILE_SIZE;
+				m_startPosition.x = (m_position.x - TILE_SIZE / 2.0f) / TILE_SIZE;
+				m_startPosition.y = (m_position.y - TILE_SIZE / 2.0f) / TILE_SIZE;
 
-				m_path = m_pathFinder.pathBetweenPoints(startPosition, m_target, level);
+				m_path = m_pathFinder.pathBetweenPoints(m_startPosition, m_target, level);
 			}
 		}
 		else {
@@ -43,10 +44,17 @@ void Player::update(float deltaTime, std::vector<std::vector<int>> level)
 	}
 	if (m_moving) {
 		glm::vec2 calcPos;
-		if (m_animTime < m_path.size()) {
-			calcPos = m_path[m_path.size() - floor(m_animTime) - 1].getPosition();
-			m_position.x = calcPos.x * TILE_SIZE + TILE_SIZE / 2.0f;
-			m_position.y = calcPos.y * TILE_SIZE + TILE_SIZE / 2.0f;
+		if (m_animTime - 1 <= m_path.size()) {
+			if (floor(m_animTime) == 0)
+				calcPos = m_startPosition;
+			else
+				calcPos = m_path[m_path.size() - floor(m_animTime)].getPosition();
+
+			if(floor(m_animTime) < m_path.size())
+				m_nextTile = m_path[m_path.size() - floor(m_animTime) - 1].getPosition();
+
+			m_position.x = ((m_nextTile.x - calcPos.x) * (m_animTime - floor(m_animTime)) + calcPos.x) * TILE_SIZE + TILE_SIZE / 2.0f;
+			m_position.y = ((m_nextTile.y - calcPos.y) * (m_animTime - floor(m_animTime)) + calcPos.y) * TILE_SIZE + TILE_SIZE / 2.0f;
 
 			std::cout << m_animTime << std::endl;
 			m_animTime += 0.1f;

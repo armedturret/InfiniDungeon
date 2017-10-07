@@ -31,5 +31,9 @@ private:
 	bool m_wasMouseDownPreviously = false;
 
 	bool m_moving = false;
+
+	glm::vec2 m_startPosition;
+
+	glm::vec2 m_nextTile;
 };
 
