@@ -32,5 +32,7 @@ protected:
 	float m_speed = 0.0f;
 	float m_health = 0.0f;
 	bool moving = false;
+
+	int m_animTile = 0;
 };
 

@@ -31,10 +31,6 @@ std::vector<Node> PathFinder::pathBetweenPoints(const glm::vec2& start, const gl
 		currentNode = closedNodes.find(currentNode.getPosition())->second;
 	}
 
-	for (int r = 0; r < returnPath.size(); r++) {
-		std::cout << returnPath[r].getPosition().x << " " << returnPath[r].getPosition().y << std::endl;
-	}
-
 	return returnPath;
 }
 
