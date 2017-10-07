@@ -10,43 +10,32 @@ PathFinder::~PathFinder()
 {
 }
 
-std::vector<Node> PathFinder::pathBetweenPoints(const glm::vec2& start, const glm::vec2& mstart)
-{
-	//for the first attempt, I will be making the A* algorithim
-	//0 is end and G is goal
-	m_maze.push_back("XXXXXXXXXX");
-	m_maze.push_back("X__X_____X");
-	m_maze.push_back("X0_X___X_X");
-	m_maze.push_back("X__X_X_X_X");
-	m_maze.push_back("X____X_X_X");
-	m_maze.push_back("X__X_X_X_X");
-	m_maze.push_back("XXXXXXXX_X");
-	m_maze.push_back("X________X");
-	m_maze.push_back("X______G_X");
-	m_maze.push_back("XXXXXXXXXX");
-
-	
+std::vector<Node> PathFinder::pathBetweenPoints(const glm::vec2& start, const glm::vec2& end, const std::vector<std::vector<int>>& map)
+{	
 	//this list contains the goal node, and which one leads to it
 	std::unordered_map<glm::ivec2, Node, KeyFuncs, KeyFuncs> closedNodes;
 
-	Node currentNode = calculatePath(closedNodes, start, mstart);
+	m_map = map;
 
-	std::vector<Node> path;
+	Node currentNode = calculatePath(closedNodes, start, end);
+
+	std::vector<Node> returnPath;
+
+	std::unordered_map<glm::ivec2, Node, KeyFuncs, KeyFuncs> path;
 
 	while (true) {
-		path.push_back(currentNode);
+		returnPath.push_back(currentNode);
 		if (closedNodes.find(currentNode.getPosition())->second.getPosition() == start) {
 			break;
 		}
 		currentNode = closedNodes.find(currentNode.getPosition())->second;
 	}
 
-	return path;
-}
+	for (int r = 0; r < returnPath.size(); r++) {
+		std::cout << returnPath[r].getPosition().x << " " << returnPath[r].getPosition().y << std::endl;
+	}
 
-void PathFinder::printPath(std::unordered_map<glm::ivec2, Node, KeyFuncs, KeyFuncs>& nodeMap)
-{	
-	
+	return returnPath;
 }
 
 Node PathFinder::calculatePath(std::unordered_map<glm::ivec2, Node, KeyFuncs, KeyFuncs>& nodeMap, const glm::vec2 & start, const glm::vec2 & finish)
@@ -66,6 +55,7 @@ Node PathFinder::calculatePath(std::unordered_map<glm::ivec2, Node, KeyFuncs, Ke
 	openNodes.push_back(startNode);
 
 	while (openNodes.size() > 0) {
+
 		int i = bestScore(openNodes, finish);
 		
 		getLocalNodes(openNodes, nodeMap, openNodes[bestScore(openNodes, finish)]);
@@ -186,5 +176,5 @@ void PathFinder::getLocalNodes(std::vector<Node> &openNodes, std::unordered_map<
 bool PathFinder::isPositionValid(const std::unordered_map<glm::ivec2, Node, KeyFuncs, KeyFuncs>& nodeMap, const Node & myNode)
 {
 	glm::vec2 pos = myNode.getPosition();
-	return m_maze[pos.y][pos.x] != 'X' && nodeMap.find(pos) == nodeMap.end() && pos.x > 0.0f && pos.y > 0.0f;
+	return pos.x >= 0.0f && pos.y >= 0.0f && pos.y < m_map.size() && m_map[0].size() > pos.x && m_map[pos.y][pos.x] == 0 && nodeMap.find(pos) == nodeMap.end();
 }

@@ -27,11 +27,9 @@ public:
 	PathFinder();
 	~PathFinder();
 
-	std::vector<Node> pathBetweenPoints(const glm::vec2& start, const glm::vec2& end);
+	std::vector<Node> pathBetweenPoints(const glm::vec2& start, const glm::vec2& end, const std::vector<std::vector<int>>& map);
 
 private:
-	void printPath(std::unordered_map<glm::ivec2, Node, KeyFuncs, KeyFuncs>& nodeMap);
-
 	Node calculatePath(std::unordered_map<glm::ivec2, Node, KeyFuncs, KeyFuncs>& nodeMap, const glm::vec2 & start, const glm::vec2 & finish);
 
 	int bestScore(std::vector<Node>& nodeMap, const glm::vec2& goal);
@@ -40,7 +38,7 @@ private:
 
 	bool isPositionValid(const std::unordered_map<glm::ivec2, Node, KeyFuncs, KeyFuncs>& nodeMap, const Node& myNode);
 
-	std::vector<std::string> m_maze;
+	std::vector<std::vector<int>> m_map;
 
 	int m_counter;
 };
