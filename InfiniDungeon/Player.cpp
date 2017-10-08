@@ -39,7 +39,7 @@ void Player::update(float deltaTime, std::vector<std::vector<int>> level)
 			m_position.y = m_nextTile.y * TILE_SIZE + TILE_SIZE / 2.0f;
 
 			m_animTime = 0.0f;
-			m_animTile = 2;
+			m_animTile = 3;
 			m_moving = false;
 		}
 		//custom "press" rejection because the engine is buggy
@@ -68,19 +68,17 @@ void Player::update(float deltaTime, std::vector<std::vector<int>> level)
 			m_position.x = ((m_nextTile.x - calcPos.x) * (m_animTime - floor(m_animTime)) + calcPos.x) * TILE_SIZE + TILE_SIZE / 2.0f;
 			m_position.y = ((m_nextTile.y - calcPos.y) * (m_animTime - floor(m_animTime)) + calcPos.y) * TILE_SIZE + TILE_SIZE / 2.0f;
 
-			m_animTile = (int)floor(m_animTime*1.5+4) % 3;
+			m_animTile = (int)floor(m_animTime*1.5) % 3;
 			
 			if (m_animTile >= 1)
 				m_animTile += 1;
-
-			std::cout << m_animTile << std::endl;
 
 			m_animTime += 0.1f;
 		}
 		else {
 			m_moving = false;
 			m_animTime = 0.0f;
-			m_animTile = 2;
+			m_animTile = 3;
 		}
 		
 	}

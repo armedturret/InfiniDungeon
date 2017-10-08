@@ -32,7 +32,7 @@ void Creature::draw(DPE::SpriteBatch & m_spriteBatch, DPE::DebugRender & m_rende
 
 	glm::vec4 uvRect = m_tileSheet.getUVs(m_animTile);
 
-	if (m_direction == 2) {
+	if (m_direction == 1) {
 		uvRect.x += 1.0f / m_tileSheet.dims.x;
 		uvRect.z *= -1;
 	}
