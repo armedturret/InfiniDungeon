@@ -9,22 +9,7 @@ int main() {
 
 	startTime = std::clock();
 
-	PathFinderTest test;
-	test.Run();
-
-	std::cout << "Test finished in " << (std::clock() - startTime) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << std::endl;
-	
-	startTime = std::clock();
-	test.Run();
-
-	std::cout << "Test finished in " << (std::clock() - startTime) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << std::endl;
-
-	startTime = std::clock();
-	test.Run();
-
-	std::cout << "Test finished in " << (std::clock() - startTime) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << std::endl;
-
-	startTime = std::clock();
+	DungeonGenerator test;
 	test.Run();
 
 	std::cout << "Test finished in " << (std::clock() - startTime) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << std::endl;

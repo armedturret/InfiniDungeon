@@ -116,11 +116,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DungeonGenerator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="PathFinderTest.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DungeonGenerator.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="PathFinderTest.h" />
   </ItemGroup>
