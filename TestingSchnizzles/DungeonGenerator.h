@@ -17,6 +17,15 @@ public:
 	//Add more "connections" randomly (to do this, make sure all connections are in a list and have a 1 in 50 or 100 chance of opening)
 	//Fill all dead ends to make maze sparser
 
+	//To gen rooms, set an amount of attempts on generation and stop it if the room intersects another
+
+	//Perfect Maze Generation
+	//Starting from a random empty cell in the maze, add it to an open list
+	//Make a list of all adjacent cells
+	//Carve a path to that cell and add it to the open list
+	//If their are no empty adjacent cells, remove the current cell from the open list and add it to closed list
+	//Just repeat until no cells in the open list
+
 	void Run();
 
 private:
