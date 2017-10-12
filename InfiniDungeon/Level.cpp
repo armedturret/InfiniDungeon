@@ -28,6 +28,7 @@ void Level::init(int difficulty)
 
 	//choose a theme of matching difficulty
 	if (difficulty == 1) {
+		//TODO: Remove json code due to being dumb
 		const Json::Value difficultyOne = themeSelectRoot["DifficultyOne"];
 
 		static std::mt19937 randomEngine(time(nullptr));

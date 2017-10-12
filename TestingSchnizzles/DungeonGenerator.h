@@ -32,9 +32,11 @@ private:
 	void generatePerfMaze();
 
 	//TODO: Add some enum for room algorithm
-	void generateRooms();
+	void generateRooms(int rowsTimesColumns);
 
 	void joinSomeDeadEnds();
+
+	int randInt(int min, int max);
 
 	std::vector<std::vector<int>> m_map;
 };

@@ -85,7 +85,7 @@ void GameplayScreen::onEntry()
 	m_camera.init(m_window->getScreenWidth(), m_window->getScreenHeight());
 	m_camera.setScale(1.0f/1.5f);
 
-	m_player.init("Data/Textures/Characters/Mage.png", glm::ivec2(4, 1), &m_game->inputManager, &m_camera, 2.0f);
+	m_player.init("Data/Textures/Characters/Mage.png", glm::ivec2(3, 2), &m_game->inputManager, &m_camera, 2.0f);
 
 	m_level.init(1);
 }
