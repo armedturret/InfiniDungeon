@@ -2,6 +2,10 @@
 
 #include <DPE/IMainGame.h>
 
+const float MAX_SCROLL = 5.5f;
+
+const float MIN_SCROLL = 1.5f;
+
 const char* VERT_SRC = R"(#version 130
 
 in vec2 vertexPosition;
@@ -43,7 +47,9 @@ void main(){
 	color = fragmentColor * textureColor;
 })";
 
-GameplayScreen::GameplayScreen(DPE::Window * window) : m_window(window)
+GameplayScreen::GameplayScreen(DPE::Window * window) :
+	m_window(window),
+	m_scrollLevel(1.5f)
 {
 }
 
@@ -145,5 +151,16 @@ void GameplayScreen::checkInput()
 	SDL_Event evnt;
 	while (SDL_PollEvent(&evnt)) {
 		m_game->onSDLEvent(evnt);
+
+		switch (evnt.type) {
+		case SDL_MOUSEWHEEL:
+			if (evnt.wheel.y == -1 && m_scrollLevel < MAX_SCROLL)
+				m_scrollLevel += 0.5f;
+			else if (evnt.wheel.y == 1 && m_scrollLevel > MIN_SCROLL)
+				m_scrollLevel -= 0.5f;
+
+			m_camera.setScale(1.0f / m_scrollLevel);
+			break;
+		}
 	}
 }

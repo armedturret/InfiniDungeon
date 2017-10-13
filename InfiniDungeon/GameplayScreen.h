@@ -47,5 +47,7 @@ private:
 	Level m_level;
 
 	Player m_player;
+
+	float m_scrollLevel;
 };
 
