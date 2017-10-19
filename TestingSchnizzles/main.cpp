@@ -4,6 +4,8 @@
 #include <iostream>
 #include <ctime>
 
+#include "DungeonGenerator.h"
+
 int main() {
 	std::clock_t  startTime;
 

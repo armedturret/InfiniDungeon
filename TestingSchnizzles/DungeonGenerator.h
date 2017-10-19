@@ -2,6 +2,12 @@
 
 #include <vector>
 
+#include <glm\glm.hpp>
+
+struct Room {
+	glm::ivec4 destRect;
+};
+
 class DungeonGenerator
 {
 public:
@@ -32,11 +38,17 @@ private:
 	void generatePerfMaze();
 
 	//TODO: Add some enum for room algorithm
-	void generateRooms(int rowsTimesColumns);
+	void generateRooms(int rows, int columns);
 
 	void joinSomeDeadEnds();
 
+	bool checkRoomCollisions(const Room& room, std::vector<Room> rooms, int rows, int columns);
+
+	bool doesRoomCollide(const Room& room1, const Room& room2);
+
 	int randInt(int min, int max);
+
+	float randFloat(float min, float max);
 
 	std::vector<std::vector<int>> m_map;
 };
