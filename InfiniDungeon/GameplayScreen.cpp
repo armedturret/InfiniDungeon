@@ -134,7 +134,7 @@ void GameplayScreen::draw()
 
 	m_spriteBatch.begin(DPE::GlyphSortType::BACK_TO_FRONT);
 
-	m_player.draw(m_spriteBatch, m_debugRender);
+	m_player.draw(m_spriteBatch);
 
 	m_spriteBatch.end();
 	

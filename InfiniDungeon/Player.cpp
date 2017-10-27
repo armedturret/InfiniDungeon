@@ -23,7 +23,7 @@ void Player::update(float deltaTime, std::vector<std::vector<int>> level)
 			m_target.y = floor(worldCoords.y / TILE_SIZE);
 
 			//Test if coordinates are in map
-			if (m_target.x >= 0.0f && m_target.y >= 0.0f && m_target.x < level.size() && m_target.y < level[0].size()) {
+			if (m_target.x >= 0.0f && m_target.y >= 0.0f && m_target.x < level.size() && m_target.y < level[0].size() &&level[m_target.y][m_target.x] != 1) {
 				m_moving = true;
 				
 				m_startPosition.x = (m_position.x - TILE_SIZE / 2.0f) / TILE_SIZE;
@@ -95,4 +95,6 @@ void Player::init(std::string texturePath, glm::ivec2 tileSheetSize, DPE::InputM
 	m_camera = camera;
 
 	m_position = glm::vec2(TILE_SIZE / 2.0f);
+	m_position.x += TILE_SIZE*2.0f;
+	m_position.y += TILE_SIZE*2.0f;
 }

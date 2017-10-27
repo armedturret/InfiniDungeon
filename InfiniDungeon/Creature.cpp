@@ -10,7 +10,7 @@ Creature::~Creature()
 {
 }
 
-void Creature::draw(DPE::SpriteBatch & m_spriteBatch, DPE::DebugRender & m_render)
+void Creature::draw(DPE::SpriteBatch & m_spriteBatch)
 {
 	/*float animSpeed = 0.1f;
 
@@ -38,5 +38,4 @@ void Creature::draw(DPE::SpriteBatch & m_spriteBatch, DPE::DebugRender & m_rende
 	}
 
 	m_spriteBatch.draw(glm::vec4(m_position.x-TILE_SIZE/2.0f, m_position.y - TILE_SIZE / 2.0f, TILE_SIZE, TILE_SIZE), uvRect, m_tileSheet.texture.id, 0.0f, DPE::ColorRGBA8(255, 255, 255, 255));
-	m_render.drawBox(glm::vec4(m_position.x - TILE_SIZE / 2.0f, m_position.y - TILE_SIZE / 2.0f, TILE_SIZE, TILE_SIZE), DPE::ColorRGBA8(255, 255, 255, 255), 0.0f);
 }

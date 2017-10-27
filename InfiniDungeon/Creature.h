@@ -14,7 +14,7 @@ public:
 		std::cout << "Creature given no update behavior" << std::endl;
 	};
 
-	void draw(DPE::SpriteBatch& m_spriteBatch, DPE::DebugRender & m_render);
+	void draw(DPE::SpriteBatch& m_spriteBatch);
 
 	glm::vec2 getPosition() const { return m_position; }
 
