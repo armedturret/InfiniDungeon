@@ -8,6 +8,19 @@ struct Room {
 	glm::ivec4 destRect;
 };
 
+struct NotKeyFuncs
+{
+	size_t operator()(const glm::ivec2& k)const
+	{
+		return std::hash<int>()(k.x) ^ std::hash<int>()(k.y);
+	}
+
+	bool operator()(const glm::ivec2& a, const glm::ivec2& b)const
+	{
+		return a.x == b.x && a.y == b.y;
+	}
+};
+
 class DungeonGenerator
 {
 public:
@@ -39,6 +52,10 @@ private:
 
 	//TODO: Add some enum for room algorithm
 	void generateRooms(int rows, int columns);
+
+	void getAdjacentTiles(const glm::ivec2& startNode, std::vector<glm::ivec2>& output);
+
+	bool isTileValid(glm::ivec2 checkTile);
 
 	void joinSomeDeadEnds();
 
