@@ -319,7 +319,6 @@ void Level::makeConnectors()
 			//open a random one
 			int connector = randInt(0, possibleConnections.size() - 1);
 			m_map[possibleConnections[connector].y][possibleConnections[connector].x] = 0;
-			std::cout << connector << " " << possibleConnections.size() << std::endl;
 
 			if (connector > 0) {
 				possibleConnections.erase(possibleConnections.begin() + connector - 1);
