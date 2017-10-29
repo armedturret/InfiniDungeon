@@ -16,6 +16,7 @@ Player::~Player()
 
 void Player::update(float deltaTime, std::vector<std::vector<int>> level)
 {
+
 	if (m_inputManager->isKeyDown(SDL_BUTTON_LEFT) && !m_wasMouseDownPreviously) {
 		if (!m_moving) {
 			glm::vec2 worldCoords = m_camera->convertScreenToWorld(m_inputManager->getMouseCoords());
@@ -83,7 +84,7 @@ void Player::update(float deltaTime, std::vector<std::vector<int>> level)
 	}
 }
 
-void Player::init(std::string texturePath, glm::ivec2 tileSheetSize, DPE::InputManager* inputManager, DPE::Camera2D* camera, float speed)
+void Player::init(std::string texturePath, glm::ivec2 tileSheetSize, DPE::InputManager* inputManager, DPE::Camera2D* camera, float speed, glm::ivec2 startPos)
 {
 	m_speed = speed;
 
@@ -95,6 +96,6 @@ void Player::init(std::string texturePath, glm::ivec2 tileSheetSize, DPE::InputM
 	m_camera = camera;
 
 	m_position = glm::vec2(TILE_SIZE / 2.0f);
-	m_position.x += TILE_SIZE*2.0f;
-	m_position.y += TILE_SIZE*2.0f;
+	m_position.x += startPos.x*TILE_SIZE;
+	m_position.y += startPos.y*TILE_SIZE;
 }

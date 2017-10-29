@@ -38,6 +38,8 @@ public:
 
 	void dispose();
 
+	glm::ivec2 getStartPos() const { return m_startPos; }
+
 	std::vector<std::vector<int>> getMap() const { return m_map; };
 
 private:
@@ -54,6 +56,10 @@ private:
 	void makeConnectors();
 
 	void removeDeadEnds();
+
+	bool isTileLonely(const glm::ivec2& pos, glm::ivec2 & possibleConnector);
+
+	bool amILonely();
 
 	bool checkRoomCollisions(const Room& room, int rows, int columns);
 
@@ -73,6 +79,8 @@ private:
 	std::vector<Room> m_rooms;
 	std::vector<std::vector<int>> m_map;
 	std::vector<glm::ivec2> m_corridors;
+
+	glm::ivec2 m_startPos;
 
 	theme m_theme;
 };

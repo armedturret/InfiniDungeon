@@ -7,7 +7,7 @@
 #include <random>
 #include <ctime>
 
-Level::Level()
+Level::Level():m_startPos(2)
 {
 }
 
@@ -53,7 +53,11 @@ void Level::init(int difficulty)
 	//Populate with corridors
 	generatePerfMaze();
 	
+	//connect corridors to rooms
 	makeConnectors();
+
+	//remove dead ends
+	removeDeadEnds();
 
 	m_spriteBatch.init();
 
@@ -76,6 +80,14 @@ void Level::init(int difficulty)
 			}
 			else if (m_map[y][x] == 1) {
 				texture = "Data/Textures/Themes/" + m_theme.name + "/"+ m_theme.wall;
+			}
+			else if (m_map[y][x] == 2) {
+				r = 0;
+				texture = "Data/Textures/Themes/" + m_theme.name + "/" + m_theme.wall;
+			}
+			else if (m_map[y][x] == 3) {
+				b = 127;
+				texture = "Data/Textures/Themes/" + m_theme.name + "/" + m_theme.wall;
 			}
 			m_spriteBatch.draw(destRect, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), DPE::ResourceManager::getTexture(texture).id, 0.0f, DPE::ColorRGBA8(r, 255, 255, b), angle);
 		}
@@ -103,6 +115,7 @@ void Level::generatePerfMaze()
 	std::vector<glm::ivec2> openList;
 
 	openList.push_back(currentNode);
+	m_corridors.push_back(currentNode);
 
 	while (openList.size() > 0) {
 		m_map[currentNode.y][currentNode.x] = 0;
@@ -110,7 +123,6 @@ void Level::generatePerfMaze()
 		getAdjacentTiles(openList[openList.size() - 1], localTiles);
 
 		if (localTiles.size() == 0) {
-			m_corridors.push_back(currentNode);
 			openList.erase(openList.begin() + openList.size() - 1);
 		}
 		else {
@@ -118,6 +130,7 @@ void Level::generatePerfMaze()
 			//set current tile
 			currentNode.x = localTiles[dir].x;
 			currentNode.y = localTiles[dir].y;
+			m_corridors.push_back(currentNode);
 
 			//create inbetween tile
 			m_map[localTiles[dir + 1].y][localTiles[dir + 1].x] = 0;
@@ -133,8 +146,8 @@ void Level::generatePerfMaze()
 void Level::generateRooms(int rows, int columns)
 {
 	//min and max in space for length always will be even
-	int minLength = 2;
-	int maxLength = 5;
+	int minLength = 1;
+	int maxLength = 4;
 
 	//atempts to make a room
 	//will be the max area divide by the maxArea and should be have of total space
@@ -157,8 +170,19 @@ void Level::generateRooms(int rows, int columns)
 		room.destRect = destRect;
 
 		if (checkRoomCollisions(room, rows, columns)) {
+			
+			//set start pos
+			if (m_rooms.size() == 0) {
+				std::cout << "Setting player pos "<< room.destRect.x << std::endl;
+				//first room is start
+				m_startPos.x = room.destRect.x + (room.destRect.z - 1) / 2;
+				m_startPos.y = room.destRect.y + (room.destRect.w - 1) / 2;
+				std::cout << m_startPos.x << " " << m_startPos.y << std::endl;
+			}
+
 			//add rooms to map
 			m_rooms.push_back(room);
+
 
 			//Add it to the maze
 			for (int r = 0; r < room.destRect.w; r++) {
@@ -248,8 +272,6 @@ void Level::makeConnectors()
 {
 	std::cout << "Connecting passages..." << std::endl;
 	std::vector<glm::ivec2> possibleConnections;
-	std::vector<glm::ivec2> debugConnections;
-	std::vector<glm::ivec2> debugConnectionsTwo;
 	glm::ivec2 tmp = glm::ivec2(0);
 	for (auto r : m_rooms) {
 
@@ -297,18 +319,22 @@ void Level::makeConnectors()
 			//open a random one
 			int connector = randInt(0, possibleConnections.size() - 1);
 			m_map[possibleConnections[connector].y][possibleConnections[connector].x] = 0;
+			std::cout << connector << " " << possibleConnections.size() << std::endl;
 
-			if (connector > 0)
+			if (connector > 0) {
 				possibleConnections.erase(possibleConnections.begin() + connector - 1);
+				connector -= 1;
+			}
 
-			if (connector < possibleConnections.size() - 1)
-					possibleConnections.erase(possibleConnections.begin() + connector + 1);
+			if (connector < possibleConnections.size() - 1) {
+				possibleConnections.erase(possibleConnections.begin() + connector + 1);
+			}
 
 			possibleConnections.erase(possibleConnections.begin() + connector);
 
 			for (auto g : possibleConnections) {
 				//possibly open second tile
-				int posib = randInt(1, 50);
+				int posib = randInt(1, 30);
 				if(posib == 1)
 					m_map[g.y][g.x] = 0;
 			}
@@ -323,6 +349,91 @@ void Level::makeConnectors()
 	}
 
 	std::cout << "Finished" << std::endl;
+}
+
+void Level::removeDeadEnds()
+{
+	std::cout << "Removing dead ends" << std::endl;
+
+	//remove dead ends
+	for (int i = 0; i < m_corridors.size(); i++) {
+		//holds single tile touching tile
+		glm::ivec2 touchyTileThing(0);
+		//throwaway var
+		glm::ivec2 filler(0);
+		glm::ivec2 fillerThingy(0);
+		glm::ivec2 fillerfiller(0);
+
+		if (isTileLonely(m_corridors[i], touchyTileThing)) {
+			m_map[m_corridors[i].y][m_corridors[i].x] = 1;
+			if (isTileLonely(touchyTileThing, filler))
+				m_map[touchyTileThing.y][touchyTileThing.x] = 1;
+
+			m_corridors.erase(m_corridors.begin() + i);
+
+			i = -1;
+		}
+	}
+
+	std::cout << "Finished" << std::endl;
+}
+
+bool Level::isTileLonely(const glm::ivec2 & pos, glm::ivec2 & possibleConnector)
+{
+	//checks if the tile is connected to other tiles
+	int localTiles = 0;
+	//up
+	glm::vec2 temp;
+	temp.x = pos.x;
+	temp.y = pos.y - 1;
+	if (m_map[temp.y][temp.x] == 0) {
+		localTiles += 1;
+		possibleConnector = temp;
+	}
+
+	//down
+	temp.x = pos.x;
+	temp.y = pos.y + 1;
+	if (m_map[temp.y][temp.x] == 0) {
+		localTiles += 1;
+		possibleConnector = temp;
+	}
+
+	//left
+	temp.x = pos.x - 1;
+	temp.y = pos.y;
+	if (m_map[temp.y][temp.x] == 0) {
+		localTiles += 1;
+		possibleConnector = temp;
+	}
+
+	//right
+	temp.x = pos.x + 1;
+	temp.y = pos.y;
+	if (m_map[temp.y][temp.x] == 0) {
+		localTiles += 1;
+		possibleConnector = temp;
+	}
+
+	if (localTiles < 2 ) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+bool Level::amILonely()
+{
+	//calculate if I'm lonely
+	int friends = 0;
+
+	if (friends > 0) {
+		return false;
+	}
+	else {
+		return true;
+	}
 }
 
 bool Level::checkRoomCollisions(const Room & room, int rows, int columns)
@@ -378,28 +489,28 @@ bool Level::hasAdjacentTile(const glm::ivec2 & pos, const Room & room)
 	glm::vec2 temp;
 	temp.x = pos.x;
 	temp.y = pos.y - 1;
-	if (!isPosRoom(temp,room) && temp.y < m_map.size() && temp.x < m_map[0].size() && m_map[temp.y][temp.x] == 0) {
+	if (!isPosRoom(temp,room) && temp.y > 0 && temp.x > 0 && temp.y < m_map.size() && temp.x < m_map[0].size() && m_map[temp.y][temp.x] == 0) {
 		return true;
 	}
 
 	//down
 	temp.x = pos.x;
 	temp.y = pos.y + 1;
-	if (!isPosRoom(temp, room) && temp.y < m_map.size() && temp.x < m_map[0].size() && m_map[temp.y][temp.x] == 0) {
+	if (!isPosRoom(temp, room) && temp.y > 0 && temp.x > 0 && temp.y < m_map.size() && temp.x < m_map[0].size() && m_map[temp.y][temp.x] == 0) {
 		return true;
 	}
 
 	//left
 	temp.x = pos.x - 1;
 	temp.y = pos.y;
-	if (!isPosRoom(temp, room) && temp.y < m_map.size() && temp.x < m_map[0].size() && m_map[temp.y][temp.x] == 0) {
+	if (!isPosRoom(temp, room) && temp.y > 0 && temp.x > 0 && temp.y < m_map.size() && temp.x < m_map[0].size() && m_map[temp.y][temp.x] == 0) {
 		return true;
 	}
 
 	//right
 	temp.x = pos.x + 1;
 	temp.y = pos.y;
-	if (!isPosRoom(temp, room) && temp.y < m_map.size() && temp.x < m_map[0].size() && m_map[temp.y][temp.x] == 0) {
+	if (!isPosRoom(temp, room) && temp.y > 0 && temp.x > 0 && temp.y < m_map.size() && temp.x < m_map[0].size() && m_map[temp.y][temp.x] == 0) {
 		return true;
 	}
 

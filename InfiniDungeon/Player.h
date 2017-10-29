@@ -14,7 +14,7 @@ public:
 
 	virtual void update(float deltaTime, std::vector<std::vector<int>> level)override;
 
-	void init(std::string texturePath, glm::ivec2 tileSheetSize, DPE::InputManager* inputManager, DPE::Camera2D* camera,float speed);
+	void init(std::string texturePath, glm::ivec2 tileSheetSize, DPE::InputManager* inputManager, DPE::Camera2D* camera, float speed, glm::ivec2 startPos);
 
 private:
 	DPE::InputManager* m_inputManager;
