@@ -144,6 +144,7 @@
     <ClInclude Include="PathFinder.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ScreenIndicies.h" />
+    <ClInclude Include="Themes.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

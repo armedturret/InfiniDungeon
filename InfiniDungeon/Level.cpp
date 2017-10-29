@@ -7,9 +7,6 @@
 #include <random>
 #include <ctime>
 
-#include <JSON\reader.h>
-#include <JSON\value.h>
-
 Level::Level()
 {
 }
@@ -23,31 +20,24 @@ Level::~Level()
 
 void Level::init(int difficulty)
 {
-	Json::Value themeSelectRoot;
-	
-	std::ifstream themes_file("Data/Textures/Themes/Themes.json", std::ios::binary);
-	themes_file >> themeSelectRoot;
 
 	//choose a theme of matching difficulty
 	if (difficulty == 1) {
 		//TODO: Remove json code due to being dumb
-		const Json::Value difficultyOne = themeSelectRoot["DifficultyOne"];
 
 		static std::mt19937 randomEngine(time(nullptr));
-		std::uniform_int_distribution<int> randInt(0, difficultyOne.size() - 1);
+		std::uniform_int_distribution<int> randInt(0, sizeof(levelOne) / sizeof(levelOne[0]) - 1);
 		//choose random theme
 		int index = randInt(randomEngine);
 
-		std::cout << difficultyOne[index].asString()<<std::endl;
-
-		m_theme = difficultyOne[index].asString();
+		m_theme = levelOne[index];
 	}
 	else {
 		std::cout << "difficulty not valid" << std::endl;
 	}
 
-	int rows = 100;
-	int columns = 100;
+	int rows = 30;
+	int columns = 30;
 
 	//reserve the map 
 	m_map.resize(rows);
@@ -63,13 +53,15 @@ void Level::init(int difficulty)
 	//Populate with corridors
 	generatePerfMaze();
 	
+	makeConnectors();
+
 	m_spriteBatch.init();
 
 	m_debugRenderer.init();
 
 	m_spriteBatch.begin();
-	for (int x = 0; x < rows; x++) {
-		for (int y = 0; y < columns; y++) {
+	for (int y = 0; y < rows; y++) {
+		for (int x = 0; x < columns; x++) {
 			glm::vec4 destRect;
 			destRect.x = x*TILE_SIZE;
 			destRect.y = y*TILE_SIZE;
@@ -77,14 +69,15 @@ void Level::init(int difficulty)
 			destRect.w = TILE_SIZE;
 			float angle = 0.0f;
 			std::string texture;
+			GLubyte r = 255;
+			GLubyte b = 255;
 			if (m_map[y][x] == 0) {
-				texture = "Data/Textures/Themes/" + m_theme + "/Floor.png";
+				texture = "Data/Textures/Themes/" + m_theme.name + "/" + m_theme.floor;
 			}
 			else if (m_map[y][x] == 1) {
-				texture = "Data/Textures/Themes/" + m_theme + "/Wall.png";
+				texture = "Data/Textures/Themes/" + m_theme.name + "/"+ m_theme.wall;
 			}
-
-			m_spriteBatch.draw(destRect, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), DPE::ResourceManager::getTexture(texture).id, 0.0f, DPE::ColorRGBA8(255, 255, 255, 255), angle);
+			m_spriteBatch.draw(destRect, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), DPE::ResourceManager::getTexture(texture).id, 0.0f, DPE::ColorRGBA8(r, 255, 255, b), angle);
 		}
 	}
 	m_spriteBatch.end();
@@ -110,12 +103,14 @@ void Level::generatePerfMaze()
 	std::vector<glm::ivec2> openList;
 
 	openList.push_back(currentNode);
+
 	while (openList.size() > 0) {
 		m_map[currentNode.y][currentNode.x] = 0;
 		std::vector<glm::ivec2> localTiles;
 		getAdjacentTiles(openList[openList.size() - 1], localTiles);
 
 		if (localTiles.size() == 0) {
+			m_corridors.push_back(currentNode);
 			openList.erase(openList.begin() + openList.size() - 1);
 		}
 		else {
@@ -132,6 +127,7 @@ void Level::generatePerfMaze()
 		localTiles.clear();
 
 	}
+	std::cout << "Finished perfect maze!" << std::endl;
 }
 
 void Level::generateRooms(int rows, int columns)
@@ -140,12 +136,9 @@ void Level::generateRooms(int rows, int columns)
 	int minLength = 2;
 	int maxLength = 5;
 
-	//store as type Room to use a room enum later
-	std::vector<Room> rooms;
-
 	//atempts to make a room
 	//will be the max area divide by the maxArea and should be have of total space
-	int attempts = rows * columns / (minLength*minLength) / 4;
+	int attempts = rows * columns / (minLength*minLength);
 	std::cout << "Populating with rooms at " << attempts << " attempts before termination." << std::endl;
 
 	for (int i = 0; i < attempts; i++) {
@@ -154,18 +147,18 @@ void Level::generateRooms(int rows, int columns)
 		glm::vec4 destRect;
 
 		//length
-		destRect.z = randInt(minLength, maxLength) * 2;
+		destRect.z = randInt(minLength, maxLength) * 2 + 1;
 		//height
-		destRect.w = randInt(minLength, maxLength) * 2;
+		destRect.w = randInt(minLength, maxLength) * 2 + 1;
 
 		destRect.x = randInt(2, (columns - 2) / 2) * 2;
 		destRect.y = randInt(2, (rows - 2) / 2) * 2;
 
 		room.destRect = destRect;
 
-		if (checkRoomCollisions(room, rooms, rows, columns)) {
+		if (checkRoomCollisions(room, rows, columns)) {
 			//add rooms to map
-			rooms.push_back(room);
+			m_rooms.push_back(room);
 
 			//Add it to the maze
 			for (int r = 0; r < room.destRect.w; r++) {
@@ -176,6 +169,8 @@ void Level::generateRooms(int rows, int columns)
 			}
 		}
 	}
+	
+	std::cout << "Finished rooms!" << std::endl;
 }
 
 void Level::getAdjacentTiles(const glm::ivec2 & startNode, std::vector<glm::ivec2>& output)
@@ -235,29 +230,110 @@ bool Level::isTileValid(glm::ivec2 checkTile)
 		m_map[0].size() >= checkTile.y + 1 &&
 		0 < checkTile.y - 1)
 
-		//right, left, up, down
+		//right, left, up, down, upleft...
 		if (m_map[checkTile.y + 1][checkTile.x] == 1 &&
 			m_map[checkTile.y - 1][checkTile.x] == 1 &&
 			m_map[checkTile.y][checkTile.x - 1] == 1 &&
-			m_map[checkTile.y][checkTile.x + 1] == 1)
+			m_map[checkTile.y][checkTile.x + 1] == 1 &&
+			m_map[checkTile.y+1][checkTile.x + 1] == 1 && 
+			m_map[checkTile.y-1][checkTile.x + 1] == 1 && 
+			m_map[checkTile.y+1][checkTile.x - 1] == 1 && 
+			m_map[checkTile.y-1][checkTile.x - 1] == 1)
 			return true;
 
 	return false;
 }
 
-void Level::joinSomeDeadEnds()
+void Level::makeConnectors()
 {
+	std::cout << "Connecting passages..." << std::endl;
+	std::vector<glm::ivec2> possibleConnections;
+	std::vector<glm::ivec2> debugConnections;
+	std::vector<glm::ivec2> debugConnectionsTwo;
+	glm::ivec2 tmp = glm::ivec2(0);
+	for (auto r : m_rooms) {
+
+		//perform bottom edge
+		for (int i = 0; i < r.destRect.z; i++) {
+			tmp.x = r.destRect.x + i;
+			tmp.y = r.destRect.y - 1;
+
+			if (hasAdjacentTile(tmp, r)) {
+				possibleConnections.push_back(tmp);
+			}
+		}
+
+		//top edge
+		for (int i = 0; i < r.destRect.z; i++) {
+			tmp.x = r.destRect.x + i;
+			tmp.y = r.destRect.y + r.destRect.w;
+			
+			if (hasAdjacentTile(tmp, r)) {
+				possibleConnections.push_back(tmp);
+			}
+		}
+
+		//left edge
+		for (int i = 0; i < r.destRect.w; i++) {
+			tmp.x = r.destRect.x - 1;
+			tmp.y = r.destRect.y + i;
+			
+			if (hasAdjacentTile(tmp, r)) {
+				possibleConnections.push_back(tmp);
+			}
+		}
+
+		//right edge
+		for (int i = 0; i < r.destRect.w; i++) {
+			tmp.x = r.destRect.x + r.destRect.z;
+			tmp.y = r.destRect.y + i;
+			
+			if (hasAdjacentTile(tmp, r)) {
+				possibleConnections.push_back(tmp);
+			}
+		}
+		
+		if (possibleConnections.size()>0) {
+			//open a random one
+			int connector = randInt(0, possibleConnections.size() - 1);
+			m_map[possibleConnections[connector].y][possibleConnections[connector].x] = 0;
+
+			if (connector > 0)
+				possibleConnections.erase(possibleConnections.begin() + connector - 1);
+
+			if (connector < possibleConnections.size() - 1)
+					possibleConnections.erase(possibleConnections.begin() + connector + 1);
+
+			possibleConnections.erase(possibleConnections.begin() + connector);
+
+			for (auto g : possibleConnections) {
+				//possibly open second tile
+				int posib = randInt(1, 50);
+				if(posib == 1)
+					m_map[g.y][g.x] = 0;
+			}
+
+			//prepare for new loop
+			possibleConnections.clear();
+			
+		}
+		else {
+
+		}
+	}
+
+	std::cout << "Finished" << std::endl;
 }
 
-bool Level::checkRoomCollisions(const Room & room, std::vector<Room> rooms, int rows, int columns)
+bool Level::checkRoomCollisions(const Room & room, int rows, int columns)
 {
 	//check if out of map
 	if (room.destRect.x + room.destRect.z > columns - 1 ||
 		room.destRect.y + room.destRect.w > rows - 1)
 		return false;
 
-	for (int b = 0; b < rooms.size(); b++/*the equivelant of an A- XD*/) {
-		if (doesRoomCollide(room, rooms[b])) {
+	for (int b = 0; b < m_rooms.size(); b++/*the equivelant of an A- XD*/) {
+		if (doesRoomCollide(room, m_rooms[b])) {
 			return false;
 		}
 	}
@@ -277,6 +353,56 @@ bool Level::doesRoomCollide(const Room & room1, const Room & room2)
 		rect1.w + rect1.y + 1 > rect2.y - 1) {
 		return true;
 	}
+	return false;
+}
+
+bool Level::isPosRoom(const glm::ivec2 & pos, const Room & room)
+{
+	glm::vec4 rect2 = room.destRect;
+	glm::vec2 rect1 = pos;
+
+	//AABB collision
+	if (rect1.x <= rect2.x + rect2.z &&
+		rect1.x >= rect2.x &&
+		rect1.y <= rect2.y + rect2.w  &&
+		rect1.y >= rect2.y) {
+		return true;
+	}
+	return false;
+}
+
+bool Level::hasAdjacentTile(const glm::ivec2 & pos, const Room & room)
+{
+	//checks if the tile connects to maze and is not a room
+	//up
+	glm::vec2 temp;
+	temp.x = pos.x;
+	temp.y = pos.y - 1;
+	if (!isPosRoom(temp,room) && temp.y < m_map.size() && temp.x < m_map[0].size() && m_map[temp.y][temp.x] == 0) {
+		return true;
+	}
+
+	//down
+	temp.x = pos.x;
+	temp.y = pos.y + 1;
+	if (!isPosRoom(temp, room) && temp.y < m_map.size() && temp.x < m_map[0].size() && m_map[temp.y][temp.x] == 0) {
+		return true;
+	}
+
+	//left
+	temp.x = pos.x - 1;
+	temp.y = pos.y;
+	if (!isPosRoom(temp, room) && temp.y < m_map.size() && temp.x < m_map[0].size() && m_map[temp.y][temp.x] == 0) {
+		return true;
+	}
+
+	//right
+	temp.x = pos.x + 1;
+	temp.y = pos.y;
+	if (!isPosRoom(temp, room) && temp.y < m_map.size() && temp.x < m_map[0].size() && m_map[temp.y][temp.x] == 0) {
+		return true;
+	}
+
 	return false;
 }
 

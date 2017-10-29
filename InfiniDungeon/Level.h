@@ -5,6 +5,8 @@
 #include <DPE\GLSLProgram.h>
 #include <vector>
 
+#include "Themes.h"
+
 const int TILE_SIZE = 128;
 
 struct Room {
@@ -49,11 +51,17 @@ private:
 
 	bool isTileValid(glm::ivec2 checkTile);
 
-	void joinSomeDeadEnds();
+	void makeConnectors();
 
-	bool checkRoomCollisions(const Room& room, std::vector<Room> rooms, int rows, int columns);
+	void removeDeadEnds();
+
+	bool checkRoomCollisions(const Room& room, int rows, int columns);
 
 	bool doesRoomCollide(const Room& room1, const Room& room2);
+
+	bool isPosRoom(const glm::ivec2& pos, const Room& room);
+
+	bool hasAdjacentTile(const glm::ivec2& pos, const Room& room);
 
 	int randInt(int min, int max);
 
@@ -62,8 +70,10 @@ private:
 	DPE::SpriteBatch m_spriteBatch;
 	DPE::DebugRender m_debugRenderer;
 
+	std::vector<Room> m_rooms;
 	std::vector<std::vector<int>> m_map;
+	std::vector<glm::ivec2> m_corridors;
 
-	std::string m_theme;
+	theme m_theme;
 };
 
