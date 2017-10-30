@@ -105,7 +105,7 @@ void GameplayScreen::onExit()
 }
 
 void GameplayScreen::update(){
-	m_player.update(0.0f, m_level.getMap());
+	m_player.update(0.0f, m_level);
 
 	m_camera.setPosition(m_player.getPosition());
 
@@ -130,7 +130,7 @@ void GameplayScreen::draw()
 	GLint pUniform = m_textureProgram.getUniformLocation("P");
 	glUniformMatrix4fv(pUniform, 1, GL_FALSE, &projectionMatrix[0][0]);
 
-	m_level.draw(projectionMatrix, m_textureProgram);
+	m_level.draw();
 
 	m_spriteBatch.begin(DPE::GlyphSortType::BACK_TO_FRONT);
 

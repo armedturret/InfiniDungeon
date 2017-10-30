@@ -14,8 +14,10 @@ Player::~Player()
 {
 }
 
-void Player::update(float deltaTime, std::vector<std::vector<int>> level)
+void Player::update(float deltaTime, Level& level)
 {
+
+	std::vector<std::vector<int>> map = level.getMap();
 
 	if (m_inputManager->isKeyDown(SDL_BUTTON_LEFT) && !m_wasMouseDownPreviously) {
 		if (!m_moving) {
@@ -24,14 +26,14 @@ void Player::update(float deltaTime, std::vector<std::vector<int>> level)
 			m_target.y = floor(worldCoords.y / TILE_SIZE);
 
 			//Test if coordinates are in map
-			if (m_target.x >= 0.0f && m_target.y >= 0.0f && m_target.x < level.size() && m_target.y < level[0].size() &&level[m_target.y][m_target.x] != 1) {
+			if (m_target.x >= 0.0f && m_target.y >= 0.0f && m_target.x < map.size() && m_target.y < map[0].size() &&map[m_target.y][m_target.x] != 1) {
 				m_moving = true;
 				
 				m_startPosition.x = (m_position.x - TILE_SIZE / 2.0f) / TILE_SIZE;
 				m_startPosition.y = (m_position.y - TILE_SIZE / 2.0f) / TILE_SIZE;
 
 				//calculate the path
-				m_path = m_pathFinder.pathBetweenPoints(m_startPosition, m_target, level);
+				m_path = m_pathFinder.pathBetweenPoints(m_startPosition, m_target, map);
 			}
 		}
 		else {
@@ -60,6 +62,28 @@ void Player::update(float deltaTime, std::vector<std::vector<int>> level)
 
 			if(floor(m_animTime) < m_path.size())
 				m_nextTile = m_path[m_path.size() - floor(m_animTime) - 1].getPosition();
+
+			//check if nextTile is door
+			if (map[m_nextTile.y][m_nextTile.x] == 2) {
+				std::vector<std::vector<int>> entMap = level.getEntMap();
+				entMap[m_nextTile.y][m_nextTile.x] = 1;
+				level.setEntMap(entMap);
+			}
+			//make sure to close previous doors
+			if (m_path.size() - floor(m_animTime) + 1 < m_path.size()) {
+				glm::vec2 prevPos = m_path[m_path.size() - floor(m_animTime) + 1].getPosition();
+				if (map[prevPos.y][prevPos.x] == 2) {
+					std::vector<std::vector<int>> entMap = level.getEntMap();
+					entMap[prevPos.y][prevPos.x] = 0;
+					level.setEntMap(entMap);
+				}
+			}
+			//Check if start pos was a door
+			if (map[m_startPosition.y][m_startPosition.x] == 2 && m_nextTile.y - calcPos.y < 0.05f && m_nextTile.x - calcPos.x < 0.05f) {
+				std::vector<std::vector<int>> entMap = level.getEntMap();
+				entMap[m_startPosition.y][m_startPosition.x] = 0;
+				level.setEntMap(entMap);
+			}
 
 			if (m_nextTile.x == calcPos.x + 1)
 				m_direction = 2;

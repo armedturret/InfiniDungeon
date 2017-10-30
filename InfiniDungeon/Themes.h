@@ -4,17 +4,18 @@
 struct theme {
 	theme() {};
 
-	theme(std::string name, std::string floor, std::string wall) :
+	theme(std::string name, std::string floor, std::string wall, std::string door) :
 		name(name),
 		floor(floor),
-		wall(wall) {};
+		wall(wall),
+		door(door){};
 
 	std::string name;
 	std::string floor;
 	std::string wall;
-	//std::string door;
+	std::string door;
 };
 
 const theme levelOne[] = {
 	//basic
-	theme("Basic","Floor.png","Wall.png")};
+	theme("Basic","Floor.png","Wall.png","Door.png")};

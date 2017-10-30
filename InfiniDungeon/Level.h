@@ -9,6 +9,9 @@
 
 const int TILE_SIZE = 128;
 
+const int ROWS = 40;
+const int COLUMNS = 40;
+
 struct Room {
 	glm::ivec4 destRect;
 };
@@ -34,15 +37,20 @@ public:
 
 	void init(int difficulty);
 
-	void draw(glm::mat4& projectionMatrix, DPE::GLSLProgram & program);
+	void draw();
 
 	void dispose();
+
+	void setEntMap(const std::vector<std::vector<int>>& entMap) { m_entMap = entMap; }
 
 	glm::ivec2 getStartPos() const { return m_startPos; }
 
 	std::vector<std::vector<int>> getMap() const { return m_map; };
+	std::vector<std::vector<int>> getEntMap() const { return m_entMap; };
 
 private:
+
+	void drawEntTiles();
 
 	void generatePerfMaze();
 
@@ -74,10 +82,13 @@ private:
 	float randFloat(float min, float max);
 
 	DPE::SpriteBatch m_spriteBatch;
-	DPE::DebugRender m_debugRenderer;
+	//Only m_entBatch is updateable
+	DPE::SpriteBatch m_entBatch;
 
 	std::vector<Room> m_rooms;
 	std::vector<std::vector<int>> m_map;
+	//Stores info about different entities i.e. Is a door open
+	std::vector<std::vector<int>> m_entMap;
 	std::vector<glm::ivec2> m_corridors;
 
 	glm::ivec2 m_startPos;

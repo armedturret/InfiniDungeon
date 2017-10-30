@@ -1,5 +1,6 @@
 #include "Level.h"
 
+#include <DPE/TileSheet.h>
 #include <DPE/ResourceManager.h>
 
 #include <iostream>
@@ -36,19 +37,22 @@ void Level::init(int difficulty)
 		std::cout << "difficulty not valid" << std::endl;
 	}
 
-	int rows = 30;
-	int columns = 30;
-
 	//reserve the map 
-	m_map.resize(rows);
+	m_map.resize(ROWS);
 
-	for (int r = 0; r < rows; r++)
-		m_map[r].resize(columns, 1);
+	for (int r = 0; r < ROWS; r++)
+		m_map[r].resize(COLUMNS, 1);
+
+	//reserve the ent map 
+	m_entMap.resize(ROWS);
+
+	for (int r = 0; r < ROWS; r++)
+		m_entMap[r].resize(COLUMNS, 0);
 
 	//!!IMPORTANT all spacing must be in multiples of 2 because spacing
 
 	//rooms first
-	generateRooms(rows, columns);
+	generateRooms(ROWS, COLUMNS);
 
 	//Populate with corridors
 	generatePerfMaze();
@@ -61,11 +65,11 @@ void Level::init(int difficulty)
 
 	m_spriteBatch.init();
 
-	m_debugRenderer.init();
+	m_entBatch.init();
 
 	m_spriteBatch.begin();
-	for (int y = 0; y < rows; y++) {
-		for (int x = 0; x < columns; x++) {
+	for (int y = 0; y < ROWS; y++) {
+		for (int x = 0; x < COLUMNS; x++) {
 			glm::vec4 destRect;
 			destRect.x = x*TILE_SIZE;
 			destRect.y = y*TILE_SIZE;
@@ -73,39 +77,55 @@ void Level::init(int difficulty)
 			destRect.w = TILE_SIZE;
 			float angle = 0.0f;
 			std::string texture;
-			GLubyte r = 255;
-			GLubyte b = 255;
 			if (m_map[y][x] == 0) {
 				texture = "Data/Textures/Themes/" + m_theme.name + "/" + m_theme.floor;
 			}
 			else if (m_map[y][x] == 1) {
 				texture = "Data/Textures/Themes/" + m_theme.name + "/"+ m_theme.wall;
 			}
-			else if (m_map[y][x] == 2) {
-				r = 0;
-				texture = "Data/Textures/Themes/" + m_theme.name + "/" + m_theme.wall;
-			}
-			else if (m_map[y][x] == 3) {
-				b = 127;
-				texture = "Data/Textures/Themes/" + m_theme.name + "/" + m_theme.wall;
-			}
-			m_spriteBatch.draw(destRect, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), DPE::ResourceManager::getTexture(texture).id, 0.0f, DPE::ColorRGBA8(r, 255, 255, b), angle);
+
+			if(m_map[y][x] < 2)
+				m_spriteBatch.draw(destRect, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), DPE::ResourceManager::getTexture(texture).id, 0.0f, DPE::ColorRGBA8(255, 255, 255, 255), angle);
 		}
 	}
 	m_spriteBatch.end();
 }
 
-void Level::draw(glm::mat4& projectionMatrix, DPE::GLSLProgram & program)
+void Level::draw()
 {
 	m_spriteBatch.renderBatch();
-	m_debugRenderer.render(projectionMatrix, 2.0f);
-	program.use();
+	drawEntTiles();
 }
 
 void Level::dispose()
 {
 	m_spriteBatch.dispose();
-	m_debugRenderer.dispose();
+	m_entBatch.dispose();
+}
+
+void Level::drawEntTiles()
+{
+	m_entBatch.begin();
+
+	DPE::TileSheet m_doorSheet;
+	m_doorSheet.init(DPE::ResourceManager::getTexture("Data/Textures/Themes/" + m_theme.name + "/" + m_theme.door), glm::ivec2(2, 1));
+	
+	for (int y = 0; y < ROWS; y++) {
+		for (int x = 0; x < COLUMNS; x++) {
+			glm::vec4 destRect;
+			destRect.x = x*TILE_SIZE;
+			destRect.y = y*TILE_SIZE;
+			destRect.z = TILE_SIZE;
+			destRect.w = TILE_SIZE;
+			float angle = 0.0f;
+			//door
+			if (m_map[y][x] == 2) {
+				m_entBatch.draw(destRect, m_doorSheet.getUVs(m_entMap[y][x]), m_doorSheet.texture.id, 0.0f, DPE::ColorRGBA8(255, 255, 255, 255), angle);
+			}
+		}
+	}
+	m_entBatch.end();
+	m_entBatch.renderBatch();
 }
 
 void Level::generatePerfMaze()
@@ -318,7 +338,7 @@ void Level::makeConnectors()
 		if (possibleConnections.size()>0) {
 			//open a random one
 			int connector = randInt(0, possibleConnections.size() - 1);
-			m_map[possibleConnections[connector].y][possibleConnections[connector].x] = 0;
+			m_map[possibleConnections[connector].y][possibleConnections[connector].x] = 2;
 
 			if (connector > 0) {
 				possibleConnections.erase(possibleConnections.begin() + connector - 1);
@@ -333,9 +353,10 @@ void Level::makeConnectors()
 
 			for (auto g : possibleConnections) {
 				//possibly open second tile
-				int posib = randInt(1, 30);
+				int posib = randInt(1, 50);
 				if(posib == 1)
-					m_map[g.y][g.x] = 0;
+					//door
+					m_map[g.y][g.x] = 2;
 			}
 
 			//prepare for new loop
@@ -385,7 +406,7 @@ bool Level::isTileLonely(const glm::ivec2 & pos, glm::ivec2 & possibleConnector)
 	glm::vec2 temp;
 	temp.x = pos.x;
 	temp.y = pos.y - 1;
-	if (m_map[temp.y][temp.x] == 0) {
+	if (m_map[temp.y][temp.x] == 0 || m_map[temp.y][temp.x] == 2) {
 		localTiles += 1;
 		possibleConnector = temp;
 	}
@@ -393,7 +414,7 @@ bool Level::isTileLonely(const glm::ivec2 & pos, glm::ivec2 & possibleConnector)
 	//down
 	temp.x = pos.x;
 	temp.y = pos.y + 1;
-	if (m_map[temp.y][temp.x] == 0) {
+	if (m_map[temp.y][temp.x] == 0 || m_map[temp.y][temp.x] == 2) {
 		localTiles += 1;
 		possibleConnector = temp;
 	}
@@ -401,7 +422,7 @@ bool Level::isTileLonely(const glm::ivec2 & pos, glm::ivec2 & possibleConnector)
 	//left
 	temp.x = pos.x - 1;
 	temp.y = pos.y;
-	if (m_map[temp.y][temp.x] == 0) {
+	if (m_map[temp.y][temp.x] == 0 || m_map[temp.y][temp.x] == 2) {
 		localTiles += 1;
 		possibleConnector = temp;
 	}
@@ -409,7 +430,7 @@ bool Level::isTileLonely(const glm::ivec2 & pos, glm::ivec2 & possibleConnector)
 	//right
 	temp.x = pos.x + 1;
 	temp.y = pos.y;
-	if (m_map[temp.y][temp.x] == 0) {
+	if (m_map[temp.y][temp.x] == 0 || m_map[temp.y][temp.x] == 2) {
 		localTiles += 1;
 		possibleConnector = temp;
 	}

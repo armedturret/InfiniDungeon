@@ -172,5 +172,5 @@ void PathFinder::getLocalNodes(std::vector<Node> &openNodes, std::unordered_map<
 bool PathFinder::isPositionValid(const std::unordered_map<glm::ivec2, Node, KeyFuncs, KeyFuncs>& nodeMap, const Node & myNode)
 {
 	glm::vec2 pos = myNode.getPosition();
-	return pos.x >= 0.0f && pos.y >= 0.0f && pos.y < m_map.size() && m_map[0].size() > pos.x && m_map[pos.y][pos.x] == 0 && nodeMap.find(pos) == nodeMap.end();
+	return pos.x >= 0.0f && pos.y >= 0.0f && pos.y < m_map.size() && m_map[0].size() > pos.x && m_map[pos.y][pos.x] != 1 && nodeMap.find(pos) == nodeMap.end();
 }
