@@ -12,7 +12,7 @@ public:
 	Player();
 	~Player();
 
-	virtual void update(float deltaTime, Level& level)override;
+	virtual void update(float deltaTime, const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap)override;
 
 	void init(std::string texturePath, glm::ivec2 tileSheetSize, DPE::InputManager* inputManager, DPE::Camera2D* camera, float speed, glm::ivec2 startPos);
 

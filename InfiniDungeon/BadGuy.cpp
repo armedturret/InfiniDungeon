@@ -14,15 +14,15 @@ BadGuy::~BadGuy()
 {
 }
 
-void BadGuy::update(float deltaTime, Level & level)
+void BadGuy::update(float deltaTime, const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap)
 {
 	if (m_state == BadGuyState::ROAMING) {
-		RoamingBehavior(deltaTime, level);
+		RoamingBehavior(deltaTime, map, entMap);
 	}
 	else if (m_state == BadGuyState::SEARCHING) {
-		SearchBehavior(deltaTime, level);
+		SearchBehavior(deltaTime, map, entMap);
 	}
 	else if (m_state == BadGuyState::ATTACKING) {
-		AttackBehavior(deltaTime, level);
+		AttackBehavior(deltaTime, map, entMap);
 	}
 }

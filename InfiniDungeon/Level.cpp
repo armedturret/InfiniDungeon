@@ -8,6 +8,8 @@
 #include <random>
 #include <ctime>
 
+#include "Themes.h"
+
 Level::Level():m_startPos(2)
 {
 }
@@ -25,13 +27,13 @@ void Level::init(int difficulty)
 	//choose a theme of matching difficulty
 	if (difficulty == 1) {
 		//TODO: Remove json code due to being dumb
+		
+		
 
 		static std::mt19937 randomEngine(time(nullptr));
-		std::uniform_int_distribution<int> randInt(0, sizeof(levelOne) / sizeof(levelOne[0]) - 1);
+		std::uniform_int_distribution<int> randInt(0, sizeof(LEVEL_ONE)/sizeof(LEVEL_ONE[0]) - 1);
 		//choose random theme
-		int index = randInt(randomEngine);
-
-		m_theme = levelOne[index];
+		m_themeIndex = randInt(randomEngine);
 	}
 	else {
 		std::cout << "difficulty not valid" << std::endl;
@@ -78,10 +80,10 @@ void Level::init(int difficulty)
 			float angle = 0.0f;
 			std::string texture;
 			if (m_map[y][x] == 0) {
-				texture = "Data/Textures/Themes/" + m_theme.name + "/" + m_theme.floor;
+				texture = "Data/Textures/Themes/" + LEVEL_ONE[m_themeIndex].name + "/" + LEVEL_ONE[m_themeIndex].floor;
 			}
 			else if (m_map[y][x] == 1) {
-				texture = "Data/Textures/Themes/" + m_theme.name + "/"+ m_theme.wall;
+				texture = "Data/Textures/Themes/" + LEVEL_ONE[m_themeIndex].name + "/"+ LEVEL_ONE[m_themeIndex].wall;
 			}
 
 			if(m_map[y][x] < 2)
@@ -108,7 +110,7 @@ void Level::drawEntTiles()
 	m_entBatch.begin();
 
 	DPE::TileSheet m_doorSheet;
-	m_doorSheet.init(DPE::ResourceManager::getTexture("Data/Textures/Themes/" + m_theme.name + "/" + m_theme.door), glm::ivec2(2, 1));
+	m_doorSheet.init(DPE::ResourceManager::getTexture("Data/Textures/Themes/" + LEVEL_ONE[m_themeIndex].name + "/" + LEVEL_ONE[m_themeIndex].door), glm::ivec2(2, 1));
 	
 	for (int y = 0; y < ROWS; y++) {
 		for (int x = 0; x < COLUMNS; x++) {

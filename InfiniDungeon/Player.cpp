@@ -14,11 +14,8 @@ Player::~Player()
 {
 }
 
-void Player::update(float deltaTime, Level& level)
+void Player::update(float deltaTime, const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap)
 {
-
-	std::vector<std::vector<int>> map = level.getMap();
-
 	if (m_inputManager->isKeyDown(SDL_BUTTON_LEFT) && !m_wasMouseDownPreviously) {
 		if (!m_moving) {
 			glm::vec2 worldCoords = m_camera->convertScreenToWorld(m_inputManager->getMouseCoords());
@@ -65,24 +62,18 @@ void Player::update(float deltaTime, Level& level)
 
 			//check if nextTile is door
 			if (map[m_nextTile.y][m_nextTile.x] == 2) {
-				std::vector<std::vector<int>> entMap = level.getEntMap();
 				entMap[m_nextTile.y][m_nextTile.x] = 1;
-				level.setEntMap(entMap);
 			}
 			//make sure to close previous doors
 			if (m_path.size() - floor(m_animTime) + 1 < m_path.size()) {
 				glm::vec2 prevPos = m_path[m_path.size() - floor(m_animTime) + 1].getPosition();
 				if (map[prevPos.y][prevPos.x] == 2) {
-					std::vector<std::vector<int>> entMap = level.getEntMap();
 					entMap[prevPos.y][prevPos.x] = 0;
-					level.setEntMap(entMap);
 				}
 			}
 			//Check if start pos was a door
 			if (map[m_startPosition.y][m_startPosition.x] == 2 && m_nextTile.y - calcPos.y < 0.05f && m_nextTile.x - calcPos.x < 0.05f) {
-				std::vector<std::vector<int>> entMap = level.getEntMap();
 				entMap[m_startPosition.y][m_startPosition.x] = 0;
-				level.setEntMap(entMap);
 			}
 
 			if (m_nextTile.x == calcPos.x + 1)

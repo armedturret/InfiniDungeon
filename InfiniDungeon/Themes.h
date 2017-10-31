@@ -20,6 +20,4 @@ struct theme {
 	BadGuy levelOneEnemy;
 };
 
-const theme levelOne[] = {
-	//basic
-	theme("Basic","Floor.png","Wall.png","Door.png")};
+const theme LEVEL_ONE[] = { theme("Basic", "Floor.png", "Wall.png", "Door.png") };

@@ -4,14 +4,12 @@
 #include <DPE/DebugRender.h>
 #include <iostream>
 
-#include "Level.h"
-
 class Creature
 {
 public:
 	Creature();
 	~Creature();
-	virtual void update(float deltaTime, Level& level) {
+	virtual void update(float deltaTime, const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap) {
 		std::cout << "Creature given no update behavior" << std::endl;
 	};
 

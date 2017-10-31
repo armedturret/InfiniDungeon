@@ -93,6 +93,6 @@ private:
 
 	glm::ivec2 m_startPos;
 
-	theme m_theme;
+	int m_themeIndex;
 };
 

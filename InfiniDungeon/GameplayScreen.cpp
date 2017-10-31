@@ -105,7 +105,9 @@ void GameplayScreen::onExit()
 }
 
 void GameplayScreen::update(){
-	m_player.update(0.0f, m_level);
+	auto entMap = m_level.getEntMap();
+	m_player.update(0.0f, m_level.getMap(), entMap);
+	m_level.setEntMap(entMap);
 
 	m_camera.setPosition(m_player.getPosition());
 

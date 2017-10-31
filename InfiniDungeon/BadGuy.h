@@ -10,24 +10,24 @@ public:
 	BadGuy();
 	~BadGuy();
 
-	virtual void update(float deltaTime, Level& level);
+	virtual void update(float deltaTime, const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap);
 
-	virtual void OnCreation(Level& level) {
+	virtual void OnCreation(const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap) {
 		std::cout << "Creature " << m_name << "given no creation behavior" << std::endl;
 	};
 
 	//creature just walking
-	virtual void RoamingBehavior(float deltaTime, Level& level) {
+	virtual void RoamingBehavior(float deltaTime, const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap) {
 		std::cout << "Creature "<<m_name<<"given no roaming behavior" << std::endl;
 	};
 
 	//creature sees player
-	virtual void AttackBehavior(float deltaTime, Level& level) {
+	virtual void AttackBehavior(float deltaTime, const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap) {
 		std::cout << "Creature " << m_name << "given no attack behavior" << std::endl;
 	};
 
 	//creature knows player there but can't see (Called when player teleports away or blinds enemy)
-	virtual void SearchBehavior(float deltaTime, Level& level) {
+	virtual void SearchBehavior(float deltaTime, const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap) {
 		std::cout << "Creature " << m_name << "given no movement behavior" << std::endl;
 	};
 
