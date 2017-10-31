@@ -9,6 +9,7 @@
 #include "Level.h"
 
 #include "Player.h"
+#include "Themes.h"
 
 class GameplayScreen : public DPE::IGameScreen
 {
@@ -49,5 +50,6 @@ private:
 	Player m_player;
 
 	float m_scrollLevel;
+	int m_difficulty;
 };
 

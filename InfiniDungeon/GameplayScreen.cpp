@@ -1,5 +1,7 @@
 #include "GameplayScreen.h"
 
+#include <random>
+#include <ctime>
 #include <DPE/IMainGame.h>
 
 const float MAX_SCROLL = 5.5f;
@@ -49,7 +51,8 @@ void main(){
 
 GameplayScreen::GameplayScreen(DPE::Window * window) :
 	m_window(window),
-	m_scrollLevel(1.5f)
+	m_scrollLevel(1.5f),
+	m_difficulty(1)
 {
 }
 
@@ -91,7 +94,17 @@ void GameplayScreen::onEntry()
 	m_camera.init(m_window->getScreenWidth(), m_window->getScreenHeight());
 	m_camera.setScale(1.0f/1.5f);
 
-	m_level.init(1);
+	//choose a theme of matching difficulty
+	if (m_difficulty == 1) {
+		//TODO: Remove json code due to being dumb
+
+
+
+		static std::mt19937 randomEngine(time(nullptr));
+		std::uniform_int_distribution<int> randInt(0, sizeof(LEVEL_ONE) / sizeof(LEVEL_ONE[0]) - 1);
+		//choose random theme
+		m_level.init(LEVEL_ONE[randInt(randomEngine)]);
+	}
 
 	m_player.init("Data/Textures/Characters/Mage.png", glm::ivec2(3, 2), &m_game->inputManager, &m_camera, 2.0f, m_level.getStartPos());
 }

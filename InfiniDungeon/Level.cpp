@@ -8,8 +8,6 @@
 #include <random>
 #include <ctime>
 
-#include "Themes.h"
-
 Level::Level():m_startPos(2)
 {
 }
@@ -21,23 +19,10 @@ Level::~Level()
 
 
 
-void Level::init(int difficulty)
+void Level::init(theme themeThing)
 {
 
-	//choose a theme of matching difficulty
-	if (difficulty == 1) {
-		//TODO: Remove json code due to being dumb
-		
-		
-
-		static std::mt19937 randomEngine(time(nullptr));
-		std::uniform_int_distribution<int> randInt(0, sizeof(LEVEL_ONE)/sizeof(LEVEL_ONE[0]) - 1);
-		//choose random theme
-		m_themeIndex = randInt(randomEngine);
-	}
-	else {
-		std::cout << "difficulty not valid" << std::endl;
-	}
+	m_theme = themeThing;
 
 	//reserve the map 
 	m_map.resize(ROWS);
@@ -80,10 +65,10 @@ void Level::init(int difficulty)
 			float angle = 0.0f;
 			std::string texture;
 			if (m_map[y][x] == 0) {
-				texture = "Data/Textures/Themes/" + LEVEL_ONE[m_themeIndex].name + "/" + LEVEL_ONE[m_themeIndex].floor;
+				texture = "Data/Textures/Themes/" + m_theme.name + "/" + m_theme.floor;
 			}
 			else if (m_map[y][x] == 1) {
-				texture = "Data/Textures/Themes/" + LEVEL_ONE[m_themeIndex].name + "/"+ LEVEL_ONE[m_themeIndex].wall;
+				texture = "Data/Textures/Themes/" + m_theme.name + "/"+ m_theme.wall;
 			}
 
 			if(m_map[y][x] < 2)
@@ -110,7 +95,7 @@ void Level::drawEntTiles()
 	m_entBatch.begin();
 
 	DPE::TileSheet m_doorSheet;
-	m_doorSheet.init(DPE::ResourceManager::getTexture("Data/Textures/Themes/" + LEVEL_ONE[m_themeIndex].name + "/" + LEVEL_ONE[m_themeIndex].door), glm::ivec2(2, 1));
+	m_doorSheet.init(DPE::ResourceManager::getTexture("Data/Textures/Themes/" + m_theme.name + "/" + m_theme.door), glm::ivec2(2, 1));
 	
 	for (int y = 0; y < ROWS; y++) {
 		for (int x = 0; x < COLUMNS; x++) {

@@ -35,7 +35,7 @@ public:
 	Level();
 	~Level();
 
-	void init(int difficulty);
+	void init(theme themeThing);
 
 	void draw();
 
@@ -93,6 +93,6 @@ private:
 
 	glm::ivec2 m_startPos;
 
-	int m_themeIndex;
+	theme m_theme;
 };
 
