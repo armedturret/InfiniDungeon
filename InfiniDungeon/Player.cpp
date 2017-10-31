@@ -99,9 +99,9 @@ void Player::update(float deltaTime, const std::vector<std::vector<int>>& map, s
 	}
 }
 
-void Player::init(std::string texturePath, glm::ivec2 tileSheetSize, DPE::InputManager* inputManager, DPE::Camera2D* camera, float speed, glm::ivec2 startPos)
+void Player::init(std::string texturePath, glm::ivec2 tileSheetSize, DPE::InputManager* inputManager, DPE::Camera2D* camera, glm::ivec2 startPos)
 {
-	m_speed = speed;
+	m_health = 10;
 
 	DPE::GLTexture m_texture = DPE::ResourceManager::getTexture(texturePath);
 	m_tileSheet.init(m_texture, tileSheetSize);

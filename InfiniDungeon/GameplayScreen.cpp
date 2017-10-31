@@ -102,7 +102,7 @@ void GameplayScreen::onEntry()
 		m_level.init(LEVEL_ONE[randInt(randomEngine)]);
 	}
 
-	m_player.init("Data/Textures/Characters/Mage.png", glm::ivec2(3, 2), &m_game->inputManager, &m_camera, 2.0f, m_level.getStartPos());
+	m_player.init("Data/Textures/Characters/Mage.png", glm::ivec2(3, 2), &m_game->inputManager, &m_camera, m_level.getStartPos());
 }
 
 void GameplayScreen::onExit()
@@ -121,6 +121,11 @@ void GameplayScreen::onExit()
 void GameplayScreen::update(){
 	auto entMap = m_level.getEntMap();
 	m_player.update(0.0f, m_level.getMap(), entMap);
+
+	for (int b = 0; b < m_badGuys.size(); b++) {
+		m_badGuys[b]->update(0.0f, m_level.getMap(), entMap);
+	}
+
 	m_level.setEntMap(entMap);
 
 	m_camera.setPosition(m_player.getPosition());

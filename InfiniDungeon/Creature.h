@@ -28,8 +28,9 @@ protected:
 
 	DPE::TileSheet m_tileSheet;
 	DPE::ColorRGBA8 m_color;
-	float m_speed = 0.0f;
-	float m_health = 0.0f;
+
+	int m_health = 10;
+
 	bool moving = false;
 
 	int m_animTile = 0;
