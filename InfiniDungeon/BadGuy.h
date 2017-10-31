@@ -12,18 +12,22 @@ public:
 
 	virtual void update(float deltaTime, Level& level);
 
+	virtual void onCreation(Level& level) {
+		std::cout << "Creature " << m_name << "given no creation behavior" << std::endl;
+	};
+
 	//creature just walking
-	virtual void roamingBehavior() {
+	virtual void roamingBehavior(float deltaTime, Level& level) {
 		std::cout << "Creature "<<m_name<<"given no roaming behavior" << std::endl;
 	};
 
 	//creature sees player
-	virtual void attackBehavior() {
+	virtual void attackBehavior(float deltaTime, Level& level) {
 		std::cout << "Creature " << m_name << "given no attack behavior" << std::endl;
 	};
 
 	//creature knows player there but can't see (Called when player teleports away or blinds enemy)
-	virtual void searchBehavior() {
+	virtual void searchBehavior(float deltaTime, Level& level) {
 		std::cout << "Creature " << m_name << "given no movement behavior" << std::endl;
 	};
 
