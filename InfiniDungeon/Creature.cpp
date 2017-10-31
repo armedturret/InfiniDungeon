@@ -12,24 +12,6 @@ Creature::~Creature()
 
 void Creature::draw(DPE::SpriteBatch & m_spriteBatch)
 {
-	/*float animSpeed = 0.1f;
-
-	if (m_direction == 0) {
-		animTile = 0;
-	}else if (m_direction == 1) {
-		animTile = 3;
-	}else if (m_direction == 2) {
-		animTile = 0;
-	}else
-	if (m_direction == 3) {
-		animTile = 6;
-	}
-
-	m_animTime += animSpeed;
-	if(moving)
-		animTile = animTile + 1 + (int)m_animTime % 2;
-	*/
-
 	glm::vec4 uvRect = m_tileSheet.getUVs(m_animTile);
 
 	if (m_direction == 2) {

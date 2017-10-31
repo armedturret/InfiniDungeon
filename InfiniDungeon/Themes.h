@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 
+#include "BadGuy.h"
+
 struct theme {
 	theme() {};
 
@@ -14,6 +16,8 @@ struct theme {
 	std::string floor;
 	std::string wall;
 	std::string door;
+
+	BadGuy levelOneEnemy;
 };
 
 const theme levelOne[] = {
