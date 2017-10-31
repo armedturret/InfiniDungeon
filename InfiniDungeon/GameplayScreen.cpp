@@ -96,10 +96,6 @@ void GameplayScreen::onEntry()
 
 	//choose a theme of matching difficulty
 	if (m_difficulty == 1) {
-		//TODO: Remove json code due to being dumb
-
-
-
 		static std::mt19937 randomEngine(time(nullptr));
 		std::uniform_int_distribution<int> randInt(0, sizeof(LEVEL_ONE) / sizeof(LEVEL_ONE[0]) - 1);
 		//choose random theme
@@ -115,6 +111,11 @@ void GameplayScreen::onExit()
 	m_textureProgram.dispose();
 	m_debugRender.dispose();
 	m_level.dispose();
+
+	for (int i = 0; i < m_badGuys.size(); i++) {
+		delete m_badGuys[i];
+		m_badGuys.erase(m_badGuys.begin() + i);
+	}
 }
 
 void GameplayScreen::update(){

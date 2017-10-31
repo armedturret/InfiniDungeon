@@ -153,12 +153,12 @@ void Level::generatePerfMaze()
 void Level::generateRooms(int rows, int columns)
 {
 	//min and max in space for length always will be even
-	int minLength = 1;
+	int minLength = 2;
 	int maxLength = 4;
 
 	//atempts to make a room
 	//will be the max area divide by the maxArea and should be have of total space
-	int attempts = rows * columns / (minLength*minLength);
+	int attempts = rows * columns / (maxLength*maxLength * 2);
 	std::cout << "Populating with rooms at " << attempts << " attempts before termination." << std::endl;
 
 	for (int i = 0; i < attempts; i++) {

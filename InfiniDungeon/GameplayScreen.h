@@ -8,6 +8,7 @@
 
 #include "Level.h"
 
+#include "BadGuy.h"
 #include "Player.h"
 #include "Themes.h"
 
@@ -48,6 +49,7 @@ private:
 	Level m_level;
 
 	Player m_player;
+	std::vector<BadGuy*> m_badGuys;
 
 	float m_scrollLevel;
 	int m_difficulty;
