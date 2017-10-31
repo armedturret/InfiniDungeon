@@ -17,12 +17,12 @@ BadGuy::~BadGuy()
 void BadGuy::update(float deltaTime, Level & level)
 {
 	if (m_state == BadGuyState::ROAMING) {
-		roamingBehavior(deltaTime, level);
+		RoamingBehavior(deltaTime, level);
 	}
 	else if (m_state == BadGuyState::SEARCHING) {
-		searchBehavior(deltaTime, level);
+		SearchBehavior(deltaTime, level);
 	}
 	else if (m_state == BadGuyState::ATTACKING) {
-		attackBehavior(deltaTime, level);
+		AttackBehavior(deltaTime, level);
 	}
 }
