@@ -14,6 +14,15 @@ BadGuy::~BadGuy()
 {
 }
 
+void BadGuy::Spawn(glm::vec2 pos, const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap)
+{
+	m_position = glm::vec2(TILE_SIZE / 2.0f);
+	m_position.x += pos.x*TILE_SIZE;
+	m_position.y += pos.y*TILE_SIZE;
+
+	OnCreation(map, entMap);
+}
+
 void BadGuy::update(float deltaTime, const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap)
 {
 	if (m_state == BadGuyState::ROAMING) {

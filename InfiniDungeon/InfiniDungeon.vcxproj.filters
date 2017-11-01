@@ -22,6 +22,9 @@
     <Filter Include="Project\IckyBehindTheSceneSetup">
       <UniqueIdentifier>{96c361fd-521a-4562-86e1-4902f107675e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Project\Creatures\Enemies\Basic">
+      <UniqueIdentifier>{75cc47ef-17d9-4cf8-a3b0-235ffccd8070}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameplayScreen.cpp">
@@ -54,6 +57,7 @@
     <ClCompile Include="main.cpp">
       <Filter>Project\IckyBehindTheSceneSetup</Filter>
     </ClCompile>
+    <ClCompile Include="Rat.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameplayScreen.h">
@@ -89,5 +93,6 @@
     <ClInclude Include="ScreenIndicies.h">
       <Filter>Project\IckyBehindTheSceneSetup</Filter>
     </ClInclude>
+    <ClInclude Include="Rat.h" />
   </ItemGroup>
 </Project>

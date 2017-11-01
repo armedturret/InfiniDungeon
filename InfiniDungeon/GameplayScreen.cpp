@@ -4,6 +4,8 @@
 #include <ctime>
 #include <DPE/IMainGame.h>
 
+#include "Rat.h"
+
 const float MAX_SCROLL = 5.5f;
 
 const float MIN_SCROLL = 1.5f;
@@ -102,6 +104,9 @@ void GameplayScreen::onEntry()
 		m_level.init(LEVEL_ONE[randInt(randomEngine)]);
 	}
 
+	m_badGuys.push_back(new Rat());
+	m_badGuys[0]->Spawn(m_level.getStartPos(), m_level.getMap(), m_level.getEntMap());
+
 	m_player.init("Data/Textures/Characters/Mage.png", glm::ivec2(3, 2), &m_game->inputManager, &m_camera, m_level.getStartPos());
 }
 
@@ -156,6 +161,10 @@ void GameplayScreen::draw()
 	m_spriteBatch.begin(DPE::GlyphSortType::BACK_TO_FRONT);
 
 	m_player.draw(m_spriteBatch);
+
+	for (int b = 0; b < m_badGuys.size(); b++) {
+		m_badGuys[b]->draw(m_spriteBatch);
+	}
 
 	m_spriteBatch.end();
 	

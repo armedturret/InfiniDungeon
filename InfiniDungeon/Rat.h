@@ -1,26 +1,16 @@
 #pragma once
-
-#include "Creature.h"
-
-enum class BadGuyState {SEARCHING, ROAMING, ATTACKING};
-
-class BadGuy : public Creature
+#include "BadGuy.h"
+class Rat : public BadGuy
 {
 public:
-	BadGuy();
-	~BadGuy();
-	
-	void Spawn(glm::vec2 pos, const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap);
+	Rat();
+	~Rat();
 
-	virtual void update(float deltaTime, const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap);
-
-	virtual void OnCreation(const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap) {
-		std::cout << "Creature " << m_name << " given no creation behavior" << std::endl;
-	};
+	virtual void OnCreation(const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap);
 
 	//creature just walking
 	virtual void RoamingBehavior(float deltaTime, const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap) {
-		std::cout << "Creature "<<m_name<<" given no roaming behavior" << std::endl;
+		std::cout << "Creature " << m_name << " given no roaming behavior"<< std::endl;
 	};
 
 	//creature sees player
@@ -32,11 +22,5 @@ public:
 	virtual void SearchBehavior(float deltaTime, const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap) {
 		std::cout << "Creature " << m_name << " given no movement behavior" << std::endl;
 	};
-
-protected:
-	std::string m_name;
-	std::string m_lore;
-
-	BadGuyState m_state;
 };
 
