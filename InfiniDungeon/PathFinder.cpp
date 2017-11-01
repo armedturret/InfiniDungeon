@@ -1,6 +1,6 @@
 #include "PathFinder.h"
 #include <iostream>
-
+#include <algorithm>
 PathFinder::PathFinder()
 {
 }
@@ -12,12 +12,17 @@ PathFinder::~PathFinder()
 
 std::vector<Node> PathFinder::pathBetweenPoints(const glm::vec2& start, const glm::vec2& end, const std::vector<std::vector<int>>& map)
 {	
+	m_calculatingBestScore = 0;
+	m_calculatingLocalTiles = 0;
+	std::clock_t startTime = std::clock();
 	//this list contains the goal node, and which one leads to it
 	std::unordered_map<glm::ivec2, Node, KeyFuncs, KeyFuncs> closedNodes;
 
 	m_map = map;
 
 	Node currentNode = calculatePath(closedNodes, start, end);
+
+	std::clock_t startReconstruction = std::clock();
 
 	std::vector<Node> returnPath;
 
@@ -31,6 +36,12 @@ std::vector<Node> PathFinder::pathBetweenPoints(const glm::vec2& start, const gl
 		currentNode = closedNodes.find(currentNode.getPosition())->second;
 	}
 
+	m_reconstructingPath = (std::clock() - startReconstruction) / (double)(CLOCKS_PER_SEC / 1000);
+
+	m_totalTime = (std::clock() - startTime) / (double)(CLOCKS_PER_SEC / 1000);
+
+	std::cout << "Local Tiles Time: " << m_calculatingLocalTiles << " ms\nFScore Time: " << m_calculatingBestScore << " ms\nReconstruction Time: " << m_reconstructingPath << " ms\nTotal Time: " << m_totalTime << " ms" << std::endl;
+
 	return returnPath;
 }
 
@@ -39,6 +50,9 @@ Node PathFinder::calculatePath(std::unordered_map<glm::ivec2, Node, KeyFuncs, Ke
 	//priority queue
 	std::vector<Node> openNodes;
 
+	//for faster fscore calculations
+	//<index, FScore>
+	std::map<int, float> indexTracker;
 
 	std::unordered_map<glm::ivec2, Node, KeyFuncs, KeyFuncs> indivNodeMap;
 
@@ -49,26 +63,33 @@ Node PathFinder::calculatePath(std::unordered_map<glm::ivec2, Node, KeyFuncs, Ke
 	indivNodeMap.insert(std::make_pair(startNode.getPosition(), startNode));
 
 	openNodes.push_back(startNode);
+	indexTracker.insert(std::make_pair(openNodes.size() - 1, startNode.calculateFScore(finish)));
 
 	while (openNodes.size() > 0) {
 
-		int i = bestScore(openNodes, finish);
+		int i = bestScore(openNodes, finish, indexTracker);
 		
-		getLocalNodes(openNodes, nodeMap, openNodes[bestScore(openNodes, finish)]);
-		
-		if (openNodes[i].getPosition() == finish) {
+		//purge if already checked to prevent clones
+		if (isPositionValid(nodeMap, openNodes[i])) {
 
-			indivNodeMap.insert(std::make_pair(openNodes[i].getPosition(), openNodes[bestScore(openNodes, finish)]));
+			getLocalNodes(openNodes, nodeMap, openNodes[i], finish, indexTracker);
+
+			if (openNodes[i].getPosition() == finish) {
+
+				indivNodeMap.insert(std::make_pair(openNodes[i].getPosition(), openNodes[bestScore(openNodes, finish, indexTracker)]));
+				nodeMap.insert(std::make_pair(openNodes[i].getPosition(), indivNodeMap.find(openNodes[i].getPrevPosition())->second));
+
+				std::cout << "Size of nodes not scanned: " << indexTracker.size() << std::endl;
+
+				return openNodes[i];
+			}
+
+			indivNodeMap.insert(std::make_pair(openNodes[i].getPosition(), openNodes[i]));
+
 			nodeMap.insert(std::make_pair(openNodes[i].getPosition(), indivNodeMap.find(openNodes[i].getPrevPosition())->second));
-
-			return openNodes[i];
 		}
-		
-		indivNodeMap.insert(std::make_pair(openNodes[i].getPosition(), openNodes[i]));
-		
-		nodeMap.insert(std::make_pair(openNodes[i].getPosition(), indivNodeMap.find(openNodes[i].getPrevPosition())->second));
 
-		openNodes.erase(openNodes.begin() + i);
+		indexTracker.erase(i);
 		
 	}
 
@@ -77,24 +98,21 @@ Node PathFinder::calculatePath(std::unordered_map<glm::ivec2, Node, KeyFuncs, Ke
 	return startNode;
 }
 
-int PathFinder::bestScore(std::vector<Node>& nodeMap, const glm::vec2& goal)
+int PathFinder::bestScore(std::vector<Node>& nodeMap, const glm::vec2& goal, const std::map<int, float>& indexTracker)
 {	
-	//calculates lowest fscore in node list and return index
-	float currentBest = nodeMap[0].calculateFScore(goal);
-	int bestNode = 0;
-	for (int i = 0; i < nodeMap.size(); i++) {
-		if (nodeMap[i].calculateFScore(goal) < currentBest) {
-			currentBest = nodeMap[i].calculateFScore(goal);
-			bestNode = i;
-		}
-	}
+	std::clock_t startCalc = std::clock();
+	auto min
+		= *min_element(indexTracker.begin(), indexTracker.end(), CompareSecond());
+	m_calculatingBestScore += (std::clock() - startCalc) / (double)(CLOCKS_PER_SEC / 1000);
 
-	return bestNode;
+	return min.first;
 }
 
 
-void PathFinder::getLocalNodes(std::vector<Node> &openNodes, std::unordered_map<glm::ivec2, Node, KeyFuncs, KeyFuncs>& nodeMap, const Node &start)
+void PathFinder::getLocalNodes(std::vector<Node> &openNodes, std::unordered_map<glm::ivec2, Node, KeyFuncs, KeyFuncs>& nodeMap, const Node &start, const glm::vec2 &goal, std::map<int, float>& indexTracker)
 {
+	std::clock_t startCalc = std::clock();
+
 	//calculates nodes in vicinity of current node
 	Node constructor;
 	glm::vec2 pos;
@@ -108,65 +126,82 @@ void PathFinder::getLocalNodes(std::vector<Node> &openNodes, std::unordered_map<
 	pos.y = startPos.y;
 	constructor.init(pos, weight);
 	constructor.setPreviousPosition(startPos);
-	if (isPositionValid(nodeMap, constructor))
+	if (isPositionValid(nodeMap, constructor)) {
 		openNodes.push_back(constructor);
+		indexTracker.insert(std::make_pair(openNodes.size() - 1, constructor.calculateFScore(goal)));
+	}
 
 	//below
 	pos.x = startPos.x;
 	pos.y = startPos.y + 1.0f;
 	constructor.init(pos, weight);
 	constructor.setPreviousPosition(startPos);
-	if (isPositionValid(nodeMap, constructor))
+	if (isPositionValid(nodeMap, constructor)) {
 		openNodes.push_back(constructor);
+		indexTracker.insert(std::make_pair(openNodes.size() - 1, constructor.calculateFScore(goal)));
+	}
 
 	//right
 	pos.x = startPos.x + 1.0f;
 	pos.y = startPos.y;
 	constructor.init(pos, weight);
 	constructor.setPreviousPosition(startPos);
-	if (isPositionValid(nodeMap, constructor))
+	if (isPositionValid(nodeMap, constructor)) {
 		openNodes.push_back(constructor);
+		indexTracker.insert(std::make_pair(openNodes.size() - 1, constructor.calculateFScore(goal)));
+	}
 
 	//above
 	pos.x = startPos.x;
 	pos.y = startPos.y - 1.0f;
 	constructor.init(pos, weight);
 	constructor.setPreviousPosition(startPos);
-	if (isPositionValid(nodeMap, constructor))
+	if (isPositionValid(nodeMap, constructor)) {
 		openNodes.push_back(constructor);
+		indexTracker.insert(std::make_pair(openNodes.size() - 1, constructor.calculateFScore(goal)));
+	}
 
 	//bottomleft
 	pos.x = startPos.x - 1.0f;
 	pos.y = startPos.y + 1.0f;
 	constructor.init(pos, weight);
 	constructor.setPreviousPosition(startPos);
-	if (isPositionValid(nodeMap, constructor))
+	if (isPositionValid(nodeMap, constructor)) {
 		openNodes.push_back(constructor);
+		indexTracker.insert(std::make_pair(openNodes.size() - 1, constructor.calculateFScore(goal)));
+	}
 
 	//top left
 	pos.x = startPos.x - 1.0f;
 	pos.y = startPos.y - 1.0f;
 	constructor.init(pos, weight);
 	constructor.setPreviousPosition(startPos);
-	if (isPositionValid(nodeMap, constructor))
+	if (isPositionValid(nodeMap, constructor)) {
 		openNodes.push_back(constructor);
+		indexTracker.insert(std::make_pair(openNodes.size() - 1, constructor.calculateFScore(goal)));
+	}
 
 	//bottom right
 	pos.x = startPos.x + 1.0f;
 	pos.y = startPos.y + 1.0f;
 	constructor.init(pos, weight);
 	constructor.setPreviousPosition(startPos);
-	if (isPositionValid(nodeMap, constructor))
+	if (isPositionValid(nodeMap, constructor)) {
 		openNodes.push_back(constructor);
+		indexTracker.insert(std::make_pair(openNodes.size() - 1, constructor.calculateFScore(goal)));
+	}
 
 	//top right
 	pos.x = startPos.x + 1.0f;
 	pos.y = startPos.y - 1.0f;
 	constructor.init(pos, weight);
 	constructor.setPreviousPosition(startPos);
-	if (isPositionValid(nodeMap, constructor))
+	if (isPositionValid(nodeMap, constructor)) {
 		openNodes.push_back(constructor);
-	
+		indexTracker.insert(std::make_pair(openNodes.size() - 1, constructor.calculateFScore(goal)));
+	}
+
+	m_calculatingLocalTiles += (std::clock() - startCalc) / (double)(CLOCKS_PER_SEC / 1000);
 }
 
 bool PathFinder::isPositionValid(const std::unordered_map<glm::ivec2, Node, KeyFuncs, KeyFuncs>& nodeMap, const Node & myNode)

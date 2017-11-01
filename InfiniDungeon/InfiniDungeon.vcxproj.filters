@@ -57,7 +57,9 @@
     <ClCompile Include="main.cpp">
       <Filter>Project\IckyBehindTheSceneSetup</Filter>
     </ClCompile>
-    <ClCompile Include="Rat.cpp" />
+    <ClCompile Include="Rat.cpp">
+      <Filter>Project\Creatures\Enemies\Basic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameplayScreen.h">
@@ -93,6 +95,8 @@
     <ClInclude Include="ScreenIndicies.h">
       <Filter>Project\IckyBehindTheSceneSetup</Filter>
     </ClInclude>
-    <ClInclude Include="Rat.h" />
+    <ClInclude Include="Rat.h">
+      <Filter>Project\Creatures\Enemies\Basic</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

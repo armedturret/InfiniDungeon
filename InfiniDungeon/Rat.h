@@ -10,7 +10,7 @@ public:
 
 	//creature just walking
 	virtual void RoamingBehavior(float deltaTime, const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap) {
-		std::cout << "Creature " << m_name << " given no roaming behavior"<< std::endl;
+		//std::cout << "Creature " << m_name << " given no roaming behavior"<< std::endl;
 	};
 
 	//creature sees player
