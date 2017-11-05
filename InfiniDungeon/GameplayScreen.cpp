@@ -125,10 +125,14 @@ void GameplayScreen::onExit()
 
 void GameplayScreen::update(){
 	auto entMap = m_level.getEntMap();
-	m_player.update(0.0f, m_level.getMap(), entMap);
+	float deltaTime = 0.1f;
+
+	m_player.update(0.1f, m_level.getMap(), entMap);
+
+	deltaTime = m_player.getDeltaFactor();
 
 	for (int b = 0; b < m_badGuys.size(); b++) {
-		m_badGuys[b]->update(0.0f, m_level.getMap(), entMap);
+		m_badGuys[b]->update(deltaTime, m_level.getMap(), entMap);
 	}
 
 	m_level.setEntMap(entMap);

@@ -92,7 +92,7 @@ void Player::update(float deltaTime, const std::vector<std::vector<int>>& map, s
 			
 			m_animTile += 3;
 
-			m_animTime += 0.1f;
+			m_animTime += deltaTime;
 		}
 		else {
 			m_moving = false;
@@ -117,4 +117,12 @@ void Player::init(std::string texturePath, glm::ivec2 tileSheetSize, DPE::InputM
 	m_position = glm::vec2(TILE_SIZE / 2.0f);
 	m_position.x += startPos.x*TILE_SIZE;
 	m_position.y += startPos.y*TILE_SIZE;
+}
+
+float Player::getDeltaFactor()
+{
+	if (m_moving)
+		return 0.1f;
+	else
+		return 0.0f;
 }

@@ -16,6 +16,8 @@ public:
 
 	void init(std::string texturePath, glm::ivec2 tileSheetSize, DPE::InputManager* inputManager, DPE::Camera2D* camera, glm::ivec2 startPos);
 
+	float getDeltaFactor();
+
 private:
 	DPE::InputManager* m_inputManager;
 	DPE::Camera2D* m_camera;

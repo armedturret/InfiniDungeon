@@ -23,6 +23,6 @@ void Rat::OnCreation(const std::vector<std::vector<int>>& map, std::vector<std::
 	m_animTile = 1;
 }
 
-void Rat::RoamingBehavior((float deltaTime, const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap) {
+void Rat::RoamingBehavior(float deltaTime, const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap) {
 
 }
