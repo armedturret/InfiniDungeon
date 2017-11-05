@@ -54,7 +54,8 @@ void main(){
 GameplayScreen::GameplayScreen(DPE::Window * window) :
 	m_window(window),
 	m_scrollLevel(1.5f),
-	m_difficulty(1)
+	m_difficulty(1),
+	m_prevTicks(0.0f)
 {
 }
 
@@ -124,15 +125,32 @@ void GameplayScreen::onExit()
 }
 
 void GameplayScreen::update(){
+	
+	
+	if (!m_prevTicks)
+	{
+		m_prevTicks = SDL_GetTicks();
+	}
+	const float DESIRED_FPS = 60.0f;
+
+	const float MS_PER_SECOND = 1000;
+	const float DESIRED_FRAMETIME = MS_PER_SECOND / DESIRED_FPS;
+
 	auto entMap = m_level.getEntMap();
-	float deltaTime = 0.1f;
+	
+	float newTicks = SDL_GetTicks();
+	float frameTime = newTicks - m_prevTicks;
+	m_prevTicks = newTicks;
+	float totalDeltaTime = frameTime / DESIRED_FRAMETIME;
 
-	m_player.update(0.1f, m_level.getMap(), entMap);
+	float deltaTimeMoveFactor = 0.1f * totalDeltaTime;
 
-	deltaTime = m_player.getDeltaFactor();
+	m_player.update(deltaTimeMoveFactor, m_level.getMap(), entMap);
+
+	deltaTimeMoveFactor = m_player.getDeltaFactor() * totalDeltaTime;
 
 	for (int b = 0; b < m_badGuys.size(); b++) {
-		m_badGuys[b]->update(deltaTime, m_level.getMap(), entMap);
+		m_badGuys[b]->update(deltaTimeMoveFactor, m_level.getMap(), entMap);
 	}
 
 	m_level.setEntMap(entMap);

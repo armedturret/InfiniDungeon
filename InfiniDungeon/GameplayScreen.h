@@ -51,7 +51,8 @@ private:
 	Player m_player;
 	std::vector<BadGuy*> m_badGuys;
 
+	float m_prevTicks;
+
 	float m_scrollLevel;
 	int m_difficulty;
 };
-
