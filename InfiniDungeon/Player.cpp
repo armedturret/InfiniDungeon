@@ -29,6 +29,10 @@ void Player::update(float deltaTime, const std::vector<std::vector<int>>& map, s
 				m_startPosition.x = (m_position.x - TILE_SIZE / 2.0f) / TILE_SIZE;
 				m_startPosition.y = (m_position.y - TILE_SIZE / 2.0f) / TILE_SIZE;
 
+				if (m_startPosition.x == m_target.x
+					&& m_startPosition.y == m_target.y)
+					m_moving = false;
+
 				//calculate the path
 				m_path = m_pathFinder.pathBetweenPoints(m_startPosition, m_target, map);
 			}

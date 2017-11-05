@@ -52,14 +52,5 @@ private:
 	std::vector<std::vector<int>> m_map;
 
 	int m_counter;
-
-	//this is for debug stuff
-	std::clock_t m_totalTime;
-
-	std::clock_t m_calculatingBestScore;
-
-	std::clock_t m_calculatingLocalTiles;
-
-	std::clock_t m_reconstructingPath;
 };
 
