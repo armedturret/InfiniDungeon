@@ -143,11 +143,9 @@ void GameplayScreen::update(){
 	m_prevTicks = newTicks;
 	float totalDeltaTime = frameTime / DESIRED_FRAMETIME;
 
-	float deltaTimeMoveFactor = 0.1f * totalDeltaTime;
+	float deltaTimeMoveFactor = m_player.getDeltaFactor()/* * totalDeltaTime bugs*/;
 
 	m_player.update(deltaTimeMoveFactor, m_level.getMap(), entMap);
-
-	deltaTimeMoveFactor = m_player.getDeltaFactor() * totalDeltaTime;
 
 	for (int b = 0; b < m_badGuys.size(); b++) {
 		m_badGuys[b]->update(deltaTimeMoveFactor, m_level.getMap(), entMap);

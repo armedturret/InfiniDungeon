@@ -1,7 +1,7 @@
 #include "Player.h"
 
 #include <DPE/ResourceManager.h>
-
+#include <cmath>
 
 Player::Player():
 			m_target(0.0f),
@@ -52,16 +52,25 @@ void Player::update(float deltaTime, const std::vector<std::vector<int>>& map, s
 	else if(!m_inputManager->isKeyDown(SDL_BUTTON_LEFT)) {
 		m_wasMouseDownPreviously = false;
 	}
-	if (m_moving) {
-		//calculate players position in path
-		glm::vec2 calcPos;
-		if (m_animTime - 1 <= m_path.size()) {
+	if (m_moving && deltaTime > 0.0f) {
+		m_animTime += deltaTime;
+		//use trunc to fix wierd rounding glitch
+		if ((int)m_animTime == m_path.size()) {
+			m_position.x = m_nextTile.x * TILE_SIZE + TILE_SIZE / 2.0f;
+			m_position.y = m_nextTile.y * TILE_SIZE + TILE_SIZE / 2.0f;
+			m_moving = false;
+			m_animTime = 0.0f;
+			m_animTile = 3;
+		}
+		else {
+			//calculate players position in path
+			glm::vec2 calcPos;
 			if (floor(m_animTime) == 0)
 				calcPos = m_startPosition;
 			else
 				calcPos = m_path[m_path.size() - floor(m_animTime)].getPosition();
 
-			if(floor(m_animTime) < m_path.size())
+			if (floor(m_animTime) < m_path.size())
 				m_nextTile = m_path[m_path.size() - floor(m_animTime) - 1].getPosition();
 
 			//check if nextTile is door
@@ -82,24 +91,16 @@ void Player::update(float deltaTime, const std::vector<std::vector<int>>& map, s
 
 			if (m_nextTile.x == calcPos.x + 1)
 				m_direction = 2;
-			else if(m_nextTile.x == calcPos.x - 1)
+			else if (m_nextTile.x == calcPos.x - 1)
 				m_direction = 1;
 
 			m_position.x = ((m_nextTile.x - calcPos.x) * (m_animTime - floor(m_animTime)) + calcPos.x) * TILE_SIZE + TILE_SIZE / 2.0f;
 			m_position.y = ((m_nextTile.y - calcPos.y) * (m_animTime - floor(m_animTime)) + calcPos.y) * TILE_SIZE + TILE_SIZE / 2.0f;
 
 			m_animTile = (int)floor(m_animTime) % 3;
-			
-			m_animTile += 3;
 
-			m_animTime += deltaTime;
+			m_animTile += 3;
 		}
-		else {
-			m_moving = false;
-			m_animTime = 0.0f;
-			m_animTile = 3;
-		}
-		
 	}
 }
 

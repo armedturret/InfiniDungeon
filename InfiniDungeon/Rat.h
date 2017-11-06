@@ -1,5 +1,7 @@
 #pragma once
 #include "BadGuy.h"
+#include "PathFinder.h"
+
 class Rat : public BadGuy
 {
 public:
@@ -20,5 +22,17 @@ public:
 	virtual void SearchBehavior(float deltaTime, const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap) {
 		std::cout << "Creature " << m_name << " given no movement behavior" << std::endl;
 	};
-};
+private:
+	bool m_moving;
 
+	std::vector<Node> m_path;
+	
+	double m_animTime = 0.0f;
+
+	glm::ivec2 m_target;
+	glm::ivec2 m_startPosition;
+
+	glm::vec2 m_nextTile;
+
+	PathFinder pathFinder;
+};

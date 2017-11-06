@@ -28,7 +28,8 @@ private:
 
 	glm::vec2 m_target;
 
-	float m_animTime = 0.0f;
+	//double somehow fixes glitches
+	double m_animTime = 0.0;
 
 	bool m_wasMouseDownPreviously = false;
 
