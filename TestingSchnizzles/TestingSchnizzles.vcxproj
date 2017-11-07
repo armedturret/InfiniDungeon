@@ -120,11 +120,13 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="PathFinderTest.cpp" />
+    <ClCompile Include="VisionStuff.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DungeonGenerator.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="PathFinderTest.h" />
+    <ClInclude Include="VisionStuff.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
