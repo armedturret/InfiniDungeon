@@ -27,6 +27,8 @@ void VisionStuff::Run() {
 
 	drawLine(startPos, endPos);
 
+	m_map[29][31] = 1;
+
 	glm::ivec2 startVision(30);
 	//seperate test for player vision
 	calculateShadows(startVision);
@@ -46,36 +48,77 @@ void VisionStuff::drawLine(glm::ivec2 startPos, glm::ivec2 endPos)
 	float deltaX = endPos.x - startPos.x;
 	float deltaY = endPos.y - startPos.y;
 
-	float slope = deltaY / deltaX;
+	float slope = abs(deltaY / deltaX);
 
 	//errpr calculation for Bresenham algorithm
 	//when greater than 0.5, line incremented by one so y value must increase
-	float error = slope - 0.5;
+	float error = abs(slope) - 0.5;
 
 	int y = 0;
 
-	//cancel if solid
+	int signOfX = 1;
+	if (deltaX < 0)
+		signOfX = -1;
 
-	for (int x = 0; x <= deltaX; x++) {
-		if (m_map[y + startPos.y][x + startPos.x] != 1) {
-			m_map[y + startPos.y][x + startPos.x] = 2;
+	int signOfY = 1;
+	if (deltaY < 0)
+		signOfY = -1;
+
+	//check if slope is undefined
+	for (int x = 0; x <= abs(deltaX); x++) {
+		if (m_map[y * signOfY + startPos.y][x * signOfX + startPos.x] != 1) {
+			m_map[y * signOfY + startPos.y][x * signOfX + startPos.x] = 2;
 			error += slope;
-			while (error >= 0.5) {
+			while (error >= 0.5 && y <= abs(deltaY)) {
 				y = y + 1;
 				error = error - 1.0f;
+				if (m_map[y * signOfY + startPos.y][x * signOfX + startPos.x] != 1) {
+					m_map[y * signOfY + startPos.y][x * signOfX + startPos.x] = 2;
+				}else {
+					m_map[y + startPos.y][x + startPos.x] = 3;
+					break;
+				}
 			}
 		}
 		else {
-			m_map[y + startPos.y][x + startPos.x] = 5;
+			m_map[y + startPos.y][x + startPos.x] = 3;
 			break;
 		}
-	}
 
-	m_map[startPos.y][startPos.x] = 3;
-	m_map[endPos.y][endPos.x] = 4;
+	}
 }
 
 void VisionStuff::calculateShadows(glm::ivec2 startPos)
 {
-	//Step 1: Split the 360 degrees round the player with 45 degree 'octants'
+	//o represents current octant
+	for (int o = 0; o < 8; o++) {
+		int y = VIEW_DISTANCE;
+		for (int x = 0; x <= VIEW_DISTANCE; x++) {
+			glm::ivec2 pos = getOctantPosFromGlobal(y, x, o);
+			pos.x += startPos.x;
+			pos.y += startPos.y;
+			drawLine(startPos, pos);
+		}
+	}
+
+	//debug crap
+	m_map[startPos.y][startPos.x] = 4;
+	m_map[20][20] = 5;
+
+}
+
+glm::ivec2 VisionStuff::getOctantPosFromGlobal(int row, int col, int octant)
+{
+	//Split the 360 degrees round the player with 45 degree 'octants'
+	//takes position relative to player
+	switch (octant) {
+	case 0: return glm::ivec2(col, row);
+	case 1: return glm::ivec2(row, col);
+	case 2: return glm::ivec2(row, -col);
+	case 3: return glm::ivec2(col, -row);
+	case 4: return glm::ivec2(-col, row);
+	case 5: return glm::ivec2(-row, col);
+	case 6: return glm::ivec2(-row, -col);
+	case 7: return glm::ivec2(-col, -row);
+	}
 }

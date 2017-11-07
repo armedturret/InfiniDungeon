@@ -19,6 +19,8 @@ private:
 
 	void calculateShadows(glm::ivec2 startPos);
 
+	glm::ivec2 getOctantPosFromGlobal(int row, int col, int octant);
+
 	std::vector<std::vector<int>> m_map;
 };
 
