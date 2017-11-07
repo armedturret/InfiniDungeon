@@ -100,7 +100,15 @@ void Rat::RoamingBehavior(float deltaTime, const std::vector<std::vector<int>>& 
 	else if (m_moving && m_animTime > 0.0f) {
 		m_animTile = 3;
 		m_animTime = round(m_animTime);
-		m_position.x = m_nextTile.x * TILE_SIZE + TILE_SIZE / 2.0f;
-		m_position.y = m_nextTile.y * TILE_SIZE + TILE_SIZE / 2.0f;
+
+		glm::vec2 calcPos(0.0f);
+
+		if (floor(m_animTime) == 0)
+			calcPos = m_startPosition;
+		else
+			calcPos = m_path[m_path.size() - floor(m_animTime)].getPosition();
+
+		m_position.x = calcPos.x * TILE_SIZE + TILE_SIZE / 2.0f;
+		m_position.y = calcPos.y * TILE_SIZE + TILE_SIZE / 2.0f;
 	}
 }
