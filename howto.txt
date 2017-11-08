@@ -1,0 +1,2 @@
+click to move/attack
+l = the lore of an enemy

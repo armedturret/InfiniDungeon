@@ -25,6 +25,9 @@
     <Filter Include="Project\Creatures\Enemies\Basic">
       <UniqueIdentifier>{75cc47ef-17d9-4cf8-a3b0-235ffccd8070}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Project\Algorithms\Bresenham">
+      <UniqueIdentifier>{03c4d19f-f05b-490a-8137-88d35576f97d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameplayScreen.cpp">
@@ -59,6 +62,9 @@
     </ClCompile>
     <ClCompile Include="Rat.cpp">
       <Filter>Project\Creatures\Enemies\Basic</Filter>
+    </ClCompile>
+    <ClCompile Include="BresenhamAlgorithm.cpp">
+      <Filter>Project\Algorithms\Bresenham</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -97,6 +103,9 @@
     </ClInclude>
     <ClInclude Include="Rat.h">
       <Filter>Project\Creatures\Enemies\Basic</Filter>
+    </ClInclude>
+    <ClInclude Include="BresenhamAlgorithm.h">
+      <Filter>Project\Algorithms\Bresenham</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

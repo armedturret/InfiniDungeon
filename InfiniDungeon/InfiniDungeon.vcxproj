@@ -137,6 +137,7 @@
   <ItemGroup>
     <ClCompile Include="App.cpp" />
     <ClCompile Include="BadGuy.cpp" />
+    <ClCompile Include="BresenhamAlgorithm.cpp" />
     <ClCompile Include="Creature.cpp" />
     <ClCompile Include="GameplayScreen.cpp" />
     <ClCompile Include="InitGameScreen.cpp" />
@@ -150,6 +151,7 @@
   <ItemGroup>
     <ClInclude Include="App.h" />
     <ClInclude Include="BadGuy.h" />
+    <ClInclude Include="BresenhamAlgorithm.h" />
     <ClInclude Include="Creature.h" />
     <ClInclude Include="GameplayScreen.h" />
     <ClInclude Include="InitGameScreen.h" />
