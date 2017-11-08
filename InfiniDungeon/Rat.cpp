@@ -1,5 +1,6 @@
 #include "Rat.h"
 
+#include "Random.h"
 #include <DPE/ResourceManager.h>
 
 #include <cmath>
@@ -27,11 +28,15 @@ void Rat::OnCreation(const std::vector<std::vector<int>>& map, std::vector<std::
 	m_moving = false;
 }
 
-void Rat::RoamingBehavior(float deltaTime, const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap) {
+void Rat::RoamingBehavior(float deltaTime,
+	const std::vector<std::vector<int>>& map,
+	std::vector<std::vector<int>>& entMap,
+	std::vector<BadGuy*>& badGuys,
+	Player& jeff) {
 	if (!m_moving) {
 		while (true) {
-			m_target.y = randInt(1, map.size() - 1);
-			m_target.x = randInt(1, map[0].size() - 1);
+			m_target.y = Random::randInt(1, map.size() - 1);
+			m_target.x = Random::randInt(1, map[0].size() - 1);
 			if (map[m_target.y][m_target.x] == 0) {
 				m_moving = true;
 
@@ -50,9 +55,33 @@ void Rat::RoamingBehavior(float deltaTime, const std::vector<std::vector<int>>& 
 
 	if (m_moving && deltaTime > 0.0f) {
 		m_animTime += deltaTime;
+		double intpart;
+		if (std::modf(m_animTime,&intpart) > 0) {
+			glm::ivec2 currentPos;
+			currentPos.x = std::round((m_position.x - TILE_SIZE / 2.0f) / TILE_SIZE);
+			currentPos.y = std::round((m_position.y - TILE_SIZE / 2.0f) / TILE_SIZE);
+			
+			glm::ivec2 goal;
+			goal.x = std::round((jeff.getPosition().x - TILE_SIZE / 2.0f) / TILE_SIZE);
+			goal.y = std::round((jeff.getPosition().y - TILE_SIZE / 2.0f) / TILE_SIZE);
+
+			if (visionThing.canSeePoint(map, currentPos, goal))
+				m_state = BadGuyState::ATTACKING;
+		}
+		else {
+			std::cout << std::modf(m_animTime, &intpart) << std::endl;
+		}
+		
 		//calculate players position in path
 		glm::vec2 calcPos;
-		if (m_animTime - 1 <= m_path.size()) {
+		if ((int)m_animTime == m_path.size()) {
+			m_position.x = m_nextTile.x * TILE_SIZE + TILE_SIZE / 2.0f;
+			m_position.y = m_nextTile.y * TILE_SIZE + TILE_SIZE / 2.0f;
+			m_moving = false;
+			m_animTime = 0.0f;
+			m_animTile = 3;
+		}
+		else {
 			if (floor(m_animTime) == 0)
 				calcPos = m_startPosition;
 			else

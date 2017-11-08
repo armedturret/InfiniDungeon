@@ -28,6 +28,9 @@
     <Filter Include="Project\Algorithms\Bresenham">
       <UniqueIdentifier>{03c4d19f-f05b-490a-8137-88d35576f97d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Project\Algorithms\Random">
+      <UniqueIdentifier>{54b232f4-f623-4846-bda5-b45937aa0425}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameplayScreen.cpp">
@@ -65,6 +68,9 @@
     </ClCompile>
     <ClCompile Include="BresenhamAlgorithm.cpp">
       <Filter>Project\Algorithms\Bresenham</Filter>
+    </ClCompile>
+    <ClCompile Include="Random.cpp">
+      <Filter>Project\Algorithms\Random</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -106,6 +112,9 @@
     </ClInclude>
     <ClInclude Include="BresenhamAlgorithm.h">
       <Filter>Project\Algorithms\Bresenham</Filter>
+    </ClInclude>
+    <ClInclude Include="Random.h">
+      <Filter>Project\Algorithms\Random</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

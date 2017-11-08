@@ -4,6 +4,7 @@
 #include <ctime>
 #include <DPE/IMainGame.h>
 
+#include "Random.h"
 #include "Rat.h"
 
 const float MAX_SCROLL = 5.5f;
@@ -99,14 +100,23 @@ void GameplayScreen::onEntry()
 
 	//choose a theme of matching difficulty
 	if (m_difficulty == 1) {
-		static std::mt19937 randomEngine(time(nullptr));
-		std::uniform_int_distribution<int> randInt(0, sizeof(LEVEL_ONE) / sizeof(LEVEL_ONE[0]) - 1);
+		int numThing = Random::randInt(0, sizeof(LEVEL_ONE) / sizeof(LEVEL_ONE[0]) - 1);
 		//choose random theme
-		m_level.init(LEVEL_ONE[randInt(randomEngine)]);
+		m_level.init(LEVEL_ONE[numThing]);
+	}
+	 
+	glm::ivec2 ratSpawn(0);
+	
+	while (true) {
+		ratSpawn.y = Random::randInt(1, m_level.getMap().size() - 1);
+		ratSpawn.x = Random::randInt(1, m_level.getMap()[0].size() - 1);
+		if (m_level.getMap()[ratSpawn.y][ratSpawn.x] == 0) {
+			break;
+		}
 	}
 
 	m_badGuys.push_back(new Rat());
-	m_badGuys[0]->Spawn(m_level.getStartPos(), m_level.getMap(), m_level.getEntMap());
+	m_badGuys[0]->Spawn(ratSpawn, m_level.getMap(), m_level.getEntMap());
 
 	m_player.init("Data/Textures/Characters/Mage.png", glm::ivec2(3, 2), &m_game->inputManager, &m_camera, m_level.getStartPos());
 }
@@ -145,10 +155,10 @@ void GameplayScreen::update(){
 
 	float deltaTimeMoveFactor = m_player.getDeltaFactor()/* * totalDeltaTime bugs*/;
 
-	m_player.update(deltaTimeMoveFactor, m_level.getMap(), entMap);
+	m_player.update(deltaTimeMoveFactor, m_level.getMap(), entMap, m_badGuys, m_player);
 
 	for (int b = 0; b < m_badGuys.size(); b++) {
-		m_badGuys[b]->update(deltaTimeMoveFactor, m_level.getMap(), entMap);
+		m_badGuys[b]->update(deltaTimeMoveFactor, m_level.getMap(), entMap, m_badGuys, m_player);
 	}
 
 	m_level.setEntMap(entMap);

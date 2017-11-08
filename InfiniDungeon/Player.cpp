@@ -14,7 +14,11 @@ Player::~Player()
 {
 }
 
-void Player::update(float deltaTime, const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap)
+void Player::update(float deltaTime,
+	const std::vector<std::vector<int>>& map,
+	std::vector<std::vector<int>>& entMap,
+	std::vector<BadGuy*>& badGuys,
+	Player& jeff)
 {
 	if (m_inputManager->isKeyDown(SDL_BUTTON_LEFT) && !m_wasMouseDownPreviously) {
 		if (!m_moving) {

@@ -4,12 +4,19 @@
 #include <DPE/DebugRender.h>
 #include <iostream>
 
+class Player;
+class BadGuy;
+
 class Creature
 {
 public:
 	Creature();
 	~Creature();
-	virtual void update(float deltaTime, const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap) {
+	virtual void update(float deltaTime,
+		const std::vector<std::vector<int>>& map,
+		std::vector<std::vector<int>>& entMap,
+		std::vector<BadGuy*>& badGuys,
+		Player& jeff) {
 		std::cout << "Creature given no update behavior" << std::endl;
 	};
 
@@ -23,9 +30,6 @@ private:
 	float m_animTime = 0;
 
 protected:
-	int randInt(int min, int max);
-
-	float randFloat(float min, float max);
 
 	glm::vec2 m_position = glm::vec2(0.0f, 0.0f);
 	int m_direction = 0; // 0 = left, 1 = up, 2 = right, 3 = down

@@ -1,6 +1,6 @@
 #include "BadGuy.h"
 
-
+#include "Player.h"
 
 BadGuy::BadGuy():
 	m_state(BadGuyState::ROAMING),
@@ -23,15 +23,19 @@ void BadGuy::Spawn(glm::vec2 pos, const std::vector<std::vector<int>>& map, std:
 	OnCreation(map, entMap);
 }
 
-void BadGuy::update(float deltaTime, const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap)
+void BadGuy::update(float deltaTime,
+	const std::vector<std::vector<int>>& map,
+	std::vector<std::vector<int>>& entMap,
+	std::vector<BadGuy*>& badGuys,
+	Player& jeff)
 {
 	if (m_state == BadGuyState::ROAMING) {
-		RoamingBehavior(deltaTime, map, entMap);
+		RoamingBehavior(deltaTime, map, entMap, badGuys, jeff);
 	}
 	else if (m_state == BadGuyState::SEARCHING) {
-		SearchBehavior(deltaTime, map, entMap);
+		SearchBehavior(deltaTime, map, entMap, badGuys, jeff);
 	}
 	else if (m_state == BadGuyState::ATTACKING) {
-		AttackBehavior(deltaTime, map, entMap);
+		AttackBehavior(deltaTime, map, entMap, badGuys, jeff);
 	}
 }

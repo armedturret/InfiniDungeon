@@ -1,6 +1,6 @@
 #include "BresenhamAlgorithm.h"
 
-
+#include <iostream>
 
 BresenhamAlgorithm::BresenhamAlgorithm()
 {
@@ -35,21 +35,25 @@ bool BresenhamAlgorithm::canSeePoint(const std::vector<std::vector<int>>& map, g
 
 	//check if slope is undefined
 	for (int x = 0; x <= abs(deltaX); x++) {
-		if (map[y * signOfY + startPos.y][x * signOfX + startPos.x] != 1) {
+		if (!isTileSolid(map,glm::ivec2(x * signOfX + startPos.x,y * signOfY + startPos.y))) {
 			error += slope;
 			while (error >= 0.5 && y <= abs(deltaY)) {
 				y = y + 1;
 				error = error - 1.0f;
 				if (map[y * signOfY + startPos.y][x * signOfX + startPos.x] == 1) {
 					return false;
-					break;
 				}
 			}
 		}
 		else {
 			return false;
-			break;
 		}
 
 	}
+	return true;
+}
+
+bool BresenhamAlgorithm::isTileSolid(const std::vector<std::vector<int>>& map, const glm::ivec2 & checkPos)
+{
+	return map[checkPos.y][checkPos.x] == 1 || map[checkPos.y][checkPos.x] == 2;
 }
