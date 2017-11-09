@@ -41,6 +41,8 @@ protected:
 
 	int m_health = 10;
 
+	int m_maxHealth = 10;
+
 	bool moving = false;
 
 	int m_animTile = 0;

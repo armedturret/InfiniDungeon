@@ -17,6 +17,7 @@ Rat::~Rat()
 void Rat::OnCreation(const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap)
 {
 	m_health = 10;
+	m_maxHealth = 10;
 
 	m_lore = "These bloated rodents have become lazy and lethargic from time spent in a dungeon with scores of heroes come to feed them.";
 	m_name = "Giant Rat";
