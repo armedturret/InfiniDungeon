@@ -141,7 +141,7 @@ void Rat::RoamingBehavior(float deltaTime,
 		}
 
 	}
-	else if (m_moving && m_animTime > 0.0f) {
+	else if (m_moving && Random::equals(deltaTime, 0.0f)) {
 		m_animTile = 3;
 		m_animTime = round(m_animTime);
 

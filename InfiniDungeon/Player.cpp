@@ -131,6 +131,7 @@ void Player::update(float deltaTime,
 				entMap[m_startPosition.y][m_startPosition.x] = 0;
 			}
 
+			//change directions accordingly
 			if (m_nextTile.x == calcPos.x + 1)
 				m_direction = 2;
 			else if (m_nextTile.x == calcPos.x - 1)
