@@ -55,9 +55,9 @@ void Rat::RoamingBehavior(float deltaTime,
 
 	if (m_moving && deltaTime > 0.0f) {
 		m_animTime += deltaTime;
-		double intpart;
-		if (std::modf(m_animTime,&intpart) > 0) {
+		if (Random::equals(floor(m_animTime) ,m_animTime)) {
 			glm::ivec2 currentPos;
+			//std::cout << std::modf(m_animTime, &intpart) << std::endl;
 			currentPos.x = std::round((m_position.x - TILE_SIZE / 2.0f) / TILE_SIZE);
 			currentPos.y = std::round((m_position.y - TILE_SIZE / 2.0f) / TILE_SIZE);
 			
@@ -65,63 +65,68 @@ void Rat::RoamingBehavior(float deltaTime,
 			goal.x = std::round((jeff.getPosition().x - TILE_SIZE / 2.0f) / TILE_SIZE);
 			goal.y = std::round((jeff.getPosition().y - TILE_SIZE / 2.0f) / TILE_SIZE);
 
-			if (visionThing.canSeePoint(map, currentPos, goal))
+			if (visionThing.canSeePoint(map, currentPos, goal)) {
 				m_state = BadGuyState::ATTACKING;
-		}
-		else {
-			std::cout << std::modf(m_animTime, &intpart) << std::endl;
-		}
-		
-		//calculate players position in path
-		glm::vec2 calcPos;
-		if ((int)m_animTime == m_path.size()) {
-			m_position.x = m_nextTile.x * TILE_SIZE + TILE_SIZE / 2.0f;
-			m_position.y = m_nextTile.y * TILE_SIZE + TILE_SIZE / 2.0f;
-			m_moving = false;
-			m_animTime = 0.0f;
-			m_animTile = 3;
-		}
-		else {
-			if (floor(m_animTime) == 0)
-				calcPos = m_startPosition;
-			else
-				calcPos = m_path[m_path.size() - floor(m_animTime)].getPosition();
-
-			if (floor(m_animTime) < m_path.size())
-				m_nextTile = m_path[m_path.size() - floor(m_animTime) - 1].getPosition();
-
-			//check if nextTile is door
-			if (map[m_nextTile.y][m_nextTile.x] == 2) {
-				entMap[m_nextTile.y][m_nextTile.x] = 1;
-			}
-			//make sure to close previous doors
-			if (m_path.size() - floor(m_animTime) + 1 < m_path.size()) {
-				glm::vec2 prevPos = m_path[m_path.size() - floor(m_animTime) + 1].getPosition();
-				if (map[prevPos.y][prevPos.x] == 2) {
-					entMap[prevPos.y][prevPos.x] = 0;
-				}
-			}
-			//Check if start pos was a door
-			if (map[m_startPosition.y][m_startPosition.x] == 2 && m_nextTile.y - calcPos.y < 0.05f && m_nextTile.x - calcPos.x < 0.05f) {
-				entMap[m_startPosition.y][m_startPosition.x] = 0;
-			}
-
-			if (m_nextTile.x == calcPos.x + 1)
-				m_direction = 2;
-			else if (m_nextTile.x == calcPos.x - 1)
-				m_direction = 1;
-
-			m_position.x = ((m_nextTile.x - calcPos.x) * (m_animTime - floor(m_animTime)) + calcPos.x) * TILE_SIZE + TILE_SIZE / 2.0f;
-			m_position.y = ((m_nextTile.y - calcPos.y) * (m_animTime - floor(m_animTime)) + calcPos.y) * TILE_SIZE + TILE_SIZE / 2.0f;
-
-			m_animTile = (int)floor(m_animTime) % 3;
-
-			m_animTile += 3;
-
-			if (m_position.x == m_target.x * TILE_SIZE + TILE_SIZE / 2.0f && m_target.y*TILE_SIZE + TILE_SIZE / 2.0f == m_position.y) {
 				m_moving = false;
 				m_animTime = 0.0f;
 				m_animTile = 3;
+				m_position.x = m_nextTile.x * TILE_SIZE + TILE_SIZE / 2.0f;
+				m_position.y = m_nextTile.y * TILE_SIZE + TILE_SIZE / 2.0f;
+
+			}
+		}
+		else {
+			//calculate players position in path
+			glm::vec2 calcPos;
+			if ((int)m_animTime == m_path.size()) {
+				m_position.x = m_nextTile.x * TILE_SIZE + TILE_SIZE / 2.0f;
+				m_position.y = m_nextTile.y * TILE_SIZE + TILE_SIZE / 2.0f;
+				m_moving = false;
+				m_animTime = 0.0f;
+				m_animTile = 3;
+			}
+			else {
+				if (floor(m_animTime) == 0)
+					calcPos = m_startPosition;
+				else
+					calcPos = m_path[m_path.size() - floor(m_animTime)].getPosition();
+
+				if (floor(m_animTime) < m_path.size())
+					m_nextTile = m_path[m_path.size() - floor(m_animTime) - 1].getPosition();
+
+				//check if nextTile is door
+				if (map[m_nextTile.y][m_nextTile.x] == 2) {
+					entMap[m_nextTile.y][m_nextTile.x] = 1;
+				}
+				//make sure to close previous doors
+				if (m_path.size() - floor(m_animTime) + 1 < m_path.size()) {
+					glm::vec2 prevPos = m_path[m_path.size() - floor(m_animTime) + 1].getPosition();
+					if (map[prevPos.y][prevPos.x] == 2) {
+						entMap[prevPos.y][prevPos.x] = 0;
+					}
+				}
+				//Check if start pos was a door
+				if (map[m_startPosition.y][m_startPosition.x] == 2 && m_nextTile.y - calcPos.y < 0.05f && m_nextTile.x - calcPos.x < 0.05f) {
+					entMap[m_startPosition.y][m_startPosition.x] = 0;
+				}
+
+				if (m_nextTile.x == calcPos.x + 1)
+					m_direction = 2;
+				else if (m_nextTile.x == calcPos.x - 1)
+					m_direction = 1;
+
+				m_position.x = ((m_nextTile.x - calcPos.x) * (m_animTime - floor(m_animTime)) + calcPos.x) * TILE_SIZE + TILE_SIZE / 2.0f;
+				m_position.y = ((m_nextTile.y - calcPos.y) * (m_animTime - floor(m_animTime)) + calcPos.y) * TILE_SIZE + TILE_SIZE / 2.0f;
+
+				m_animTile = (int)floor(m_animTime) % 3;
+
+				m_animTile += 3;
+
+				if (m_position.x == m_target.x * TILE_SIZE + TILE_SIZE / 2.0f && m_target.y*TILE_SIZE + TILE_SIZE / 2.0f == m_position.y) {
+					m_moving = false;
+					m_animTime = 0.0f;
+					m_animTile = 3;
+				}
 			}
 		}
 
