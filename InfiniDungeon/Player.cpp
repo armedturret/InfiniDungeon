@@ -32,6 +32,9 @@ void Player::update(float deltaTime,
 
 			//Test if coordinates are in map
 			if (m_target.x >= 0.0f && m_target.y >= 0.0f && m_target.x < map.size() && m_target.y < map[0].size() &&map[m_target.y][m_target.x] != 1) {
+				//test if they see an enemy
+				m_enemiesSpotted = seesEnemy(badGuys, map);
+
 				m_moving = true;
 				
 				m_startPosition.x = (m_position.x - TILE_SIZE / 2.0f) / TILE_SIZE;
@@ -47,8 +50,15 @@ void Player::update(float deltaTime,
 		}
 		else {
 			//prevents glitch where they get stuck between tiles
-			m_position.x = m_nextTile.x * TILE_SIZE + TILE_SIZE / 2.0f;
-			m_position.y = m_nextTile.y * TILE_SIZE + TILE_SIZE / 2.0f;
+			glm::vec2 calcPos(0.0f);
+
+			if (floor(m_animTime) == 0)
+				calcPos = m_startPosition;
+			else
+				calcPos = m_path[m_path.size() - floor(m_animTime)].getPosition();
+
+			m_position.x = calcPos.x * TILE_SIZE + TILE_SIZE / 2.0f;
+			m_position.y = calcPos.y * TILE_SIZE + TILE_SIZE / 2.0f;
 
 			m_animTime = 0.0f;
 			m_animTile = 3;
@@ -83,8 +93,9 @@ void Player::update(float deltaTime,
 		m_wasLDownPreviously = false;
 	}
 
-	if (m_moving && deltaTime > 0.0f) {
+	if (m_moving && deltaTime > 0.0f && (!m_enemiesSpotted || Random::equals(m_animTime, MAX_ATTACK_ANIM) || m_animTime<MAX_ATTACK_ANIM)) {
 		m_animTime += deltaTime;
+
 		//use trunc to fix wierd rounding glitch
 		if ((int)m_animTime == m_path.size()) {
 			m_position.x = m_nextTile.x * TILE_SIZE + TILE_SIZE / 2.0f;
@@ -131,7 +142,42 @@ void Player::update(float deltaTime,
 			m_animTile = (int)floor(m_animTime) % 3;
 
 			m_animTile += 3;
+
+			if (!m_enemiesSpotted && seesEnemy(badGuys, map)) {
+				m_enemiesSpotted = true;
+				
+				m_animTime = std::round(m_animTime);
+
+				glm::vec2 calcPos(0.0f);
+
+				if (floor(m_animTime) == 0)
+					calcPos = m_startPosition;
+				else
+					calcPos = m_path[m_path.size() - floor(m_animTime) + 1].getPosition();
+
+				m_position.x = calcPos.x * TILE_SIZE + TILE_SIZE / 2.0f;
+				m_position.y = calcPos.y * TILE_SIZE + TILE_SIZE / 2.0f;
+
+				m_animTime = 0.0f;
+				m_animTile = 3;
+				m_moving = false;
+			}
 		}
+	}
+	else if (m_enemiesSpotted && m_animTime > 0.0f) {
+		glm::vec2 calcPos(0.0f);
+
+		if (floor(m_animTime) == 0)
+			calcPos = m_startPosition;
+		else
+			calcPos = m_path[m_path.size() - floor(m_animTime)].getPosition();
+
+		m_position.x = calcPos.x * TILE_SIZE + TILE_SIZE / 2.0f;
+		m_position.y = calcPos.y * TILE_SIZE + TILE_SIZE / 2.0f;
+
+		m_animTime = 0.0f;
+		m_animTile = 3;
+		m_moving = false;
 	}
 }
 
@@ -157,4 +203,29 @@ float Player::getDeltaFactor()
 		return 0.1f;
 	else
 		return 0.0f;
+}
+
+bool Player::seesEnemy(std::vector<BadGuy*> badGuys, std::vector<std::vector<int>> map)
+{
+	for (BadGuy* b : badGuys) {
+		glm::ivec2 currentPos;
+		currentPos.x = std::round((m_position.x - TILE_SIZE / 2.0f) / TILE_SIZE);
+		currentPos.y = std::round((m_position.y - TILE_SIZE / 2.0f) / TILE_SIZE);
+
+		glm::ivec2 goal;
+		goal.x = std::round((b->getPosition().x - TILE_SIZE / 2.0f) / TILE_SIZE);
+		goal.y = std::round((b->getPosition().y - TILE_SIZE / 2.0f) / TILE_SIZE);
+
+		glm::vec2 calcPos;
+		if (floor(m_animTime) == 0)
+			calcPos = m_startPosition;
+		else
+			calcPos = m_path[m_path.size() - floor(m_animTime)].getPosition();
+
+		if (visionThing.canSeePoint(map, currentPos, goal)) {
+			return true;
+		}
+	}
+
+	return false;
 }

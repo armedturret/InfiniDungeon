@@ -51,6 +51,4 @@ private:
 	glm::vec2 m_nextTile;
 
 	PathFinder pathFinder;
-
-	BresenhamAlgorithm visionThing;
 };

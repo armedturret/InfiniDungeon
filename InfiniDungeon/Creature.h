@@ -4,6 +4,8 @@
 #include <DPE/DebugRender.h>
 #include <iostream>
 
+#include "BresenhamAlgorithm.h"
+
 class Player;
 class BadGuy;
 
@@ -42,5 +44,7 @@ protected:
 	bool moving = false;
 
 	int m_animTile = 0;
+
+	BresenhamAlgorithm visionThing;
 };
 

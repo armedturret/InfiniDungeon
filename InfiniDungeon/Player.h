@@ -6,6 +6,8 @@
 #include "PathFinder.h"
 #include "Creature.h"
 
+const double MAX_ATTACK_ANIM = 6.0;
+
 class Player : public Creature
 {
 public:
@@ -23,6 +25,8 @@ public:
 	float getDeltaFactor();
 
 private:
+	bool seesEnemy(std::vector<BadGuy*> badGuys, std::vector<std::vector<int>> map);
+
 	DPE::InputManager* m_inputManager;
 	DPE::Camera2D* m_camera;
 
@@ -44,5 +48,7 @@ private:
 	glm::vec2 m_startPosition;
 
 	glm::vec2 m_nextTile;
+
+	bool m_enemiesSpotted = false;
 };
 
