@@ -53,9 +53,9 @@ void Rat::RoamingBehavior(float deltaTime,
 		}
 	}
 
-	if (m_moving && deltaTime > 0.0f) {
-		m_animTime += deltaTime;
-		if (Random::equals(floor(m_animTime) ,m_animTime)) {
+	if (m_moving) {
+		
+		if (Random::equals(floor(m_animTime) ,m_animTime) || m_animTime == 0) {
 			glm::ivec2 currentPos;
 			//std::cout << std::modf(m_animTime, &intpart) << std::endl;
 			currentPos.x = std::round((m_position.x - TILE_SIZE / 2.0f) / TILE_SIZE);
@@ -65,17 +65,27 @@ void Rat::RoamingBehavior(float deltaTime,
 			goal.x = std::round((jeff.getPosition().x - TILE_SIZE / 2.0f) / TILE_SIZE);
 			goal.y = std::round((jeff.getPosition().y - TILE_SIZE / 2.0f) / TILE_SIZE);
 
+			glm::vec2 calcPos;
+			if (floor(m_animTime) == 0)
+				calcPos = m_startPosition;
+			else
+				calcPos = m_path[m_path.size() - floor(m_animTime)].getPosition();
+
 			if (visionThing.canSeePoint(map, currentPos, goal)) {
 				m_state = BadGuyState::ATTACKING;
 				m_moving = false;
 				m_animTime = 0.0f;
 				m_animTile = 3;
-				m_position.x = m_nextTile.x * TILE_SIZE + TILE_SIZE / 2.0f;
-				m_position.y = m_nextTile.y * TILE_SIZE + TILE_SIZE / 2.0f;
+				m_position.x = calcPos.x * TILE_SIZE + TILE_SIZE / 2.0f;
+				m_position.y = calcPos.y * TILE_SIZE + TILE_SIZE / 2.0f;
 
+			}
+			else {
+				m_animTime += deltaTime;
 			}
 		}
 		else {
+			m_animTime += deltaTime;
 			//calculate players position in path
 			glm::vec2 calcPos;
 			if ((int)m_animTime == m_path.size()) {
