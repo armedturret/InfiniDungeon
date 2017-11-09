@@ -3,6 +3,10 @@
 #include <DPE/ResourceManager.h>
 #include <cmath>
 
+#include "Random.h"
+
+#include "BadGuy.h"
+
 Player::Player():
 			m_target(0.0f),
 			m_nextTile(0.0f)
@@ -56,6 +60,29 @@ void Player::update(float deltaTime,
 	else if(!m_inputManager->isKeyDown(SDL_BUTTON_LEFT)) {
 		m_wasMouseDownPreviously = false;
 	}
+
+	if (m_inputManager->isKeyDown(SDLK_l) && !m_wasLDownPreviously) {
+		//lore
+		glm::vec2 worldCoords = m_camera->convertScreenToWorld(m_inputManager->getMouseCoords());
+		m_target.x = floor(worldCoords.x / TILE_SIZE);
+		m_target.y = floor(worldCoords.y / TILE_SIZE);
+
+		//Test if coordinates are in map
+		if (m_target.x >= 0.0f && m_target.y >= 0.0f && m_target.x < map.size() && m_target.y < map[0].size() && map[m_target.y][m_target.x] != 1) {
+			
+			for (BadGuy* b : badGuys) {
+				if (Random::equals(floor(b->getPosition().x / TILE_SIZE) , m_target.x)
+					&& Random::equals(floor(b->getPosition().y / TILE_SIZE) , m_target.y)) {
+					std::cout << b->getLore() << std::endl;
+				}
+			}
+		}
+		m_wasLDownPreviously = true;
+	}
+	else if (!m_inputManager->isKeyDown(SDLK_l)) {
+		m_wasLDownPreviously = false;
+	}
+
 	if (m_moving && deltaTime > 0.0f) {
 		m_animTime += deltaTime;
 		//use trunc to fix wierd rounding glitch

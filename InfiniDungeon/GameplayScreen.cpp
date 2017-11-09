@@ -166,6 +166,7 @@ void GameplayScreen::update(){
 	m_camera.setPosition(m_player.getPosition());
 
 	m_camera.update();
+	m_game->inputManager.update();
 	checkInput();
 }
 

@@ -37,6 +37,8 @@ private:
 
 	bool m_wasMouseDownPreviously = false;
 
+	bool m_wasLDownPreviously = false;
+
 	bool m_moving = false;
 
 	glm::vec2 m_startPosition;
