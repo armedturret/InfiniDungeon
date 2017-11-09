@@ -52,6 +52,44 @@ void main(){
 	color = fragmentColor * textureColor;
 })";
 
+const char* SHADOWFRAG_SRC = R"(#version 130
+
+in vec2 fragmentPosition;
+in vec4 fragmentColor;
+in vec2 fragmentUV;
+
+out vec4 color;
+
+void main(){
+	
+	float distance = length(fragmentUV);
+	color = vec4(fragmentColor.rgb, fragmentColor.a * pow(0.01, distance) - 0.01);
+})";
+
+const char* SHADOWVERT_SRC = R"(#version 130
+
+in vec2 vertexPosition;
+in vec4 vertexColor;
+in vec2 vertexUV;
+
+out vec2 fragmentPosition;
+out vec4 fragmentColor;
+out vec2 fragmentUV;
+
+uniform mat4 P;
+
+void main() {
+	gl_Position.xy = (P * vec4(vertexPosition, 0.0, 1.0)).xy;
+	gl_Position.z = 0.0;
+	gl_Position.w = 1.0;
+	
+	fragmentPosition = vertexPosition;
+	
+	fragmentColor = vertexColor;
+	
+	fragmentUV = vertexUV;
+})";
+
 GameplayScreen::GameplayScreen(DPE::Window * window) :
 	m_window(window),
 	m_scrollLevel(1.5f),
