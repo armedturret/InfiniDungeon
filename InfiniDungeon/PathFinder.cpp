@@ -10,7 +10,7 @@ PathFinder::~PathFinder()
 {
 }
 
-std::vector<Node> PathFinder::pathBetweenPoints(const glm::vec2& start, const glm::vec2& end, const std::vector<std::vector<int>>& map)
+std::vector<Node> PathFinder::pathBetweenPoints(const glm::vec2& end, const glm::vec2& start, const std::vector<std::vector<int>>& map)
 {	
 	//this list contains the goal node, and which one leads to it
 	std::unordered_map<glm::ivec2, Node, KeyFuncs, KeyFuncs> closedNodes;
@@ -30,6 +30,12 @@ std::vector<Node> PathFinder::pathBetweenPoints(const glm::vec2& start, const gl
 		}
 		currentNode = closedNodes.find(currentNode.getPosition())->second;
 	}
+
+	//add extra node
+	Node goalNode;
+	goalNode.init(start, returnPath.size());
+
+	returnPath.push_back(goalNode);
 	return returnPath;
 }
 

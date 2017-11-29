@@ -45,24 +45,10 @@ void Player::update(float deltaTime,
 					m_moving = false;
 
 				//calculate the path
-				m_path = m_pathFinder.pathBetweenPoints(m_target, m_startPosition, map);
+				m_path = m_pathFinder.pathBetweenPoints(m_startPosition, m_target, map);
 			}
 		}
 		else {
-			//prevents glitch where they get stuck between tiles
-			glm::vec2 calcPos(0.0f);
-
-			if (floor(m_animTime) == 0)
-				calcPos = m_startPosition;
-			else
-				calcPos = m_path[m_path.size() - floor(m_animTime) - 1].getPosition();
-
-			m_position.x = calcPos.x * TILE_SIZE + TILE_SIZE / 2.0f;
-			m_position.y = calcPos.y * TILE_SIZE + TILE_SIZE / 2.0f;
-
-			m_animTime = 0.0f;
-			m_animTile = 3;
-			m_moving = false;
 		}
 		//custom "press" rejection because the engine is buggy
 		m_wasMouseDownPreviously = true;
@@ -93,6 +79,7 @@ void Player::update(float deltaTime,
 		m_wasLDownPreviously = false;
 	}
 	
+	//move
 	if (m_moving) {
 		if (moveToNextTile(m_path, deltaTime)) {
 			std::cout << "intermediate" << moveToNextTile(m_path, deltaTime) <<std::endl;

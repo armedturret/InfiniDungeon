@@ -33,11 +33,7 @@ bool Creature::moveToNextTile(std::vector<Node>& path, float deltaTime)
 	//the position prior to the move
 	glm::vec2 calcPos;
 
-	if (Random::equals(floor(m_animTime), path.size())) {
-		calcPos.x = m_position.x;
-		calcPos.y = m_position.y;
-	}
-	else if (floor(m_animTime) < path.size()) {
+	if (floor(m_animTime) < path.size()) {
 		calcPos.x = path[floor(m_animTime)].getPosition().x * TILE_SIZE + TILE_SIZE / 2;
 		calcPos.y = path[floor(m_animTime)].getPosition().y * TILE_SIZE + TILE_SIZE / 2;
 	}
@@ -46,10 +42,6 @@ bool Creature::moveToNextTile(std::vector<Node>& path, float deltaTime)
 		path.clear();
 		return false;
 	}
-
-	std::cout << "floor(m_animTime) - 1:" << floor(m_animTime) - 1 << std::endl;
-	std::cout << "floor(m_animTime) < path.size() + 1:" << (floor(m_animTime) < path.size() + 1) << std::endl;
-
 
 	m_position.x = calcPos.x;
 	m_position.y = calcPos.y;

@@ -42,8 +42,6 @@ private:
 	bool m_moving;
 
 	std::vector<Node> m_path;
-	
-	double m_animTime = 0.0;
 
 	glm::ivec2 m_target;
 	glm::ivec2 m_startPosition;
