@@ -186,10 +186,10 @@ void GameplayScreen::update(){
 
 	auto entMap = m_level.getEntMap();
 	
-	float newTicks = SDL_GetTicks();
+	/*float newTicks = SDL_GetTicks();
 	float frameTime = newTicks - m_prevTicks;
 	m_prevTicks = newTicks;
-	float totalDeltaTime = frameTime / DESIRED_FRAMETIME;
+	float totalDeltaTime = frameTime / DESIRED_FRAMETIME;*/
 
 	float deltaTimeMoveFactor = m_player.getDeltaFactor()/* * totalDeltaTime bugs*/;
 

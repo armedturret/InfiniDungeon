@@ -3,7 +3,7 @@
 #include <DPE/InputManager.h>
 #include <DPE/Camera2D.h>
 
-#include "PathFinder.h"
+
 #include "Creature.h"
 
 const double MAX_ATTACK_ANIM = 6.0;
@@ -30,14 +30,9 @@ private:
 	DPE::InputManager* m_inputManager;
 	DPE::Camera2D* m_camera;
 
-	PathFinder m_pathFinder;
-
 	std::vector<Node> m_path;
 
 	glm::vec2 m_target;
-
-	//double somehow fixes glitches
-	double m_animTime = 0.0;
 
 	bool m_wasMouseDownPreviously = false;
 

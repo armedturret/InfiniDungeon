@@ -27,7 +27,7 @@ public:
 		std::vector<std::vector<int>>& entMap,
 		std::vector<BadGuy*>& badGuys,
 		Player& jeff) {
-		std::cout << "Creature " << m_name << " given no attack behavior" << std::endl;
+		//std::cout << "Creature " << m_name << " given no attack behavior" << std::endl;
 	};
 
 	//creature knows player there but can't see (Called when player teleports away or blinds enemy)

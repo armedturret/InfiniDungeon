@@ -45,7 +45,7 @@ void Player::update(float deltaTime,
 					m_moving = false;
 
 				//calculate the path
-				m_path = m_pathFinder.pathBetweenPoints(m_startPosition, m_target, map);
+				m_path = m_pathFinder.pathBetweenPoints(m_target, m_startPosition, map);
 			}
 		}
 		else {
@@ -92,108 +92,16 @@ void Player::update(float deltaTime,
 	else if (!m_inputManager->isKeyDown(SDLK_l)) {
 		m_wasLDownPreviously = false;
 	}
-
-	if (m_moving && deltaTime > 0.0f && (!m_enemiesSpotted || m_animTime<MAX_ATTACK_ANIM)) {
-		m_animTime += deltaTime;
-
-		//use trunc to fix wierd rounding glitch
-		if ((int)m_animTime == m_path.size()) {
-			m_position.x = m_nextTile.x * TILE_SIZE + TILE_SIZE / 2.0f;
-			m_position.y = m_nextTile.y * TILE_SIZE + TILE_SIZE / 2.0f;
+	
+	if (m_moving) {
+		if (moveToNextTile(m_path, deltaTime)) {
+			std::cout << "intermediate" << moveToNextTile(m_path, deltaTime) <<std::endl;
+		}
+		if (m_path.size() == 0) {
+			std::cout << "End" << std::endl;
 			m_moving = false;
-			m_animTime = 0.0f;
-			m_animTile = 3;
+			m_animTime = 0.0;
 		}
-		else {
-			
-			if (!m_enemiesSpotted && seesEnemy(badGuys, map)) {
-				m_enemiesSpotted = seesEnemy(badGuys, map);
-				
-
-				glm::vec2 calcPos(0.0f);
-
-				if (std::round(m_animTime) == 0)
-					calcPos = m_startPosition;
-				else
-					calcPos = m_path[m_path.size() - std::round(m_animTime)].getPosition();
-
-				if (m_path.size() - floor(m_animTime) + 1 < m_path.size() && std::round(m_animTime)-m_animTile < 0.4) {
-					glm::vec2 prevPos = m_path[m_path.size() - std::round(m_animTime) + 1].getPosition();
-					if (map[prevPos.y][prevPos.x] == 2) {
-						entMap[prevPos.y][prevPos.x] = 0;
-					}
-					m_position.x = calcPos.x * TILE_SIZE + TILE_SIZE / 2.0f;
-					m_position.y = calcPos.y * TILE_SIZE + TILE_SIZE / 2.0f;
-				}
-				else{
-					m_position.x = calcPos.x * TILE_SIZE + TILE_SIZE / 2.0f;
-					m_position.y = calcPos.y * TILE_SIZE + TILE_SIZE / 2.0f;
-				}
-					
-				m_animTime = 0.0f;
-				m_animTile = 3;
-				m_moving = false;
-				m_enemiesSpotted = seesEnemy(badGuys, map);
-			}
-			else {
-
-				//calculate players position in path
-				glm::vec2 calcPos;
-				if (floor(m_animTime) == 0)
-					calcPos = m_startPosition;
-				else
-					calcPos = m_path[m_path.size() - floor(m_animTime)].getPosition();
-
-				if (floor(m_animTime) < m_path.size())
-					m_nextTile = m_path[m_path.size() - floor(m_animTime) - 1].getPosition();
-
-				//check if nextTile is door
-				if (map[m_nextTile.y][m_nextTile.x] == 2) {
-					entMap[m_nextTile.y][m_nextTile.x] = 1;
-				}
-				//make sure to close previous doors
-				if (m_path.size() - floor(m_animTime) + 1 < m_path.size()) {
-					glm::vec2 prevPos = m_path[m_path.size() - floor(m_animTime) + 1].getPosition();
-					if (map[prevPos.y][prevPos.x] == 2) {
-						entMap[prevPos.y][prevPos.x] = 0;
-					}
-				}
-				//Check if start pos was a door
-				if (map[m_startPosition.y][m_startPosition.x] == 2 && m_nextTile.y - calcPos.y < 0.05f && m_nextTile.x - calcPos.x < 0.05f) {
-					entMap[m_startPosition.y][m_startPosition.x] = 0;
-				}
-
-				//change directions accordingly
-				if (m_nextTile.x == calcPos.x + 1)
-					m_direction = 2;
-				else if (m_nextTile.x == calcPos.x - 1)
-					m_direction = 1;
-
-				m_position.x = ((m_nextTile.x - calcPos.x) * (m_animTime - floor(m_animTime)) + calcPos.x) * TILE_SIZE + TILE_SIZE / 2.0f;
-				m_position.y = ((m_nextTile.y - calcPos.y) * (m_animTime - floor(m_animTime)) + calcPos.y) * TILE_SIZE + TILE_SIZE / 2.0f;
-
-				m_animTile = (int)floor(m_animTime) % 3;
-
-				m_animTile += 3;
-
-			}
-		}
-	}
-	else if (m_enemiesSpotted && m_animTime > 0.0f) {
-		glm::vec2 calcPos(0.0f);
-
-		if (floor(m_animTime) == 0)
-			calcPos = m_startPosition;
-		else
-			calcPos = m_path[m_path.size() - floor(m_animTime)].getPosition();
-
-		m_position.x = calcPos.x * TILE_SIZE + TILE_SIZE / 2.0f;
-		m_position.y = calcPos.y * TILE_SIZE + TILE_SIZE / 2.0f;
-
-		m_animTime = 0.0f;
-		m_animTile = 3;
-		m_moving = false;
-		m_enemiesSpotted = seesEnemy(badGuys, map);
 	}
 }
 
