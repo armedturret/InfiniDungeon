@@ -49,8 +49,25 @@ bool Creature::moveToNextTile(std::vector<Node>& path, float deltaTime)
 		//set to nextPosition
 		m_position.x = m_nextPosition.x;
 		m_position.y = m_nextPosition.y;
+		
+		//reset animation
+		m_animTime = 0.0;
+		m_animTile = 0;
 		return true;
 	}
+
+	//calculate which direction to face
+	if (m_nextPosition.x < calcPos.x) {
+		//left
+		m_direction = 2;
+	}
+	else if (m_nextPosition.x > calcPos.x) {
+		//right
+		m_direction = 1;
+	}
+
+	//the time into the current movement
+	double currentTileTime = m_animTime - floor(m_animTime);
 
 	//calculate movement gradient if not intermediate
 	if (m_animTime == (int)m_animTime) {
@@ -65,9 +82,6 @@ bool Creature::moveToNextTile(std::vector<Node>& path, float deltaTime)
 		difference.x = m_nextPosition.x - calcPos.x;
 		difference.y = m_nextPosition.y - calcPos.y;
 
-		//the time into the current movement
-		double currentTileTime = m_animTime - floor(m_animTime);
-
 		// add the multiply difference by currentTileTime
 		calcPos.x += difference.x * currentTileTime;
 		calcPos.y += difference.y * currentTileTime;
@@ -76,7 +90,11 @@ bool Creature::moveToNextTile(std::vector<Node>& path, float deltaTime)
 		m_position.y = calcPos.y;
 	}
 	
-	
+	//calculate which fram the character is at
+	if ((int)(currentTileTime* 10) % (int)m_animSpeed == 0)
+		m_animTile += 1;
+	if (m_animTile > 2)
+		m_animTile = 0;
 
 	return false;
 }

@@ -42,14 +42,17 @@ protected:
 	//used for animation
 	glm::vec2 m_nextPosition = glm::vec2(0.0f);
 
-	int m_direction = 0; // 0 = left, 1 = up, 2 = right, 3 = down
+	int m_direction = 0; // 2 = left, 1 = right
 
 	DPE::TileSheet m_tileSheet;
 	DPE::ColorRGBA8 m_color;
 
-	double m_animTime = 0.0f;
+	double m_animTime = 0.0;
 
 	PathFinder m_pathFinder;
+
+	//frames in between animations
+	double m_animSpeed = 10;
 
 	int m_health = 10;
 
