@@ -82,10 +82,10 @@ void Player::update(float deltaTime,
 	//move
 	if (m_moving) {
 		if (moveToNextTile(m_path, deltaTime)) {
-			std::cout << "intermediate" << moveToNextTile(m_path, deltaTime) <<std::endl;
+			//intermediate functions should be called here
 		}
+		//checks if moveToNextTile has reached the end
 		if (m_path.size() == 0) {
-			std::cout << "End" << std::endl;
 			m_moving = false;
 			m_animTime = 0.0;
 		}

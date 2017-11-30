@@ -36,6 +36,9 @@ protected:
 	bool moveToNextTile(std::vector<Node>& path, float deltaTime);
 	glm::vec2 m_position = glm::vec2(0.0f, 0.0f);
 
+	//used for animation
+	glm::vec2 m_nextPosition = glm::vec2(0.0f);
+
 	int m_direction = 0; // 0 = left, 1 = up, 2 = right, 3 = down
 
 	DPE::TileSheet m_tileSheet;
