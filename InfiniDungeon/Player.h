@@ -25,7 +25,7 @@ public:
 	float getDeltaFactor();
 
 private:
-	bool seesEnemy(std::vector<BadGuy*> badGuys, std::vector<std::vector<int>> map);
+	bool seesEnemy(std::vector<BadGuy*> badGuys, const std::vector<std::vector<int>>& map, const std::vector<std::vector<int>>& entmap);
 
 	DPE::InputManager* m_inputManager;
 	DPE::Camera2D* m_camera;

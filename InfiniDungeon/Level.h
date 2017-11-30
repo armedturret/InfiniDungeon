@@ -28,6 +28,14 @@ struct NotKeyFuncs
 		return a.x == b.x && a.y == b.y;
 	}
 };
+/*
+Key:
+0 -> Air
+1 -> Wall
+2 -> Door
+	0 -> Closed
+	1 -> Open
+*/
 
 class Level
 {

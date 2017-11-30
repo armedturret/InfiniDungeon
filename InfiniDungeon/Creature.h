@@ -34,6 +34,9 @@ protected:
 	
 	//returns true when arrived to next tile
 	bool moveToNextTile(std::vector<Node>& path, float deltaTime);
+	//uses raw positions and uses Bresenham
+	bool seesPoint(const std::vector<std::vector<int>>& map, const std::vector<std::vector<int>>& entmap, glm::vec2 end);
+
 	glm::vec2 m_position = glm::vec2(0.0f, 0.0f);
 
 	//used for animation

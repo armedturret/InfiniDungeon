@@ -33,7 +33,7 @@ void Player::update(float deltaTime,
 			//Test if coordinates are in map
 			if (m_target.x >= 0.0f && m_target.y >= 0.0f && m_target.x < map.size() && m_target.y < map[0].size() &&map[m_target.y][m_target.x] != 1) {
 				//test if they see an enemy
-				m_enemiesSpotted = seesEnemy(badGuys, map);
+				m_enemiesSpotted = seesEnemy(badGuys, map, entMap);
 
 				m_moving = true;
 				
@@ -117,27 +117,10 @@ float Player::getDeltaFactor()
 		return 0.0f;
 }
 
-bool Player::seesEnemy(std::vector<BadGuy*> badGuys, std::vector<std::vector<int>> map)
+bool Player::seesEnemy(std::vector<BadGuy*> badGuys, const std::vector<std::vector<int>>& map, const std::vector<std::vector<int>>& entmap)
 {
 	for (BadGuy* b : badGuys) {
-		glm::ivec2 currentPos;
-		currentPos.x = std::round((m_position.x - TILE_SIZE / 2.0f) / TILE_SIZE);
-		currentPos.y = std::round((m_position.y - TILE_SIZE / 2.0f) / TILE_SIZE);
-
-		glm::ivec2 goal;
-		goal.x = std::round((b->getPosition().x - TILE_SIZE / 2.0f) / TILE_SIZE);
-		goal.y = std::round((b->getPosition().y - TILE_SIZE / 2.0f) / TILE_SIZE);
-
-		glm::vec2 calcPos;
-		if (floor(m_animTime) == 0)
-			calcPos = m_startPosition;
-		else
-			calcPos = m_path[m_path.size() - floor(m_animTime)].getPosition();
-
-		if (visionThing.canSeePoint(map, currentPos, goal)) {
-			if(Random::equals(m_animTime, floor(m_animTime)))
-			return true;
-		}
+		seesPoint(map, entmap, b->getPosition());
 	}
 
 	return false;

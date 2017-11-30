@@ -43,6 +43,8 @@ private:
 
 	std::vector<Node> m_path;
 
+	BresenhamAlgorithm m_sight;
+
 	glm::ivec2 m_target;
 	glm::ivec2 m_startPosition;
 

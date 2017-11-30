@@ -80,3 +80,17 @@ bool Creature::moveToNextTile(std::vector<Node>& path, float deltaTime)
 
 	return false;
 }
+
+bool Creature::seesPoint(const std::vector<std::vector<int>>& map, const std::vector<std::vector<int>>& entmap, glm::vec2 end)
+{
+	//calculate creatureslocation
+	glm::ivec2 currentPos;
+	currentPos.x = std::round((m_position.x - TILE_SIZE / 2.0f) / TILE_SIZE);
+	currentPos.y = std::round((m_position.y - TILE_SIZE / 2.0f) / TILE_SIZE);
+
+	glm::ivec2 goal;
+	goal.x = std::round((end.x - TILE_SIZE / 2.0f) / TILE_SIZE);
+	goal.y = std::round((end.y - TILE_SIZE / 2.0f) / TILE_SIZE);
+
+	return visionThing.canSeePoint(map, entmap, currentPos, goal);
+}

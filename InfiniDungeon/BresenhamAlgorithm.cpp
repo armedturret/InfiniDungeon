@@ -11,7 +11,7 @@ BresenhamAlgorithm::~BresenhamAlgorithm()
 {
 }
 
-bool BresenhamAlgorithm::canSeePoint(const std::vector<std::vector<int>>& map, glm::ivec2 startPos, glm::ivec2 endPos)
+bool BresenhamAlgorithm::canSeePoint(const std::vector<std::vector<int>>& map, const std::vector<std::vector<int>>& entmap, glm::ivec2 startPos, glm::ivec2 endPos)
 {
 	//end pos is the slope at the x of the view distance
 	float deltaX = endPos.x - startPos.x;
@@ -35,7 +35,7 @@ bool BresenhamAlgorithm::canSeePoint(const std::vector<std::vector<int>>& map, g
 
 	//check if slope is undefined
 	for (int x = 0; x <= abs(deltaX); x++) {
-		if (!isTileSolid(map,glm::ivec2(x * signOfX + startPos.x,y * signOfY + startPos.y))) {
+		if (!isTileSolid(map,entmap,glm::ivec2(x * signOfX + startPos.x,y * signOfY + startPos.y))) {
 			error += slope;
 			while (error >= 0.5 && y <= abs(deltaY)) {
 				y = y + 1;
@@ -53,7 +53,7 @@ bool BresenhamAlgorithm::canSeePoint(const std::vector<std::vector<int>>& map, g
 	return true;
 }
 
-bool BresenhamAlgorithm::isTileSolid(const std::vector<std::vector<int>>& map, const glm::ivec2 & checkPos)
+bool BresenhamAlgorithm::isTileSolid(const std::vector<std::vector<int>>& map, const std::vector<std::vector<int>>& entmap, const glm::ivec2 & checkPos)
 {
-	return map[checkPos.y][checkPos.x] == 1 || map[checkPos.y][checkPos.x] == 2;
+	return /*wall*/map[checkPos.y][checkPos.x] == 1 || (/*door*/map[checkPos.y][checkPos.x] == 2 && entmap[checkPos.y][checkPos.x] == 0);
 }

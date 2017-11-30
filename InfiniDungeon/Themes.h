@@ -16,4 +16,4 @@ struct theme {
 	std::string door;
 };
 
-const theme LEVEL_ONE[] = { theme("Basic", "Floor.png", "Wall.png", "Door.png") };
+const theme LEVEL_ONE[] = { theme("Underdark", "Floor.png", "Wall.png", "Door.png") };

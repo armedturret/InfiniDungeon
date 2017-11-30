@@ -22,7 +22,7 @@ void Rat::OnCreation(const std::vector<std::vector<int>>& map, std::vector<std::
 	m_lore = "These bloated rodents have become lazy and lethargic from time spent in a dungeon with scores of heroes come to feed them.";
 	m_name = "Giant Rat";
 
-	m_tileSheet.init(DPE::ResourceManager::getTexture("Data/Textures/Themes/Basic/Enemies/" + m_name+".png"), glm::ivec2(4, 2));
+	m_tileSheet.init(DPE::ResourceManager::getTexture("Data/Textures/Themes/Underdark/Enemies/" + m_name+".png"), glm::ivec2(4, 2));
 
 	m_animTile = 1;
 
@@ -57,6 +57,7 @@ void Rat::RoamingBehavior(float deltaTime,
 	//move
 	if (m_moving) {
 		if (moveToNextTile(m_path, deltaTime)) {
+			//do sight calculations
 		}
 		if (m_path.size() == 0) {
 			m_moving = false;
