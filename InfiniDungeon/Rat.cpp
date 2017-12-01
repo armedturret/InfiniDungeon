@@ -117,8 +117,7 @@ void Rat::AttackBehavior(float deltaTime, const std::vector<std::vector<int>>& m
 				m_path = m_pathFinder.pathBetweenPoints(m_startPosition, m_target, map);
 			}
 		}
-	}
-	if (m_attacking) {
+	}else if (m_attacking) {
 		//calculate if within coordinates
 		if (arePositionsAdjacent(m_position, jeff.getPosition()))
 			std::cout << "";
