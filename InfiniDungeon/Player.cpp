@@ -86,18 +86,21 @@ void Player::update(float deltaTime,
 			//stop if sees enemy
 			if (seesEnemy(badGuys, map, entMap) && !m_enemiesSpotted) {
 				m_enemiesSpotted = seesEnemy(badGuys, map, entMap);
-				std::cout << "sup" << std::endl;
+
 				//stop moving
 				m_moving = false;
 				m_animTime = 0.0;
 				m_animTile = 0;
 			}
 			else if (m_enemiesSpotted && Random::equals(m_animTime, MAX_COMBAT_TILES)) {
-				std::cout << "tup" << std::endl;
-				//stop moving in combat
-				m_moving = false;
-				m_animTime = 0.0;
-				m_animTile = 0;
+				m_enemiesSpotted = seesEnemy(badGuys, map, entMap);
+
+				if (m_enemiesSpotted) {
+					//stop moving in combat
+					m_moving = false;
+					m_animTime = 0.0;
+					m_animTile = 0;
+				}
 			}
 		}
 		//checks if moveToNextTile has reached the end

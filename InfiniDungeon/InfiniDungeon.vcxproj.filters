@@ -34,6 +34,15 @@
     <Filter Include="Project\Algorithms\Damage goods">
       <UniqueIdentifier>{966ddd4f-b3cb-47d5-94f2-f5e686249ceb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Project\Items">
+      <UniqueIdentifier>{3ec6699e-650f-43a9-8aa5-88a1f5efc04d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Project\Items\Armor">
+      <UniqueIdentifier>{93aaac5f-1d93-4371-ab3e-82355e0e139a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Project\Items\Weapons">
+      <UniqueIdentifier>{06874b03-ee97-4394-92c5-6d8c0b28ed3e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameplayScreen.cpp">
