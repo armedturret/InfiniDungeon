@@ -93,7 +93,7 @@ bool Creature::moveToNextTile(std::vector<Node>& path, const std::vector<std::ve
 	double currentTileTime = m_animTime - floor(m_animTime);
 
 	//calculate movement gradient if not intermediate
-	if (Random::equals(m_animTime, floor(m_animTime))) {
+	if (Random::equals(m_animTime, floor(m_animTime))&&deltaTime>0.0f) {
 		m_position.x = calcPos.x;
 		m_position.y = calcPos.y;
 		return true;

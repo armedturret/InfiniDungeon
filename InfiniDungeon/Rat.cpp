@@ -78,20 +78,21 @@ void Rat::AttackBehavior(float deltaTime, const std::vector<std::vector<int>>& m
 {
 	if (m_path.size() == 0) {
 		//player is movement target
-		m_target.x = (jeff.getPosition().x - TILE_SIZE / 2.0f) / TILE_SIZE;
-		m_target.y = (jeff.getPosition().y - TILE_SIZE / 2.0f) / TILE_SIZE;
+		m_target.x = floor(jeff.getPosition().x  / TILE_SIZE);
+		m_target.y = floor(jeff.getPosition().y  / TILE_SIZE);
 
 		m_startPosition.x = (m_position.x - TILE_SIZE / 2.0f) / TILE_SIZE;
 		m_startPosition.y = (m_position.y - TILE_SIZE / 2.0f) / TILE_SIZE;
 
 		m_path = m_pathFinder.pathBetweenPoints(m_startPosition, m_target, map);
+		std::cout << m_path.size() << std::endl;
 		m_moving = true;
 	}
 
 	if (m_moving) {
 		if (moveToNextTile(m_path, map, entMap, deltaTime)) {
 			//next to player
-			if (Random::equals(m_animTime, m_path.size() - 2)) {
+			if (Random::equals(floor(m_animTime), m_path.size() - 2)) {
 				m_attacking = true;
 				m_moving = false;
 				m_animTime = 0.0;
@@ -105,9 +106,11 @@ void Rat::AttackBehavior(float deltaTime, const std::vector<std::vector<int>>& m
 				m_path.clear();
 			}//recalculate path
 			else {
+				m_path.clear();
+
 				//player is movement target
-				m_target.x = jeff.getPosition().x / TILE_SIZE;
-				m_target.y = jeff.getPosition().y / TILE_SIZE;
+				m_target.x = floor(jeff.getPosition().x / TILE_SIZE);
+				m_target.y = floor(jeff.getPosition().y / TILE_SIZE);
 
 				m_startPosition.x = (m_position.x - TILE_SIZE / 2.0f) / TILE_SIZE;
 				m_startPosition.y = (m_position.y - TILE_SIZE / 2.0f) / TILE_SIZE;
@@ -117,8 +120,26 @@ void Rat::AttackBehavior(float deltaTime, const std::vector<std::vector<int>>& m
 		}
 	}
 	if (m_attacking) {
-		//calculate distance and print to screen
-		std::cout << sqrt(pow(m_position.x - jeff.getPosition().x, 2) + pow(m_position.y - jeff.getPosition().y, 2))<<std::endl;
+		//calculate distance and less than 183 means still in radius
+		//todo: better test
+		if (sqrt(
+			pow(m_position.x - jeff.getPosition().x, 2)
+			+ pow(m_position.y - jeff.getPosition().y, 2)) <= 183.0)
+			std::cout << "oof" << std::endl;
+		else {
+			//restart player as movement target
+			m_target.x = jeff.getPosition().x / TILE_SIZE;
+			m_target.y = jeff.getPosition().y / TILE_SIZE;
+
+			m_startPosition.x = (m_position.x - TILE_SIZE / 2.0f) / TILE_SIZE;
+			m_startPosition.y = (m_position.y - TILE_SIZE / 2.0f) / TILE_SIZE;
+
+			m_path = m_pathFinder.pathBetweenPoints(m_startPosition, m_target, map);
+			m_moving = true;
+			m_attacking = false;
+			m_animTime = 0.0;
+			m_animTile = 0;
+		}
 	}
 }
 
