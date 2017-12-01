@@ -38,4 +38,8 @@ void BadGuy::update(float deltaTime,
 	else if (m_state == BadGuyState::ATTACKING) {
 		AttackBehavior(deltaTime, map, entMap, badGuys, jeff);
 	}
+
+	//kill
+	if (m_health <= 0)
+		OnDeath(map, entMap);
 }

@@ -14,6 +14,10 @@ public:
 
 	virtual void OnCreation(const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap);
 
+	virtual void OnDeath(const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap) {
+		std::cout << "Creature " << m_name << " given no death behavior" << std::endl;
+	};
+
 	//creature just walking
 	virtual void RoamingBehavior(float deltaTime,
 		const std::vector<std::vector<int>>& map,

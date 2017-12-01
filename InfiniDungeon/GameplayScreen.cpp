@@ -199,6 +199,8 @@ void GameplayScreen::update(){
 		m_badGuys[b]->update(deltaTimeMoveFactor, m_level.getMap(), entMap, m_badGuys, m_player);
 	}
 
+	updateDamage();
+
 	m_level.setEntMap(entMap);
 
 	m_camera.setPosition(m_player.getPosition());
@@ -243,6 +245,19 @@ void GameplayScreen::draw()
 	m_debugRender.render(projectionMatrix, 2.0f);
 
 	m_textureProgram.unuse();
+}
+
+void GameplayScreen::updateDamage()
+{
+	for (int it = 0; it < m_badGuys.size(); it++) {
+		//check if it needs to die
+		if (m_badGuys[it]->getHealth() <= 0) {
+			delete m_badGuys[it];
+			m_badGuys.erase(m_badGuys.begin() + it);
+			//return back one iteration just in case
+			it--;
+		}
+	}
 }
 
 void GameplayScreen::checkInput()

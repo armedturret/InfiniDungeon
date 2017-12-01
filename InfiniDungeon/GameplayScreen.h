@@ -37,6 +37,8 @@ public:
 
 private:
 
+	void updateDamage();
+
 	void checkInput();
 
 	DPE::SpriteBatch m_spriteBatch;
