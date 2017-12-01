@@ -3,10 +3,7 @@
 #include <DPE/InputManager.h>
 #include <DPE/Camera2D.h>
 
-
 #include "Creature.h"
-
-const double MAX_ATTACK_ANIM = 6.0;
 
 class Player : public Creature
 {
