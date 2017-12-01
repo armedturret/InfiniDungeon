@@ -85,14 +85,13 @@ void Rat::AttackBehavior(float deltaTime, const std::vector<std::vector<int>>& m
 		m_startPosition.y = (m_position.y - TILE_SIZE / 2.0f) / TILE_SIZE;
 
 		m_path = m_pathFinder.pathBetweenPoints(m_startPosition, m_target, map);
-		std::cout << m_path.size() << std::endl;
 		m_moving = true;
 	}
 
 	if (m_moving) {
 		if (moveToNextTile(m_path, map, entMap, deltaTime)) {
 			//next to player
-			if (Random::equals(floor(m_animTime), m_path.size() - 2)) {
+			if (arePositionsAdjacent(m_position, jeff.getPosition())) {
 				m_attacking = true;
 				m_moving = false;
 				m_animTime = 0.0;
@@ -122,11 +121,11 @@ void Rat::AttackBehavior(float deltaTime, const std::vector<std::vector<int>>& m
 	if (m_attacking) {
 		//calculate if within coordinates
 		if (arePositionsAdjacent(m_position, jeff.getPosition()))
-			std::cout << "oof" << std::endl;
+			std::cout << "";
 		else {
 			//restart player as movement target
-			m_target.x = jeff.getPosition().x / TILE_SIZE;
-			m_target.y = jeff.getPosition().y / TILE_SIZE;
+			m_target.x = floor(jeff.getPosition().x / TILE_SIZE);
+			m_target.y = floor(jeff.getPosition().y / TILE_SIZE);
 
 			m_startPosition.x = (m_position.x - TILE_SIZE / 2.0f) / TILE_SIZE;
 			m_startPosition.y = (m_position.y - TILE_SIZE / 2.0f) / TILE_SIZE;
