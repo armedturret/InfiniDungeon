@@ -52,7 +52,7 @@ protected:
 	PathFinder m_pathFinder;
 
 	//frames in between animations
-	double m_animSpeed = 10;
+	double m_animSpeed = 5;
 
 	int m_health = 10;
 

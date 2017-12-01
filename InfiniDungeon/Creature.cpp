@@ -91,8 +91,12 @@ bool Creature::moveToNextTile(std::vector<Node>& path, float deltaTime)
 	}
 	
 	//calculate which fram the character is at
-	if ((int)(currentTileTime* 10) % (int)m_animSpeed == 0)
+	//also check if its animating
+	if ((int)(currentTileTime * 10) % (int)m_animSpeed == 0 && !Random::equals(deltaTime, 0.0))
 		m_animTile += 1;
+	else if (Random::equals(deltaTime, 0.0))
+		m_animTile = 0;
+
 	if (m_animTile > 2)
 		m_animTile = 0;
 
