@@ -31,6 +31,9 @@
     <Filter Include="Project\Algorithms\Random">
       <UniqueIdentifier>{54b232f4-f623-4846-bda5-b45937aa0425}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Project\Algorithms\Damage goods">
+      <UniqueIdentifier>{966ddd4f-b3cb-47d5-94f2-f5e686249ceb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameplayScreen.cpp">
@@ -71,6 +74,9 @@
     </ClCompile>
     <ClCompile Include="Random.cpp">
       <Filter>Project\Algorithms\Random</Filter>
+    </ClCompile>
+    <ClCompile Include="Damage.cpp">
+      <Filter>Project\Algorithms\Damage goods</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -115,6 +121,9 @@
     </ClInclude>
     <ClInclude Include="Random.h">
       <Filter>Project\Algorithms\Random</Filter>
+    </ClInclude>
+    <ClInclude Include="Damage.h">
+      <Filter>Project\Algorithms\Damage goods</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
