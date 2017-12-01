@@ -82,7 +82,23 @@ void Player::update(float deltaTime,
 	//move
 	if (m_moving) {
 		if (moveToNextTile(m_path, deltaTime)) {
-			//intermediate functions should be called here
+			
+			//stop if sees enemy
+			if (seesEnemy(badGuys, map, entMap) && !m_enemiesSpotted) {
+				m_enemiesSpotted = seesEnemy(badGuys, map, entMap);
+				std::cout << "sup" << std::endl;
+				//stop moving
+				m_moving = false;
+				m_animTime = 0.0;
+				m_animTile = 0;
+			}
+			else if (m_enemiesSpotted && Random::equals(m_animTime, MAX_COMBAT_TILES)) {
+				std::cout << "tup" << std::endl;
+				//stop moving in combat
+				m_moving = false;
+				m_animTime = 0.0;
+				m_animTile = 0;
+			}
 		}
 		//checks if moveToNextTile has reached the end
 		if (m_path.size() == 0) {
@@ -120,7 +136,8 @@ float Player::getDeltaFactor()
 bool Player::seesEnemy(std::vector<BadGuy*> badGuys, const std::vector<std::vector<int>>& map, const std::vector<std::vector<int>>& entmap)
 {
 	for (BadGuy* b : badGuys) {
-		seesPoint(map, entmap, b->getPosition());
+		if (seesPoint(map, entmap, b->getPosition()))
+			return true;
 	}
 
 	return false;

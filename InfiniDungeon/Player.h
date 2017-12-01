@@ -5,6 +5,8 @@
 
 #include "Creature.h"
 
+const double MAX_COMBAT_TILES = 6.0;
+
 class Player : public Creature
 {
 public:
