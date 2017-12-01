@@ -120,11 +120,8 @@ void Rat::AttackBehavior(float deltaTime, const std::vector<std::vector<int>>& m
 		}
 	}
 	if (m_attacking) {
-		//calculate distance and less than 183 means still in radius
-		//todo: better test
-		if (sqrt(
-			pow(m_position.x - jeff.getPosition().x, 2)
-			+ pow(m_position.y - jeff.getPosition().y, 2)) <= 183.0)
+		//calculate if within coordinates
+		if (arePositionsAdjacent(m_position, jeff.getPosition()))
 			std::cout << "oof" << std::endl;
 		else {
 			//restart player as movement target

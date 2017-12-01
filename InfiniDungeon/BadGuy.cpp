@@ -43,3 +43,12 @@ void BadGuy::update(float deltaTime,
 	if (m_health <= 0)
 		OnDeath(map, entMap);
 }
+
+bool BadGuy::arePositionsAdjacent(glm::vec2 posOne, glm::vec2 posTwo)
+{
+	//ugh
+	return (((Random::equals(posOne.x, posTwo.x - TILE_SIZE) || Random::equals(posOne.x, posTwo.x + TILE_SIZE)) && Random::equals(posOne.y, posTwo.y))||
+		((Random::equals(posOne.y, posTwo.y - TILE_SIZE) || Random::equals(posOne.y, posTwo.y + TILE_SIZE)) && Random::equals(posOne.x, posTwo.x))||
+		((Random::equals(posOne.x, posTwo.x - TILE_SIZE) || Random::equals(posOne.x, posTwo.x + TILE_SIZE)) && ((Random::equals(posOne.y, posTwo.y - TILE_SIZE) || Random::equals(posOne.y, posTwo.y + TILE_SIZE))
+		)));
+}

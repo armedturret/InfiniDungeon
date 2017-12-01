@@ -56,6 +56,8 @@ public:
 	std::string getName() const { return m_name; }
 	std::string getLore() const { return m_lore; }
 protected:
+	bool arePositionsAdjacent(glm::vec2 posOne, glm::vec2 posTwo);
+
 	std::string m_name;
 	std::string m_lore;
 
