@@ -25,7 +25,17 @@ void Creature::draw(DPE::SpriteBatch & m_spriteBatch)
 	m_spriteBatch.draw(glm::vec4(m_position.x-TILE_SIZE/2.0f, m_position.y - TILE_SIZE / 2.0f, TILE_SIZE, TILE_SIZE), uvRect, m_tileSheet.texture.id, 0.0f, DPE::ColorRGBA8(255, 255, 255, 255));
 }
 
-bool Creature::moveToNextTile(std::vector<Node>& path, float deltaTime)
+void Creature::applyDamage(const int & damage)
+{
+	//that's a lot of damage
+	m_health -= damage;
+
+	//check if over max health
+	if (m_health > m_maxHealth)
+		m_health = m_maxHealth;
+}
+
+bool Creature::moveToNextTile(std::vector<Node>& path, const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entmap, float deltaTime)
 {	
 	//increment animTime
 	m_animTime += deltaTime;
@@ -36,6 +46,19 @@ bool Creature::moveToNextTile(std::vector<Node>& path, float deltaTime)
 	if (floor(m_animTime) < path.size()) {
 		calcPos.x = path[floor(m_animTime)].getPosition().x * TILE_SIZE + TILE_SIZE / 2;
 		calcPos.y = path[floor(m_animTime)].getPosition().y * TILE_SIZE + TILE_SIZE / 2;
+	}
+
+	//close/open door if needed
+	if (floor(m_animTime) - 1 > -1) {
+		glm::vec2 prevPos = path[floor(m_animTime) - 1].getPosition();
+		//check if tile door
+		if(map[prevPos.y][prevPos.x] == 2)
+			entmap[prevPos.y][prevPos.x] = 0;
+
+		glm::vec2 currentPos = path[floor(m_animTime)].getPosition();
+		//check if tile door
+		if (map[currentPos.y][currentPos.x] == 2)
+			entmap[currentPos.y][currentPos.x] = 1;
 	}
 
 	//get next tile for gradiation between tiles

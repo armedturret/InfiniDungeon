@@ -28,12 +28,16 @@ public:
 
 	glm::vec2 getPosition() const { return m_position; }
 
+	int getHealth() const { return m_health; }
+
+	void applyDamage(const int& damage);
+
 	const int TILE_SIZE = 128;
 
 protected:
 	
 	//returns true when arrived to next tile
-	bool moveToNextTile(std::vector<Node>& path, float deltaTime);
+	bool moveToNextTile(std::vector<Node>& path, const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entmap, float deltaTime);
 	//uses raw positions and uses Bresenham
 	bool seesPoint(const std::vector<std::vector<int>>& map, const std::vector<std::vector<int>>& entmap, glm::vec2 end);
 

@@ -49,7 +49,7 @@ public:
 		std::cout << "Creature " << m_name << " given no movement behavior" << std::endl;
 	};
 
-
+	std::string getName() const { return m_name; }
 	std::string getLore() const { return m_lore; }
 protected:
 	std::string m_name;

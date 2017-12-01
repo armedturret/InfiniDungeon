@@ -56,7 +56,7 @@ void Rat::RoamingBehavior(float deltaTime,
 
 	//move
 	if (m_moving) {
-		if (moveToNextTile(m_path, deltaTime)) {
+		if (moveToNextTile(m_path, map, entMap, deltaTime)) {
 			//do sight calculations
 			if (seesPoint(map, entMap, jeff.getPosition())) {
 				m_state = BadGuyState::ATTACKING;

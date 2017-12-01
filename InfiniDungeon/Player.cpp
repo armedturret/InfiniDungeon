@@ -81,7 +81,7 @@ void Player::update(float deltaTime,
 	
 	//move
 	if (m_moving) {
-		if (moveToNextTile(m_path, deltaTime)) {
+		if (moveToNextTile(m_path, map, entMap, deltaTime)) {
 			
 			//stop if sees enemy
 			if (seesEnemy(badGuys, map, entMap) && !m_enemiesSpotted) {
