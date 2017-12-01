@@ -63,11 +63,99 @@ void Rat::RoamingBehavior(float deltaTime,
 				m_moving = false;
 				m_animTime = 0.0;
 				m_animTile = 0;
+				m_path.clear();
 			}
 		}
 		if (m_path.size() == 0) {
 			m_moving = false;
 			m_animTime = 0.0;
+			m_animTile = 0;
+		}
+	}
+}
+
+void Rat::AttackBehavior(float deltaTime, const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap, std::vector<BadGuy*>& badGuys, Player & jeff)
+{
+	if (m_path.size() == 0) {
+		//player is movement target
+		m_target.x = (jeff.getPosition().x - TILE_SIZE / 2.0f) / TILE_SIZE;
+		m_target.y = (jeff.getPosition().y - TILE_SIZE / 2.0f) / TILE_SIZE;
+
+		m_startPosition.x = (m_position.x - TILE_SIZE / 2.0f) / TILE_SIZE;
+		m_startPosition.y = (m_position.y - TILE_SIZE / 2.0f) / TILE_SIZE;
+
+		m_path = m_pathFinder.pathBetweenPoints(m_startPosition, m_target, map);
+		m_moving = true;
+	}
+
+	if (m_moving) {
+		if (moveToNextTile(m_path, map, entMap, deltaTime)) {
+			//next to player
+			if (Random::equals(m_animTime, m_path.size() - 2)) {
+				m_attacking = true;
+				m_moving = false;
+				m_animTime = 0.0;
+				m_animTile = 0;
+			}else			//do sight calculations
+			if (!seesPoint(map, entMap, jeff.getPosition())) {
+				m_state = BadGuyState::SEARCHING;
+				m_moving = false;
+				m_animTime = 0.0;
+				m_animTile = 0;
+				m_path.clear();
+			}//recalculate path
+			else {
+				//player is movement target
+				m_target.x = jeff.getPosition().x / TILE_SIZE;
+				m_target.y = jeff.getPosition().y / TILE_SIZE;
+
+				m_startPosition.x = (m_position.x - TILE_SIZE / 2.0f) / TILE_SIZE;
+				m_startPosition.y = (m_position.y - TILE_SIZE / 2.0f) / TILE_SIZE;
+
+				m_path = m_pathFinder.pathBetweenPoints(m_startPosition, m_target, map);
+			}
+		}
+	}
+	if (m_attacking) {
+		//calculate distance and print to screen
+		std::cout << sqrt(pow(m_position.x - jeff.getPosition().x, 2) + pow(m_position.y - jeff.getPosition().y, 2))<<std::endl;
+	}
+}
+
+void Rat::SearchBehavior(float deltaTime, const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap, std::vector<BadGuy*>& badGuys, Player & jeff)
+{
+	//go to last position it saw the player then give up
+	//ignore the copy paste
+
+	if (m_path.size() == 0) {
+
+		//no need to recalculate target
+
+		m_startPosition.x = (m_position.x - TILE_SIZE / 2.0f) / TILE_SIZE;
+		m_startPosition.y = (m_position.y - TILE_SIZE / 2.0f) / TILE_SIZE;
+
+		m_path = m_pathFinder.pathBetweenPoints(m_startPosition, m_target, map);
+		m_moving = true;
+	}
+
+	//move
+	if (m_moving) {
+		if (moveToNextTile(m_path, map, entMap, deltaTime)) {
+			//do sight calculations to see if found player
+			if (seesPoint(map, entMap, jeff.getPosition())) {
+				m_state = BadGuyState::ATTACKING;
+				m_moving = false;
+				m_animTime = 0.0;
+				m_animTile = 0;
+				m_path.clear();
+			}
+		}
+		//give up search
+		if (m_path.size() == 0) {
+			m_state = BadGuyState::ROAMING;
+			m_moving = false;
+			m_animTime = 0.0;
+			m_animTile = 0;
 		}
 	}
 }

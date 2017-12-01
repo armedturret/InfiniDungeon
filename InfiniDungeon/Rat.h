@@ -30,20 +30,17 @@ public:
 		const std::vector<std::vector<int>>& map,
 		std::vector<std::vector<int>>& entMap,
 		std::vector<BadGuy*>& badGuys,
-		Player& jeff) {
-		//std::cout << "Creature " << m_name << " given no attack behavior" << std::endl;
-	};
+		Player& jeff);
 
 	//creature knows player there but can't see (Called when player teleports away or blinds enemy)
 	virtual void SearchBehavior(float deltaTime,
 		const std::vector<std::vector<int>>& map,
 		std::vector<std::vector<int>>& entMap,
 		std::vector<BadGuy*>& badGuys,
-		Player& jeff) {
-		std::cout << "Creature " << m_name << " given no movement behavior" << std::endl;
-	};
+		Player& jeff);
 private:
 	bool m_moving;
+	bool m_attacking;
 
 	std::vector<Node> m_path;
 
