@@ -55,5 +55,7 @@ bool BresenhamAlgorithm::canSeePoint(const std::vector<std::vector<int>>& map, c
 
 bool BresenhamAlgorithm::isTileSolid(const std::vector<std::vector<int>>& map, const std::vector<std::vector<int>>& entmap, const glm::ivec2 & checkPos)
 {
-	return /*wall*/map[checkPos.y][checkPos.x] == 1 || (/*door*/map[checkPos.y][checkPos.x] == 2 && entmap[checkPos.y][checkPos.x] == 0);
+	return /*wall*/map[checkPos.y][checkPos.x] == 1 || 
+		(/*door*/map[checkPos.y][checkPos.x] == 2 
+			&& entmap[checkPos.y][checkPos.x] == 0);
 }
