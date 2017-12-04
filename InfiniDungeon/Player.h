@@ -33,6 +33,7 @@ private:
 
 	glm::vec2 m_target;
 
+	bool m_waiting = false;
 	bool m_moving = false;
 
 	glm::vec2 m_startPosition;
