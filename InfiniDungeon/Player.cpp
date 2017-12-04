@@ -24,7 +24,7 @@ void Player::update(float deltaTime,
 	std::vector<BadGuy*>& badGuys,
 	Player& jeff)
 {
-	if (m_inputManager->isKeyDown(SDL_BUTTON_LEFT) && !m_wasMouseDownPreviously) {
+	if (m_inputManager->isKeyPressed(SDL_BUTTON_LEFT)) {
 		if (!m_moving) {
 			glm::vec2 worldCoords = m_camera->convertScreenToWorld(m_inputManager->getMouseCoords());
 			m_target.x = floor(worldCoords.x / TILE_SIZE);
@@ -48,16 +48,8 @@ void Player::update(float deltaTime,
 				m_path = m_pathFinder.pathBetweenPoints(m_startPosition, m_target, map);
 			}
 		}
-		else {
-		}
-		//custom "press" rejection because the engine is buggy
-		m_wasMouseDownPreviously = true;
 	}
-	else if(!m_inputManager->isKeyDown(SDL_BUTTON_LEFT)) {
-		m_wasMouseDownPreviously = false;
-	}
-
-	if (m_inputManager->isKeyDown(SDLK_l) && !m_wasLDownPreviously) {
+	if (m_inputManager->isKeyPressed(SDLK_l)) {
 		//lore
 		glm::vec2 worldCoords = m_camera->convertScreenToWorld(m_inputManager->getMouseCoords());
 		m_target.x = floor(worldCoords.x / TILE_SIZE);
@@ -73,10 +65,6 @@ void Player::update(float deltaTime,
 				}
 			}
 		}
-		m_wasLDownPreviously = true;
-	}
-	else if (!m_inputManager->isKeyDown(SDLK_l)) {
-		m_wasLDownPreviously = false;
 	}
 	
 	//move

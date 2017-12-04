@@ -155,7 +155,6 @@ void GameplayScreen::onEntry()
 
 	m_badGuys.push_back(new Rat());
 	m_badGuys[0]->Spawn(ratSpawn, m_level.getMap(), m_level.getEntMap());
-
 	m_player.init("Data/Textures/Characters/Mage.png", glm::ivec2(3, 2), &m_game->inputManager, &m_camera, m_level.getStartPos());
 }
 
@@ -173,8 +172,7 @@ void GameplayScreen::onExit()
 }
 
 void GameplayScreen::update(){
-	
-	
+	checkInput();
 	if (!m_prevTicks)
 	{
 		m_prevTicks = SDL_GetTicks();
@@ -202,12 +200,9 @@ void GameplayScreen::update(){
 	updateDamage();
 
 	m_level.setEntMap(entMap);
-
 	m_camera.setPosition(m_player.getPosition());
-
 	m_camera.update();
-	m_game->inputManager.update();
-	checkInput();
+	
 }
 
 void GameplayScreen::draw()

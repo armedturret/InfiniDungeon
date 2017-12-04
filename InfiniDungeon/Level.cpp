@@ -180,11 +180,9 @@ void Level::generateRooms(int rows, int columns)
 			
 			//set start pos
 			if (m_rooms.size() == 0) {
-				std::cout << "Setting player pos "<< room.destRect.x << std::endl;
 				//first room is start
 				m_startPos.x = room.destRect.x + (room.destRect.z - 1) / 2;
 				m_startPos.y = room.destRect.y + (room.destRect.w - 1) / 2;
-				std::cout << m_startPos.x << " " << m_startPos.y << std::endl;
 			}
 
 			//add rooms to map
