@@ -105,6 +105,8 @@ void Rat::AttackBehavior(float deltaTime, const std::vector<std::vector<int>>& m
 				m_path.clear();
 			}//recalculate path
 			else {
+				m_animTime = 0.0;
+				m_animTile = 0;
 				m_path.clear();
 
 				//player is movement target
