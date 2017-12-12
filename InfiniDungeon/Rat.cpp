@@ -91,12 +91,6 @@ void Rat::AttackBehavior(float deltaTime, const std::vector<std::vector<int>>& m
 	if (m_moving) {
 		if (moveToNextTile(m_path, map, entMap, deltaTime)) {
 			//next to player
-			if (arePositionsAdjacent(m_position, jeff.getPosition())) {
-				m_attacking = true;
-				m_moving = false;
-				m_animTime = 0.0;
-				m_animTile = 0;
-			}else			//do sight calculations
 			if (!seesPoint(map, entMap, jeff.getPosition())) {
 				m_state = BadGuyState::SEARCHING;
 				m_moving = false;
@@ -117,12 +111,20 @@ void Rat::AttackBehavior(float deltaTime, const std::vector<std::vector<int>>& m
 				m_startPosition.y = (m_position.y - TILE_SIZE / 2.0f) / TILE_SIZE;
 
 				m_path = m_pathFinder.pathBetweenPoints(m_startPosition, m_target, map);
+				if (m_path.size() == 2) {
+					std::cout << "attacking" << std::endl;
+					m_moving = false;
+					m_animTime = 0.0;
+					m_animTile = 0;
+					m_attacking = true;
+				}
 			}
 		}
 	}else if (m_attacking) {
 		//calculate if within coordinates
-		if (arePositionsAdjacent(m_position, jeff.getPosition()))
-			std::cout << "";
+		if (true) {
+
+		}
 		else {
 			//restart player as movement target
 			m_target.x = floor(jeff.getPosition().x / TILE_SIZE);

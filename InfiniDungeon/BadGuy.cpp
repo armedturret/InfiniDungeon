@@ -43,8 +43,3 @@ void BadGuy::update(float deltaTime,
 	if (m_health <= 0)
 		OnDeath(map, entMap);
 }
-
-bool BadGuy::arePositionsAdjacent(glm::vec2 posOne, glm::vec2 posTwo)
-{
-	return false;
-}
