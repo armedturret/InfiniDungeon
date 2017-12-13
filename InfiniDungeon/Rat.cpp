@@ -86,6 +86,14 @@ void Rat::AttackBehavior(float deltaTime, const std::vector<std::vector<int>>& m
 
 		m_path = m_pathFinder.pathBetweenPoints(m_startPosition, m_target, map);
 		m_moving = true;
+
+		if (m_path.size() == 2) {
+			//check if next to player
+			m_moving = false;
+			m_animTime = 0.0;
+			m_animTile = 0;
+			m_attacking = true;
+		}
 	}
 
 	if (m_moving) {
@@ -112,7 +120,6 @@ void Rat::AttackBehavior(float deltaTime, const std::vector<std::vector<int>>& m
 
 				m_path = m_pathFinder.pathBetweenPoints(m_startPosition, m_target, map);
 				if (m_path.size() == 2) {
-					std::cout << "attacking" << std::endl;
 					m_moving = false;
 					m_animTime = 0.0;
 					m_animTile = 0;
@@ -120,12 +127,10 @@ void Rat::AttackBehavior(float deltaTime, const std::vector<std::vector<int>>& m
 				}
 			}
 		}
-	}else if (m_attacking) {
+	}
+	else if (m_attacking) {
 		//calculate if within coordinates
-		if (true) {
-
-		}
-		else {
+		if (Random::equals(m_animTime, floor(m_animTime))) {
 			//restart player as movement target
 			m_target.x = floor(jeff.getPosition().x / TILE_SIZE);
 			m_target.y = floor(jeff.getPosition().y / TILE_SIZE);
@@ -134,11 +139,19 @@ void Rat::AttackBehavior(float deltaTime, const std::vector<std::vector<int>>& m
 			m_startPosition.y = (m_position.y - TILE_SIZE / 2.0f) / TILE_SIZE;
 
 			m_path = m_pathFinder.pathBetweenPoints(m_startPosition, m_target, map);
-			m_moving = true;
-			m_attacking = false;
-			m_animTime = 0.0;
-			m_animTile = 0;
+			if (m_path.size() != 2) {
+				std::cout << "Begone thot" << std::endl;
+				m_moving = true;
+				m_attacking = false;
+				m_animTime = 0.0;
+				m_animTile = 0;
+			}
+			else {
+				//within attack range
+				//add attack code here
+			}
 		}
+		m_animTime += deltaTime;
 	}
 }
 
