@@ -139,8 +139,7 @@ void Rat::AttackBehavior(float deltaTime, const std::vector<std::vector<int>>& m
 			m_startPosition.y = (m_position.y - TILE_SIZE / 2.0f) / TILE_SIZE;
 
 			m_path = m_pathFinder.pathBetweenPoints(m_startPosition, m_target, map);
-			if (m_path.size() != 2) {
-				std::cout << "Begone thot" << std::endl;
+			if (m_path.size() > 2) {
 				m_moving = true;
 				m_attacking = false;
 				m_animTime = 0.0;
