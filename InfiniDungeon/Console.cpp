@@ -19,7 +19,7 @@ void Console::init()
 	Command::create_map();
 
 	//make commands
-	Command::create(Console::help, CommandInfo("help", "Stop it. Get some help.", "help OR help <pagenum> OR help <command>"));
+	Command::create(Console::help, CommandInfo("help", "Stop it. Get some help.", "help OR help <command>"));
 	Command::create(Console::echo, CommandInfo("echo", "Prints text that follows.", "echo <words..>"));
 
 	m_shouldEndThread = false;
@@ -39,7 +39,16 @@ void Console::destroy()
 
 int Console::help(std::vector<std::string> args)
 {
-	std::cout << "My name is jeff" << std::endl;
+	if (args.size() > 1) {
+		Command target = Command::get_map().find(args[1])->second;
+		std::cout << "[help]: " << target.cmdInfo.name << " - " << target.cmdInfo.desc << std::endl;
+		std::cout << "[help]: SYNTAX: " << target.cmdInfo.helphint << std::endl;
+	}
+	else {
+		for (auto it = Command::get_map().begin(); it != Command::get_map().end(); it++) {
+			std::cout << "[help]: " << it->second.cmdInfo.name << " - " << it->second.cmdInfo.desc << std::endl;
+		}
+	}
 	return 0;
 }
 
