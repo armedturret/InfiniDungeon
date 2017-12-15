@@ -43,6 +43,9 @@
     <Filter Include="Project\Items\Weapons">
       <UniqueIdentifier>{06874b03-ee97-4394-92c5-6d8c0b28ed3e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Project\Console">
+      <UniqueIdentifier>{e44e07ed-c939-4ee8-b96e-22aaca368ebe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameplayScreen.cpp">
@@ -87,6 +90,7 @@
     <ClCompile Include="Damage.cpp">
       <Filter>Project\Algorithms\Damage goods</Filter>
     </ClCompile>
+    <ClCompile Include="Console.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameplayScreen.h">
@@ -134,5 +138,6 @@
     <ClInclude Include="Damage.h">
       <Filter>Project\Algorithms\Damage goods</Filter>
     </ClInclude>
+    <ClInclude Include="Console.h" />
   </ItemGroup>
 </Project>

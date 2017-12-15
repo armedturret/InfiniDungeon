@@ -12,6 +12,7 @@ App::~App()
 }
 
 void App::onInit() {
+	gameConsole.init();
 }
 
 void App::addScreens() {
@@ -25,4 +26,5 @@ void App::addScreens() {
 }
 
 void App::onExit() {
+	gameConsole.destroy();
 }
