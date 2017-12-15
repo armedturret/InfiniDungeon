@@ -17,6 +17,8 @@ public:
 	void destroy();
 
 private:
+	bool m_shouldEndThread = false;
+
 	//console thread
 	std::thread console;
 
@@ -28,6 +30,7 @@ class ConsoleRun
 friend Console;
 
 private:
+	static std::string getLineFromCin();
 	//console function
-	static int run(std::thread& consoleThread);
+	static int run(std::thread& consoleThread, bool& shouldEndThread);
 };
