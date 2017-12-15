@@ -90,7 +90,9 @@
     <ClCompile Include="Damage.cpp">
       <Filter>Project\Algorithms\Damage goods</Filter>
     </ClCompile>
-    <ClCompile Include="Console.cpp" />
+    <ClCompile Include="Console.cpp">
+      <Filter>Project\Console</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameplayScreen.h">
@@ -138,6 +140,8 @@
     <ClInclude Include="Damage.h">
       <Filter>Project\Algorithms\Damage goods</Filter>
     </ClInclude>
-    <ClInclude Include="Console.h" />
+    <ClInclude Include="Console.h">
+      <Filter>Project\Console</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
