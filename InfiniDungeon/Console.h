@@ -71,6 +71,8 @@ class Command
 	friend class Console;
 	friend class ConsoleRun;
 public:
+	std::string getCvar(std::string name);
+
 	static std::unordered_map<std::string, Command> & create_map()
 	{
 		static std::unordered_map<std::string, Command> mymap;
@@ -115,7 +117,6 @@ inline bool is_digits(const std::string &str)
 class ConsoleRun
 {
 friend Console;
-
 private:
 	static std::string getLineFromCin();
 	//console function

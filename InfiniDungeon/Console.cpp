@@ -28,7 +28,7 @@ void Console::init()
 	Command::create(Console::spliceargs, CommandInfo("db_spliceargs", "Debug operation to show how arguments would be spliced","db_spliceargs <args..>"));
 #endif
 	//make cvars
-	Command::createCVar(CVar("sv_cheats", "int", "0"));
+	Command::createCVar(CVar("infi_max_roamingenemies", "int", "1"));
 
 	m_shouldEndThread = false;
 	console = std::thread(ConsoleRun::run, std::ref(console), std::ref(m_shouldEndThread));
@@ -103,6 +103,18 @@ int Console::spliceargs(std::vector<std::string> args)
 		std::cout << "[spliceargs]: " << s << " = " << args[s] << std::endl;
 	}
 	return 0;
+}
+
+std::string Command::getCvar(std::string name)
+{
+	auto vit = Command::get_vap().find(name);
+	if (vit != Command::get_vap().end()) {
+		return vit->second.val;
+	}
+	else {
+		std::cout << "[cvar]: Attempted access to unknown cvar \'" << name << "\'." << std::endl;
+	}
+	return "UNKNOWN VALUE";
 }
 
 std::string ConsoleRun::getLineFromCin()
