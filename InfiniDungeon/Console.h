@@ -49,14 +49,21 @@ struct CommandInfo {
 	std::string helphint;
 };
 
+inline int defaultOnChange(std::string newvalue) {
+	//return 1 to reject new value
+	return 0;
+}
+
 struct CVar {
 
-	CVar() : text(""), valType(""), val("") {}
-	CVar(std::string text, std::string valType, std::string val) : text(text), valType(valType), val(val) {}
+	CVar() : text(""), valType(""), val(""), m_onchange(defaultOnChange) {}
+	CVar(std::string text, std::string valType, std::string val) : text(text), valType(valType), val(val), m_onchange(defaultOnChange) {}
+	CVar(std::string text, std::string valType, std::string val, int(&onchange) (std::string newvalue)) : text(text), valType(valType), val(val), m_onchange(onchange) {}
 	std::string text;
 	//what type to run
 	std::string valType;
 	std::string val;
+	int(*m_onchange) (std::string newvalue);
 };
 
 class Command

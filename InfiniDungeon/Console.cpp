@@ -116,14 +116,19 @@ int ConsoleRun::processCvar(CVar& cvar, const std::string& val)
 {
 	if (cvar.valType == "int") {
 		if (is_digits(val)) {
-			cvar.val = val;
+			if(!cvar.m_onchange(val))
+				cvar.val = val;
 		}
 		else {
 			std::cout << "[cvar]: Incorrect data type." << std::endl;
+			return 1;
 		}
+		return 0;
 	}
 	else if (cvar.valType == "string") {
-		cvar.val = val;
+		if (!cvar.m_onchange(val))
+			cvar.val = val;
+		return 0;
 	}
 	else {
 		std::cout << "[cvar]: cvar " << cvar.text << " has unknown type. Please report this to the developer." << std::endl;
