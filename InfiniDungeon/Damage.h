@@ -7,6 +7,6 @@ public:
 	Damage();
 	~Damage();
 
-	void damageDoop(Creature& player);
+	void damageDoop(Creature& attacker, Creature& defender);
 };
 
