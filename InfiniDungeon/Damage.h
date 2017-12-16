@@ -7,6 +7,6 @@ public:
 	Damage();
 	~Damage();
 
-	void damageDoop(Creature& attacker, Creature& defender);
+	int damageToDeal(Creature& attacker, Creature& defender);
 };
 

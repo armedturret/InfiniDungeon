@@ -90,6 +90,15 @@ void main() {
 	fragmentUV = vertexUV;
 })";
 
+/*TODO:
+create cmds:
+infi_listcreatures
+infi_getcreatureinfo <creatureid>
+infi_test_damage <defenderid> <attackerid>
+infi_test_damage_def <attackerid> <defenderarmour> <defenderevade>
+infi_test_damage_att <defenderid> <attackdamage>
+*/
+
 GameplayScreen::GameplayScreen(DPE::Window * window) :
 	m_window(window),
 	m_scrollLevel(1.5f),
