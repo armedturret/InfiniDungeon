@@ -34,6 +34,7 @@ private:
 	//cmds
 	static int help(std::vector<std::string> args);
 	static int echo(std::vector<std::string> args);
+	static int spliceargs(std::vector<std::string> args);
 };
 
 struct CommandInfo {
@@ -48,6 +49,16 @@ struct CommandInfo {
 	std::string helphint;
 };
 
+struct CVar {
+
+	CVar() : text(""), valType(""), val("") {}
+	CVar(std::string text, std::string valType, std::string val) : text(text), valType(valType), val(val) {}
+	std::string text;
+	//what type to run
+	std::string valType;
+	std::string val;
+};
+
 class Command
 {
 	friend class Console;
@@ -56,7 +67,7 @@ public:
 	static std::unordered_map<std::string, Command> & create_map()
 	{
 		static std::unordered_map<std::string, Command> mymap;
-		/// init your map here
+		// init your map here
 		return mymap;
 	}
 
@@ -66,13 +77,32 @@ public:
 		return mymap; // subsequent calls just return the single instance.
 	}
 
-	static void create(int(&handler) (std::vector<std::string> args), const CommandInfo& infoObject);
+	static std::unordered_map<std::string, CVar> & create_vap()
+	{
+		static std::unordered_map<std::string, CVar> myvap;
+		// init your map here
+		return myvap;
+	}
 
+	static std::unordered_map<std::string, CVar> & get_vap()
+	{
+		static std::unordered_map<std::string, CVar> & myvap = create_vap(); // this is only called once!
+		return myvap; // subsequent calls just return the single instance.
+	}
+
+
+	static void create(int(&handler) (std::vector<std::string> args), const CommandInfo& infoObject);
+	static void createCVar(const CVar& varObject);
 private:
 	int(*m_handler) (std::vector<std::string> args);
 	CommandInfo cmdInfo;
 	static int currentIndex;
 };
+
+inline bool is_digits(const std::string &str)
+{
+	return str.find_first_not_of("0123456789") == std::string::npos;
+}
 
 //seperate class for runtime
 class ConsoleRun
@@ -82,6 +112,7 @@ friend Console;
 private:
 	static std::string getLineFromCin();
 	//console function
-	static int processCommand(std::string input);
+	static int processCvar(CVar& cvar, const std::string& val);
+	static int processCommand(const std::string& input);
 	static int run(std::thread& consoleThread, bool& shouldEndThread);
 };

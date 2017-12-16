@@ -17,10 +17,18 @@ Console::~Console()
 void Console::init()
 {
 	Command::create_map();
+	Command::create_vap();
 
 	//make commands
-	Command::create(Console::help, CommandInfo("help", "Stop it. Get some help.", "help OR help <command>"));
+	Command::create(Console::help, CommandInfo("help", "Lists all commands.", "help OR help <command||cvar> OR help cvar"));
 	Command::create(Console::echo, CommandInfo("echo", "Prints text that follows.", "echo <words..>"));
+
+#ifdef _DEBUG
+	//debug commands (start with db_)
+	Command::create(Console::spliceargs, CommandInfo("db_spliceargs", "Debug operation to show how arguments would be spliced","db_spliceargs <args..>"));
+#endif
+	//make cvars
+	Command::createCVar(CVar("sv_cheats", "int", "0"));
 
 	m_shouldEndThread = false;
 	console = std::thread(ConsoleRun::run, std::ref(console), std::ref(m_shouldEndThread));
@@ -40,9 +48,31 @@ void Console::destroy()
 int Console::help(std::vector<std::string> args)
 {
 	if (args.size() > 1) {
-		Command target = Command::get_map().find(args[1])->second;
-		std::cout << "[help]: " << target.cmdInfo.name << " - " << target.cmdInfo.desc << std::endl;
-		std::cout << "[help]: SYNTAX: " << target.cmdInfo.helphint << std::endl;
+		auto dit = Command::get_map().find(args[1]);
+		if (dit == Command::get_map().end()) {
+			//check if cvar
+			auto vit = Command::get_vap().find(args[1]);
+			if (vit == Command::get_vap().end()) {
+				if (args[1] == "cvar") {
+					for (auto crit = Command::get_vap().begin(); crit != Command::get_vap().end(); crit++) {
+						std::cout << "[help]: " << crit->second.text << " = " << crit->second.val << std::endl;
+					}
+				}
+				else {
+					std::cout << "[help]: That is not a recognized command or cvar.\n[urdumb]: Use 'help' for a list of commands and help cvars for a list of cvars." << std::endl;
+					return 1;
+				}
+				return 0;
+			}
+			else {
+				std::cout << "[help]: " << vit->second.text << " = " << vit->second.val << std::endl;
+			}
+		}
+		else {
+			Command target = dit->second;
+			std::cout << "[help]: " << target.cmdInfo.name << " - " << target.cmdInfo.desc << std::endl;
+			std::cout << "[help]: SYNTAX: " << target.cmdInfo.helphint << std::endl;
+		}
 	}
 	else {
 		for (auto it = Command::get_map().begin(); it != Command::get_map().end(); it++) {
@@ -67,6 +97,14 @@ int Console::echo(std::vector<std::string> args)
 	
 }
 
+int Console::spliceargs(std::vector<std::string> args)
+{
+	for (int s = 0; s < args.size(); s++) {
+		std::cout << "[spliceargs]: " << s << " = " << args[s] << std::endl;
+	}
+	return 0;
+}
+
 std::string ConsoleRun::getLineFromCin()
 {
 	std::string line;
@@ -74,15 +112,163 @@ std::string ConsoleRun::getLineFromCin()
 	return line;
 }
 
-int ConsoleRun::processCommand(std::string input)
+int ConsoleRun::processCvar(CVar& cvar, const std::string& val)
+{
+	if (cvar.valType == "int") {
+		if (is_digits(val)) {
+			cvar.val = val;
+		}
+		else {
+			std::cout << "[cvar]: Incorrect data type." << std::endl;
+		}
+	}
+	else if (cvar.valType == "string") {
+		cvar.val = val;
+	}
+	else {
+		std::cout << "[cvar]: cvar " << cvar.text << " has unknown type. Please report this to the developer." << std::endl;
+	}
+	return 1;
+}
+
+int ConsoleRun::processCommand(const std::string& input)
 {
 	std::istringstream iss(input);
-	std::vector<std::string> tokens{ std::istream_iterator<std::string>{iss},
+	std::vector<std::string> rawargs{ std::istream_iterator<std::string>{iss},
 		std::istream_iterator<std::string>{} };
+
+	std::vector<std::string> tokens;
+
+	bool begunstring = false;
+	int compensation = 0;
+	//parse if strings
+	for (int i = 0; i < rawargs.size(); i++) {
+		if (rawargs[i].substr(0, 1) == "\"" && !begunstring) {
+			begunstring = true;
+			if (rawargs[i].substr(rawargs[i].size()-1) == "\"" && (rawargs[i].size() - 2 >= 0 && rawargs[i].substr(rawargs[i].size() - 2,1) != "\\")) {
+				tokens.push_back(rawargs[i].substr(1, rawargs[i].size() - 2));
+				begunstring = false;
+			}
+			else {
+				tokens.push_back(rawargs[i].substr(1));
+				compensation += 1;
+			}
+			
+		}
+		else {
+			if (begunstring) {
+				if (rawargs[i].substr(rawargs[i].size() - 1) == "\"" && (rawargs[i].size() - 2 >= 0 && rawargs[i].substr(rawargs[i].size() - 2,1) != "\\")) {
+					begunstring = false;
+					tokens[i - compensation] += " ";
+					tokens[i-compensation] += rawargs[i].substr(0, rawargs[i].size() - 1);
+				}
+				else {
+					tokens[i - compensation] += " ";
+					tokens[i - compensation] += rawargs[i];
+					compensation += 1;
+				}
+				
+			}
+			else {
+				if (rawargs[i].substr(rawargs[i].size() - 1) == "\"" && (rawargs[i].size() - 2 >= 0 && rawargs[i].substr(rawargs[i].size() - 2, 1) != "\\")) {
+					std::cout << "[urdumb]: String is not started!" << std::endl;
+					return 1;
+				}
+
+				tokens.push_back(rawargs[i]);
+			}
+		}
+	}
+
+	//throw errors after pre command processing
+	if (begunstring) {
+		std::cout << "[urdumb]: String is not terminated!" << std::endl;
+		return 1;
+	}
+	
+	//check for lone wolf quotes
+	for (int i = 0; i < tokens.size(); i++) {
+		std::string*s = &tokens[i];
+		std::size_t result = -1;
+		while (true) {
+			//search for '\'
+			result = s->find('\"', result + 1);
+			if (result != std::string::npos) {
+				if (result == 0) {
+					std::cout << "[urdumb]: There was a lone slash in your arguments." << std::endl;
+					return 1;
+				}
+				if (s[0][result - 1] != '\\') {
+					std::cout << "[urdumb]: There was a lone slash in your arguments." << std::endl;
+					return 1;
+				}
+			}
+			else {
+				break;
+			}
+		}
+	}
+	//check escape sequences
+	for (int i = 0; i < tokens.size(); i++) {
+		std::string*s = &tokens[i];
+		std::size_t result = -1;
+		while(true){
+			//search for '\'
+			result = s->find('\\',result+1);
+			if (result != std::string::npos || result == s->length() - 1) {
+				//check if its lonely
+				if (s[0][result + 1] == '\\') {
+					s->erase(s->begin() + result + 1);
+				}
+				else if (s[0][result + 1] == '"') {
+					s->erase(s->begin() + result);
+				}
+				else if (s[0][result + 1] == '\'') {
+					s->erase(s->begin() + result);
+				}
+				else {
+					std::cout << "[urdumb]: There was an unrecognized backslash in your arguments." << std::endl;
+					return 1;
+				}
+			}
+			else {
+				if (result == s->length() - 1) {
+					std::cout << "[urdumb]: There was an unrecognized backslash in your arguments." << std::endl;
+					return 1;
+				}
+				break;
+			}
+		}
+	}
+
 	if (tokens.size() > 0) {
-		Command cmd = Command::get_map().find(tokens[0])->second;
-		if (cmd.m_handler(tokens) == 1) {
-			std::cout << cmd.cmdInfo.helphint << std::endl;
+		auto it = Command::get_map().find(tokens[0]);
+		if (it == Command::get_map().end()) {
+			//check if cvar
+			auto vit = Command::get_vap().find(tokens[0]);
+			if (vit == Command::get_vap().end()) {
+				std::cout << "[urdumb]: That is not a recognized command or cvar.\n[urdumb]: Use 'help' for a list of commands and help cvars for a list of cvars." << std::endl;
+				return 1;
+			}
+			else {
+				if (tokens.size() > 1) {
+					processCvar(vit->second, tokens[1]);
+				}
+				else {
+					std::cout << "[cvar]: " << vit->second.text << " = " << vit->second.val << std::endl;
+				}
+			}
+			return 0;
+		}
+		else {
+			Command cmd = it->second;
+			int err = cmd.m_handler(tokens);
+			if (err == 1) {
+				std::cout << cmd.cmdInfo.helphint << std::endl;
+			}
+			else {
+				return err;
+			}
 		}
 	}
 	return 0;
@@ -111,4 +297,9 @@ void Command::create(int(&handler)(std::vector<std::string>args), const CommandI
 	tmpCommand.m_handler = &handler;
 	tmpCommand.cmdInfo = infoObject;
 	Command::get_map().insert(std::make_pair(tmpCommand.cmdInfo.name,tmpCommand));
+}
+
+void Command::createCVar(const CVar & varObject)
+{
+	Command::get_vap().insert(std::make_pair(varObject.text, varObject));
 }
