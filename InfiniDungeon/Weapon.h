@@ -9,7 +9,7 @@ public:
 
 	std::string getName() const { return m_name; }
 	std::string getLore() const { return m_lore; }
-	int getDefencePoints() const { return m_attackPoints; }
+	int getAttackPoints() const { return m_attackPoints; }
 
 private:
 	std::string m_name;

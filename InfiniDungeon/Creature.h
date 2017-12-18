@@ -30,6 +30,7 @@ public:
 	glm::vec2 getPosition() const { return m_position; }
 
 	int getHealth() const { return m_health; }
+	int getMaxHealth() const { return m_maxHealth; }
 
 	void applyDamage(const int& damage);
 

@@ -298,7 +298,8 @@ int GameplayScreen::getCreatureStats(std::vector<std::string> args)
 		return 1;
 	}
 	if (args[1] == "-1") {
-		std::cout << "[infi]: Creature Name: Player\n" << "[infi]: Health: " << m_player.getHealth() << std::endl;
+		std::cout << "[infi]: Creature Name: Player\n" << "[infi]: Health: " << m_player.getHealth() << "/" << m_player.getMaxHealth() 
+			<<"\n[infi]: Defence: "<<m_player.getArmor().getDefencePoints()<<"\n[infi]: Attack: "<<m_player.getWeapon().getAttackPoints()<< std::endl;
 		return 0;
 	}
 	else if (is_digits(args[1])) {
@@ -307,7 +308,8 @@ int GameplayScreen::getCreatureStats(std::vector<std::string> args)
 			std::cout << "[infi] That enemy does not exist." << std::endl;
 			return 3;
 		}
-		std::cout << "[infi]: Creature Name: " << m_badGuys[index]->getName() << "\n" << "[infi]: Health: " << m_badGuys[index]->getHealth() << "\n" << "[infi]: Lore: " << m_badGuys[index]->getLore() << std::endl;
+		std::cout << "[infi]: Creature Name: " << m_badGuys[index]->getName() << "\n" << "[infi]: Health: " << m_badGuys[index]->getHealth()<<"/"<< m_badGuys[index]->getMaxHealth()
+			<<"\n[infi]: Defence: " << m_badGuys[index]->getArmor().getDefencePoints() << "\n[infi]: Attack: " << m_badGuys[index]->getWeapon().getAttackPoints() << "\n" << "[infi]: Lore: " << m_badGuys[index]->getLore() << std::endl;
 		return 0;
 	}
 	else {
