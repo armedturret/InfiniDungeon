@@ -43,6 +43,8 @@ private:
 	static int echo(std::vector<std::string> args);
 	static int spliceargs(std::vector<std::string> args);
 	static int listCreatures(std::vector<std::string> args);
+	static int getCreatureInfo(std::vector<std::string> args);
+	static int quit(std::vector<std::string> args);
 };
 
 struct CommandInfo {

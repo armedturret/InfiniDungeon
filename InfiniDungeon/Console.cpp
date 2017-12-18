@@ -25,9 +25,11 @@ void Console::init()
 	//make commands
 	Command::create(Console::help, CommandInfo("help", "Lists all commands.", "help OR help <command||cvar> OR help cvar"));
 	Command::create(Console::echo, CommandInfo("echo", "Prints text that follows.", "echo <words..>"));
+	Command::create(Console::quit, CommandInfo("quit","Quits the game.","quit"));
 
 	//game commands
 	Command::create(Console::listCreatures, CommandInfo("infi_listcreatures", "List all currently active creatures.", "infi_listcreatures"));
+	Command::create(Console::getCreatureInfo, CommandInfo("infi_getcreaturestats", "Gets info of specified creature.", "infi_getcreatureinfo <creatureid>"));
 
 #ifdef _DEBUG
 	//debug commands (start with db_)
@@ -35,6 +37,7 @@ void Console::init()
 #endif
 	//make unsafecvars (don't run from console)
 	Command::createCVar(CVar("infi_unsafecvar_safetorun", "int", "0"));
+	Command::createCVar(CVar("infi_shouldquit", "int", "0"));
 }
 
 void Console::run(std::shared_ptr<GameplayScreen> screen) {
@@ -125,6 +128,23 @@ int Console::listCreatures(std::vector<std::string> args)
 		std::cout << "[infi]: Cannot run game specific commands prior to initialization." << std::endl;
 		return 3;
 	}
+}
+
+int Console::getCreatureInfo(std::vector<std::string> args)
+{
+	if (Command::getCvar("infi_unsafecvar_safetorun") == "1") {
+		return theScreen->getCreatureStats(args);
+	}
+	else {
+		std::cout << "[infi]: Cannot run game specific commands prior to initialization." << std::endl;
+		return 3;
+	}
+}
+
+int Console::quit(std::vector<std::string> args)
+{
+	Command::setCvar("infi_shouldquit", "1");
+	return 0;
 }
 
 std::string Command::getCvar(std::string name)
@@ -337,7 +357,7 @@ int ConsoleRun::processCommand(const std::string& input)
 			Command cmd = it->second;
 			int err = cmd.m_handler(tokens);
 			if (err == 1) {
-				std::cout << cmd.cmdInfo.helphint << std::endl;
+				std::cout << "[urdumb]: "<<cmd.cmdInfo.helphint << std::endl;
 			}
 			else {
 				return err;

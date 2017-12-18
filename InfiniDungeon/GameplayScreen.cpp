@@ -214,8 +214,12 @@ void GameplayScreen::update(){
 	m_level.setEntMap(entMap);
 	m_camera.setPosition(m_player.getPosition());
 	m_camera.update();
-	
+
+	if (Command::getCvar("infi_shouldquit") == "1") {
+		m_currentState = DPE::ScreenState::EXIT_APPLICATION;
+	}
 }
+
 
 void GameplayScreen::draw()
 {
@@ -288,13 +292,36 @@ void GameplayScreen::checkInput()
 
 int GameplayScreen::getCreatures(std::vector<std::string> args)
 {
-	std::cout << "oof" << std::endl;
+	//player is negative 1
+	std::cout << "[infi]: -1 = Player" << std::endl;
+	for (int i = 0; i < m_badGuys.size(); i++) {
+		std::cout << "[infi]: "<<i<<" = "<<m_badGuys[i]->getName()<< std::endl;
+	}
 	return 0;
 }
 
 int GameplayScreen::getCreatureStats(std::vector<std::string> args)
 {
-	return 0;
+	if (args.size() != 2) {
+		return 1;
+	}
+	if (args[1] == "-1") {
+		std::cout << "[infi]: Creature Name: Player\n" << "[infi]: Health: " << m_player.getHealth() << std::endl;
+		return 0;
+	}
+	else if (is_digits(args[1])) {
+		int index = stoi(args[1]);
+		if (index >= m_badGuys.size()) {
+			std::cout << "[infi] That enemy does not exist." << std::endl;
+			return 3;
+		}
+		std::cout << "[infi]: Creature Name: " << m_badGuys[index]->getName() << "\n" << "[infi]: Health: " << m_badGuys[index]->getHealth() << "\n" << "[infi]: Lore: " << m_badGuys[index]->getLore() << std::endl;
+		return 0;
+	}
+	else {
+		std::cout << "[infi]: That is not a numerical value." << std::endl;
+		return 2;
+	}
 }
 
 int GameplayScreen::testDamage(std::vector<std::string> args)

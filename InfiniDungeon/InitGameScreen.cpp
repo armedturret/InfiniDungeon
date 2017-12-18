@@ -4,6 +4,8 @@
 #include <DPE/IMaingame.h>
 #include <DPE/ResourceManager.h>
 
+#include "Console.h"
+
 const char* INIT_VERT_SRC = R"(#version 130
 
 in vec2 vertexPosition;
@@ -102,6 +104,9 @@ void InitGameScreen::update()
 
 	m_camera.update();
 	checkInput();
+	if (Command::getCvar("infi_shouldquit") == "1") {
+		m_currentState = DPE::ScreenState::EXIT_APPLICATION;
+	}
 }
 
 void InitGameScreen::draw()
