@@ -3,6 +3,7 @@
 class Weapon
 {
 public:
+	Weapon();
 	Weapon(std::string name, std::string lore, int attackPoints);
 	~Weapon();
 

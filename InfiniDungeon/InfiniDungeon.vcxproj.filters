@@ -93,8 +93,12 @@
     <ClCompile Include="Console.cpp">
       <Filter>Project\Console</Filter>
     </ClCompile>
-    <ClCompile Include="Armor.cpp" />
-    <ClCompile Include="Weapon.cpp" />
+    <ClCompile Include="Armor.cpp">
+      <Filter>Project\Items\Armor</Filter>
+    </ClCompile>
+    <ClCompile Include="Weapon.cpp">
+      <Filter>Project\Items\Weapons</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameplayScreen.h">
@@ -145,7 +149,11 @@
     <ClInclude Include="Console.h">
       <Filter>Project\Console</Filter>
     </ClInclude>
-    <ClInclude Include="Armor.h" />
-    <ClInclude Include="Weapon.h" />
+    <ClInclude Include="Armor.h">
+      <Filter>Project\Items\Armor</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapon.h">
+      <Filter>Project\Items\Weapons</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

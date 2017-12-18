@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Creature.h"
-
 enum class BadGuyState {SEARCHING, ROAMING, ATTACKING};
 
 class BadGuy : public Creature

@@ -16,6 +16,9 @@ Rat::~Rat()
 
 void Rat::OnCreation(const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap)
 {
+	m_armor = Armor("ratArmor", "If you see this, you are hacking.", 2);
+	m_weapon = Weapon("ratWeapon", "If you see this, you are hacking.", 1);
+
 	m_health = 10;
 	m_maxHealth = 10;
 

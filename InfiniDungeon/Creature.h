@@ -7,7 +7,8 @@
 #include "Random.h"
 #include "PathFinder.h"
 #include "BresenhamAlgorithm.h"
-
+#include "Armor.h"
+#include "Weapon.h"
 class Player;
 class BadGuy;
 
@@ -33,6 +34,9 @@ public:
 	void applyDamage(const int& damage);
 
 	const int TILE_SIZE = 128;
+
+	Armor getArmor() const { return m_armor; }
+	Weapon getWeapon() const { return m_weapon; }
 
 protected:
 	
@@ -65,6 +69,9 @@ protected:
 	bool moving = false;
 
 	int m_animTile = 0;
+
+	Armor m_armor;
+	Weapon m_weapon;
 
 	BresenhamAlgorithm visionThing;
 };

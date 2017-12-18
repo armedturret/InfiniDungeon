@@ -5,7 +5,6 @@
 #include "BresenhamAlgorithm.h"
 
 #include "Player.h"
-
 class Rat : public BadGuy
 {
 public:
@@ -38,6 +37,7 @@ public:
 		std::vector<std::vector<int>>& entMap,
 		std::vector<BadGuy*>& badGuys,
 		Player& jeff);
+
 private:
 	bool m_moving;
 	bool m_attacking;
@@ -50,6 +50,6 @@ private:
 	glm::ivec2 m_startPosition;
 
 	glm::vec2 m_nextTile;
-
+	
 	PathFinder pathFinder;
 };

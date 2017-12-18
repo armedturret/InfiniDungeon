@@ -3,6 +3,7 @@
 class Armor
 {
 public:
+	Armor();
 	Armor(std::string armorName, std::string lore, int defencePoints);
 	~Armor();
 
