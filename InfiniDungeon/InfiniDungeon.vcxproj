@@ -136,6 +136,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
+    <ClCompile Include="Armor.cpp" />
     <ClCompile Include="BadGuy.cpp" />
     <ClCompile Include="BresenhamAlgorithm.cpp" />
     <ClCompile Include="Console.cpp" />
@@ -150,9 +151,11 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="Rat.cpp" />
+    <ClCompile Include="Weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
+    <ClInclude Include="Armor.h" />
     <ClInclude Include="BadGuy.h" />
     <ClInclude Include="BresenhamAlgorithm.h" />
     <ClInclude Include="Console.h" />
@@ -168,6 +171,7 @@
     <ClInclude Include="Rat.h" />
     <ClInclude Include="ScreenIndicies.h" />
     <ClInclude Include="Themes.h" />
+    <ClInclude Include="Weapon.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

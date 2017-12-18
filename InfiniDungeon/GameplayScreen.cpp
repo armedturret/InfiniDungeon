@@ -159,14 +159,6 @@ void GameplayScreen::onEntry()
 	m_badGuys[0]->Spawn(ratSpawn, m_level.getMap(), m_level.getEntMap());
 	m_player.init("Data/Textures/Characters/Mage.png", glm::ivec2(3, 2), &m_game->inputManager, &m_camera, m_level.getStartPos());
 
-	/*TODO:
-	create cmds:
-	infi_listcreatures
-	infi_getcreatureinfo <creatureid>
-	infi_test_damage <defenderid> <attackerid> OR infi_test_damage <defenderarmour> <defenderevade> <attackdamage>
-	infi_test_damage_def <attackerid> <defenderarmour> <defenderevade>
-	infi_test_damage_att <defenderid> <attackdamage>
-	*/
 	Command::setCvar("infi_unsafecvar_safetorun", "1");
 }
 
@@ -326,6 +318,12 @@ int GameplayScreen::getCreatureStats(std::vector<std::string> args)
 
 int GameplayScreen::testDamage(std::vector<std::string> args)
 {
+/*TODO:
+	create cmds:
+	infi_test_damage <defenderid> <attackerid> OR infi_test_damage <defenderarmour> <defenderevade> <attackdamage>
+	infi_test_damage_def <attackerid> <defenderarmour> <defenderevade>
+	infi_test_damage_att <defenderid> <attackdamage>
+	*/
 	return 0;
 }
 
