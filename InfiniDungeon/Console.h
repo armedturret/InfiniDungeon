@@ -3,6 +3,9 @@
 #include <functional>
 #include <vector>
 #include <unordered_map>
+#include <memory>
+
+#include "GameplayScreen.h"
 
 class Console
 {
@@ -18,6 +21,8 @@ public:
 
 	void init();
 
+	void run(std::shared_ptr<GameplayScreen> screen);
+
 	void destroy();
 
 private:
@@ -25,6 +30,8 @@ private:
 
 	//console thread
 	std::thread console;
+
+	static std::shared_ptr<GameplayScreen>  theScreen;
 
 	//return codes
 	// 0 = fine
@@ -35,6 +42,7 @@ private:
 	static int help(std::vector<std::string> args);
 	static int echo(std::vector<std::string> args);
 	static int spliceargs(std::vector<std::string> args);
+	static int listCreatures(std::vector<std::string> args);
 };
 
 struct CommandInfo {
@@ -71,7 +79,8 @@ class Command
 	friend class Console;
 	friend class ConsoleRun;
 public:
-	std::string getCvar(std::string name);
+	static std::string getCvar(std::string name);
+	static int setCvar(std::string name, std::string val);
 
 	static std::unordered_map<std::string, Command> & create_map()
 	{

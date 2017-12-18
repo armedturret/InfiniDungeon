@@ -34,6 +34,13 @@ public:
 	virtual void update() override;
 
 	virtual void draw() override;
+	
+	//commands
+	int getCreatures(std::vector<std::string> args);
+	int getCreatureStats(std::vector<std::string> args);
+	int testDamage(std::vector<std::string> args);
+	int testDamageDefend(std::vector<std::string> args);
+	int testDamageAttack(std::vector<std::string> args);
 
 private:
 

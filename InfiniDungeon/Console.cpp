@@ -5,6 +5,7 @@
 #include <string>
 #include <sstream>
 #include <iterator>
+
 Console::Console()
 {
 }
@@ -13,6 +14,8 @@ Console::Console()
 Console::~Console()
 {
 }
+
+std::shared_ptr<GameplayScreen> Console::theScreen = nullptr;
 
 void Console::init()
 {
@@ -23,12 +26,19 @@ void Console::init()
 	Command::create(Console::help, CommandInfo("help", "Lists all commands.", "help OR help <command||cvar> OR help cvar"));
 	Command::create(Console::echo, CommandInfo("echo", "Prints text that follows.", "echo <words..>"));
 
+	//game commands
+	Command::create(Console::listCreatures, CommandInfo("infi_listcreatures", "List all currently active creatures.", "infi_listcreatures"));
+
 #ifdef _DEBUG
 	//debug commands (start with db_)
 	Command::create(Console::spliceargs, CommandInfo("db_spliceargs", "Debug operation to show how arguments would be spliced","db_spliceargs <args..>"));
 #endif
-	//make cvars
-	Command::createCVar(CVar("infi_max_roamingenemies", "int", "1"));
+	//make unsafecvars (don't run from console)
+	Command::createCVar(CVar("infi_unsafecvar_safetorun", "int", "0"));
+}
+
+void Console::run(std::shared_ptr<GameplayScreen> screen) {
+	theScreen = screen;
 
 	m_shouldEndThread = false;
 	console = std::thread(ConsoleRun::run, std::ref(console), std::ref(m_shouldEndThread));
@@ -105,6 +115,17 @@ int Console::spliceargs(std::vector<std::string> args)
 	return 0;
 }
 
+int Console::listCreatures(std::vector<std::string> args)
+{
+	if (Command::getCvar("infi_unsafecvar_safetorun") == "1") {
+		return theScreen->getCreatures(args);
+	}
+	else {
+		std::cout << "[infi]: Cannot run game specific commands prior to initialization." << std::endl;
+		return 3;
+	}
+}
+
 std::string Command::getCvar(std::string name)
 {
 	auto vit = Command::get_vap().find(name);
@@ -115,6 +136,40 @@ std::string Command::getCvar(std::string name)
 		std::cout << "[cvar]: Attempted access to unknown cvar \'" << name << "\'." << std::endl;
 	}
 	return "UNKNOWN VALUE";
+}
+
+int Command::setCvar(std::string name, std::string val)
+{
+	CVar *cvar;
+	auto vit = Command::get_vap().find(name);
+	if (vit != Command::get_vap().end()) {
+		cvar = &vit->second;
+	}
+	else {
+		std::cout << "[cvar]: Attempted access to unknown cvar \'" << name << "\'." << std::endl;
+		return 1;
+	}
+	if (cvar->valType == "int") {
+		if (is_digits(val)) {
+			if (!cvar->m_onchange(val))
+				cvar->val = val;
+		}
+		else {
+			std::cout << "[cvar]: Incorrect data type." << std::endl;
+			return 1;
+		}
+		return 0;
+	}
+	else if (cvar->valType == "string") {
+		if (!cvar->m_onchange(val))
+			cvar->val = val;
+		return 0;
+	}
+	else {
+		std::cout << "[cvar]: cvar " << cvar->text << " has unknown type. Please report this to the developer." << std::endl;
+		return 1;
+	}
+	return 1;
 }
 
 std::string ConsoleRun::getLineFromCin()

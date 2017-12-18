@@ -18,7 +18,7 @@ public:
 private:
 	Console gameConsole;
 
-	std::unique_ptr<InitGameScreen> m_initGameScreen = nullptr;
-	std::unique_ptr<GameplayScreen> m_gameplayScreen = nullptr;
+	std::shared_ptr<InitGameScreen> m_initGameScreen = nullptr;
+	std::shared_ptr<GameplayScreen> m_gameplayScreen = nullptr;
 };
 
