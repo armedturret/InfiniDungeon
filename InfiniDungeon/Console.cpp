@@ -42,7 +42,8 @@ void Console::run(std::shared_ptr<GameplayScreen> screen) {
 
 	m_shouldEndThread = false;
 	console = std::thread(ConsoleRun::run, std::ref(console), std::ref(m_shouldEndThread));
-	std::cout << "Console thread initialized; Id: " << console.get_id() << std::endl;;
+	std::cout << "Console thread initialized; Id: " << console.get_id() << std::endl;
+	std::cout << "Note that modifying and running some of the commands can really mess up the game/computer\nUSE AT YOUR OWN RISK (know what you're doing)" << std::endl;
 }
 
 void Console::destroy()
