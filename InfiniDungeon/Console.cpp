@@ -239,12 +239,23 @@ int ConsoleRun::processCommand(const std::string& input)
 		if (rawargs[i].substr(0, 1) == "\"" && !begunstring) {
 			begunstring = true;
 			if (rawargs[i].substr(rawargs[i].size()-1) == "\"" && (rawargs[i].size() - 2 >= 0 && rawargs[i].substr(rawargs[i].size() - 2,1) != "\\")) {
-				tokens.push_back(rawargs[i].substr(1, rawargs[i].size() - 2));
-				begunstring = false;
+				if (rawargs[i].size() - 2 > 0) {
+					tokens.push_back(rawargs[i].substr(1, rawargs[i].size() - 2));
+					begunstring = false;
+				}else{
+					tokens.push_back("");
+					begunstring = false;
+				}
 			}
 			else {
-				tokens.push_back(rawargs[i].substr(1));
-				compensation += 1;
+				if (rawargs[i].size() > 0) {
+					tokens.push_back(rawargs[i].substr(1));
+					compensation += 1;
+				}
+				else {
+					tokens.push_back(" ");
+					compensation += 1;
+				}
 			}
 			
 		}
@@ -253,7 +264,11 @@ int ConsoleRun::processCommand(const std::string& input)
 				if (rawargs[i].substr(rawargs[i].size() - 1) == "\"" && (rawargs[i].size() - 2 >= 0 && rawargs[i].substr(rawargs[i].size() - 2,1) != "\\")) {
 					begunstring = false;
 					tokens[i - compensation] += " ";
-					tokens[i-compensation] += rawargs[i].substr(0, rawargs[i].size() - 1);
+					if(rawargs[i].size() > 1)
+						tokens[i-compensation] += rawargs[i].substr(0, rawargs[i].size() - 1);
+					else {
+						tokens[i - compensation] += "";
+					}
 				}
 				else {
 					tokens[i - compensation] += " ";
@@ -285,14 +300,15 @@ int ConsoleRun::processCommand(const std::string& input)
 		std::size_t result = -1;
 		while (true) {
 			//search for '\'
+			std::cout << result << std::endl;
 			result = s->find('\"', result + 1);
+			std::cout << result << std::endl;
 			if (result != std::string::npos) {
 				if (result == 0) {
-					std::cout << "[urdumb]: There was a lone slash in your arguments." << std::endl;
+					std::cout << "[urdumb]: There was a lone quote in your arguments." << std::endl;
 					return 1;
-				}
-				if (s[0][result - 1] != '\\') {
-					std::cout << "[urdumb]: There was a lone slash in your arguments." << std::endl;
+				}else if (s[0][result - 1] != '\\') {
+					std::cout << "[urdumb]: There was a lone quote in your arguments." << std::endl;
 					return 1;
 				}
 			}
