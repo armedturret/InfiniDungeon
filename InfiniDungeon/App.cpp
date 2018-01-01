@@ -12,7 +12,9 @@ App::~App()
 }
 
 void App::onInit() {
+#ifdef _DEBUG
 	gameConsole.init();
+#endif
 }
 
 void App::addScreens() {
@@ -23,10 +25,13 @@ void App::addScreens() {
 	m_screenList->addScreen(m_gameplayScreen.get());
 
 	m_screenList->setScreen(m_initGameScreen->getScreenIndex());
-
+#ifdef _DEBUG
 	gameConsole.run(m_gameplayScreen);
+#endif
 }
 
 void App::onExit() {
+#ifdef _DEBUG
 	gameConsole.destroy();
+#endif
 }
