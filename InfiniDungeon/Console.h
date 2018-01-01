@@ -44,6 +44,7 @@ private:
 	static int spliceargs(std::vector<std::string> args);
 	static int listCreatures(std::vector<std::string> args);
 	static int getCreatureInfo(std::vector<std::string> args);
+	static int testDamage(std::vector<std::string> args);
 	static int quit(std::vector<std::string> args);
 };
 
@@ -121,6 +122,8 @@ private:
 
 inline bool is_digits(const std::string &str)
 {
+	if(str[0] == '-' || str[0] == '+')
+		return str.substr(1).find_first_not_of("0123456789") == std::string::npos;
 	return str.find_first_not_of("0123456789") == std::string::npos;
 }
 

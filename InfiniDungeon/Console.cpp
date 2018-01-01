@@ -30,6 +30,7 @@ void Console::init()
 	//game commands
 	Command::create(Console::listCreatures, CommandInfo("infi_listcreatures", "List all currently active creatures.", "infi_listcreatures"));
 	Command::create(Console::getCreatureInfo, CommandInfo("infi_getcreaturestats", "Gets info of specified creature.", "infi_getcreatureinfo <creatureid>"));
+	Command::create(Console::testDamage, CommandInfo("infi_test_damage", "Test the damage between two creatures.", "infi_test_damage <defenderid> <attackerid> OR infi_test_damage <defenderarmour> <defenderevade> <attackdamage>"));
 
 #ifdef _DEBUG
 	//debug commands (start with db_)
@@ -139,6 +140,18 @@ int Console::getCreatureInfo(std::vector<std::string> args)
 		std::cout << "[infi]: Cannot run game specific commands prior to initialization." << std::endl;
 		return 3;
 	}
+}
+
+int Console::testDamage(std::vector<std::string> args)
+{
+	if (Command::getCvar("infi_unsafecvar_safetorun") == "1") {
+		return theScreen->testDamage(args);
+	}
+	else {
+		std::cout << "[infi]: Cannot run game specific commands prior to initialization." << std::endl;
+		return 3;
+	}
+	return 0;
 }
 
 int Console::quit(std::vector<std::string> args)
@@ -300,9 +313,7 @@ int ConsoleRun::processCommand(const std::string& input)
 		std::size_t result = -1;
 		while (true) {
 			//search for '\'
-			std::cout << result << std::endl;
 			result = s->find('\"', result + 1);
-			std::cout << result << std::endl;
 			if (result != std::string::npos) {
 				if (result == 0) {
 					std::cout << "[urdumb]: There was a lone quote in your arguments." << std::endl;
