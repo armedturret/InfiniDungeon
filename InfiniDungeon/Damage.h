@@ -9,6 +9,6 @@ public:
 	Damage();
 	~Damage();
 
-	int damageToDeal(const int& attackDamage, const int& defenderEvasion, const int& defenderArmor);
+	int damageToDeal(const int& attackDamage, const int& attackEvade, const int& defenderEvasion, const int& defenderArmor);
 };
 

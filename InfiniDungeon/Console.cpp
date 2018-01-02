@@ -30,7 +30,7 @@ void Console::init()
 	//game commands
 	Command::create(Console::listCreatures, CommandInfo("infi_listcreatures", "List all currently active creatures.", "infi_listcreatures"));
 	Command::create(Console::getCreatureInfo, CommandInfo("infi_getcreaturestats", "Gets info of specified creature.", "infi_getcreatureinfo <creatureid>"));
-	Command::create(Console::testDamage, CommandInfo("infi_test_damage", "Test the damage between two creatures.", "infi_test_damage <defenderid> <attackerid> OR infi_test_damage <defenderarmour> <defenderevade> <attackdamage>"));
+	Command::create(Console::testDamage, CommandInfo("infi_test_damage", "Test the damage between two creatures.", "infi_test_damage <defenderid> <attackerid> OR infi_test_damage <defenderarmour> <defenderevade> <attackdamage> <attackerevade>"));
 
 #ifdef _DEBUG
 	//debug commands (start with db_)

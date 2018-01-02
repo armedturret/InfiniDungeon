@@ -132,6 +132,7 @@ void Player::init(std::string texturePath, glm::ivec2 tileSheetSize, DPE::InputM
 	m_position = glm::vec2(TILE_SIZE / 2.0f);
 	m_position.x += startPos.x*TILE_SIZE;
 	m_position.y += startPos.y*TILE_SIZE;
+	m_weapon = Weapon("Deadly Spork","I dunno, you were eating a salad when stuff went down so I guess use this.",4);
 }
 
 float Player::getDeltaFactor()

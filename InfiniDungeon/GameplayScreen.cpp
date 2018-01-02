@@ -321,8 +321,8 @@ int GameplayScreen::getCreatureStats(std::vector<std::string> args)
 
 int GameplayScreen::testDamage(std::vector<std::string> args)
 {
-//	infi_test_damage <defenderid> <attackerid> OR infi_test_damage <defenderarmour> <defenderevade> <attackdamage>*/
-	if (args.size() != 3 && args.size() != 4) {
+//	infi_test_damage <defenderid> <attackerid> OR infi_test_damage <defenderarmour> <defenderevade> <attackdamage> <attackerevade>*/
+	if (args.size() != 3 && args.size() != 5) {
 		return 1;
 	}
 	else if (args.size() == 3 && is_digits(args[1]) && is_digits(args[2])) {
@@ -331,6 +331,7 @@ int GameplayScreen::testDamage(std::vector<std::string> args)
 		int armor = 0;
 		int evade = 0;
 		int attackdamage = 0;
+		int attackEvade = 0;
 		int defHealth = 0;
 		if (firstCreature == -1) {
 			armor = m_player.getArmor().getDefencePoints();
@@ -356,16 +357,17 @@ int GameplayScreen::testDamage(std::vector<std::string> args)
 		}
 		//thats allota damage
 		Damage flexSeal;
-		int damage = flexSeal.damageToDeal(attackdamage, evade, armor);
+		int damage = flexSeal.damageToDeal(attackdamage, attackEvade, evade, armor);
 		std::cout << "[infi]: Damage to be dealt: "<<damage<<"\n[infi]: Defender final health: "<< (defHealth-damage)<< std::endl;
 		return 0;
 	}
-	else if(args.size() == 4 && is_digits(args[1]) && is_digits(args[2]) && is_digits(args[3]) ){
+	else if(args.size() == 5 && is_digits(args[1]) && is_digits(args[2]) && is_digits(args[3]) && is_digits(args[4]) ){
 		int armor = stoi(args[1]);
 		int evade = stoi(args[2]);
 		int attackdamage = stoi(args[3]);
+		int attackevade = stoi(args[4]);
 		Damage jonTron;
-		int damage = jonTron.damageToDeal(attackdamage, evade, armor);
+		int damage = jonTron.damageToDeal(attackdamage, attackevade, evade, armor);
 		std::cout << "[infi]: Damage to be dealt: " << damage << std::endl;
 		return 0;
 	}
