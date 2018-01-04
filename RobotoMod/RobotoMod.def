@@ -1,0 +1,4 @@
+LIBRARY RobotoMod
+EXPORTS
+	create_enemy
+	delete_enemy

@@ -7,8 +7,6 @@ public:
 	ScaryBoi();
 	~ScaryBoi();
 	
-	virtual void sayHy() {
-		std::cout << "Hello there" << std::endl;
-	};
+	virtual void sayHy();
 };
 

@@ -173,6 +173,7 @@ void GameplayScreen::onExit()
 	for (int i = 0; i < m_badGuys.size(); i++) {
 		delete m_badGuys[i];
 		m_badGuys.erase(m_badGuys.begin() + i);
+		i--;
 	}
 }
 

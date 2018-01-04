@@ -11,18 +11,41 @@
 
 void listFile(std::vector<std::string>& files);
 
+typedef Enemy* (*create_enemy)();
+
 int main() {
+	std::vector<HINSTANCE> libs;
 	std::vector<std::string> b;
+	std::vector<Enemy*> enemies;
 	listFile(b);
 	std::string a;
 	for (auto s : b) {
-		std::ifstream reader;
-		reader.open("./mods/" + s);
-		reader >> a;
-		std::cout << a << "\n";
+		//load dlls
+		a = "./mods/" + s;
+		HINSTANCE temp = LoadLibrary(a.c_str());
+		libs.push_back(temp);
+		if (!temp) {
+			std::cout << "could not load the dynamic library" << std::endl;
+			std::getline(std::cin, a);
+			return EXIT_FAILURE;
+		}
+		// resolve function address here
+		create_enemy enemyFunc = (create_enemy)GetProcAddress(temp, "create_enemy");
+		if (!enemyFunc) {
+			std::cout << "could not locate the function" << std::endl;
+			std::getline(std::cin, a);
+			return EXIT_FAILURE;
+		}
+		else {
+			enemies.push_back(enemyFunc());
+		}
 	}
-	std::vector<Enemy*> enemies;
+	
 	enemies.push_back(new ScaryBoi());
+	
+	for (auto e : enemies) {
+		std::cout << e->getName() << std::endl;
+	}
 
 	while (true) {
 		std::getline(std::cin, a);
@@ -39,6 +62,13 @@ int main() {
 	for (int i = 0; i < enemies.size(); i++) {
 		delete enemies[i];
 		enemies.erase(enemies.begin() + i);
+		i--;
+	}
+
+	for (int i = 0; i < libs.size(); i++) {
+		FreeLibrary(libs[i]);
+		libs.erase(libs.begin() + i);
+		i--;
 	}
 
 	return 0;
