@@ -29,10 +29,12 @@ public:
 
 	glm::vec2 getPosition() const { return m_position; }
 
+	int getEvade() const { return m_evade; }
 	int getHealth() const { return m_health; }
 	int getMaxHealth() const { return m_maxHealth; }
 
 	void applyDamage(const int& damage);
+	void forceWait() { m_shouldWait = true; }
 
 	const int TILE_SIZE = 128;
 
@@ -63,10 +65,13 @@ protected:
 	//frames in between animations
 	double m_animSpeed = 5;
 
+	int m_evade = 0;
+
 	int m_health = 10;
 
 	int m_maxHealth = 10;
 
+	bool m_shouldWait = false;
 	bool moving = false;
 
 	int m_animTile = 0;

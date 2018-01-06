@@ -1,5 +1,6 @@
 #include "Rat.h"
 
+#include "Damage.h"
 #include "Random.h"
 #include <DPE/ResourceManager.h>
 
@@ -149,9 +150,17 @@ void Rat::AttackBehavior(float deltaTime, const std::vector<std::vector<int>>& m
 				m_animTile = 0;
 			}
 			else {
-				//within attack range
-				//add attack code here
+				jeff.forceWait();
 			}
+		}
+		else if (Random::equals(m_animTime, floor(m_animTime) + 0.5)) {
+			//within attack range
+			//add attack code here
+			Damage calc;
+			int damage = calc.damageToDeal(m_weapon.getAttackPoints(), m_evade, jeff.getEvade(), jeff.getArmor().getDefencePoints());
+			std::cout << m_name << " attacked the player for " << damage << " damage" << std::endl;
+			jeff.applyDamage(damage);
+			std::cout << "the player is at " << jeff.getHealth() << " health" << std::endl;
 		}
 		m_animTime += deltaTime;
 	}

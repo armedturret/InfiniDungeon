@@ -24,6 +24,9 @@ void Player::update(float deltaTime,
 	std::vector<BadGuy*>& badGuys,
 	Player& jeff)
 {
+	if (m_shouldWait) {
+		m_waiting = true;
+	}
 	//check if it should ignore
 	if (!m_waiting) {
 		//move, attack, click
@@ -79,6 +82,7 @@ void Player::update(float deltaTime,
 		m_animTime += 0.1;
 		if (Random::equals(m_animTime, 1.0)) {
 			m_waiting = false;
+			m_shouldWait = false;
 			m_animTime = 0.0;
 		}
 	}
