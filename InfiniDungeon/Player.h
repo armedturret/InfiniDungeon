@@ -13,12 +13,12 @@ public:
 	Player();
 	~Player();
 
-	virtual void update(float deltaTime,
+	/*virtual void update(float deltaTime,
 		const std::vector<std::vector<int>>& map,
 		std::vector<std::vector<int>>& entMap,
 		std::vector<BadGuy*>& badGuys,
 		Player& jeff)override;
-
+	*/
 	void init(std::string texturePath, glm::ivec2 tileSheetSize, DPE::InputManager* inputManager, DPE::Camera2D* camera, glm::ivec2 startPos);
 
 	float getDeltaFactor();

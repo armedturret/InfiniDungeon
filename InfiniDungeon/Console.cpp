@@ -36,6 +36,9 @@ void Console::init()
 	//debug commands (start with db_)
 	Command::create(Console::spliceargs, CommandInfo("db_spliceargs", "Debug operation to show how arguments would be spliced","db_spliceargs <args..>"));
 #endif
+
+	Command::createCVar(CVar("infi_frameincrement", "string", "0.1"));
+
 	//make unsafecvars (don't run from console)
 	Command::createCVar(CVar("infi_unsafecvar_safetorun", "int", "0"));
 	Command::createCVar(CVar("infi_shouldquit", "int", "0"));

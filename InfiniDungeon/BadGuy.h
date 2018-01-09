@@ -11,11 +11,11 @@ public:
 	
 	void Spawn(glm::vec2 pos, const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap);
 
-	virtual void update(float deltaTime,
+	/*virtual void update(float deltaTime,
 		const std::vector<std::vector<int>>& map,
 		std::vector<std::vector<int>>& entMap,
 		std::vector<BadGuy*>& badGuys,
-		Player& jeff)override;
+		Player& jeff)override;*/
 
 	virtual void OnCreation(const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap) {
 		std::cout << "Creature " << m_name << " given no creation behavior" << std::endl;

@@ -156,8 +156,6 @@ void GameplayScreen::onEntry()
 		}
 	}
 
-	m_badGuys.push_back(new Rat());
-	m_badGuys[0]->Spawn(ratSpawn, m_level.getMap(), m_level.getEntMap());
 	m_player.init("Data/Textures/Characters/Mage.png", glm::ivec2(3, 2), &m_game->inputManager, &m_camera, m_level.getStartPos());
 
 	Command::setCvar("infi_unsafecvar_safetorun", "1");
@@ -179,29 +177,15 @@ void GameplayScreen::onExit()
 
 void GameplayScreen::update(){
 	checkInput();
-	if (!m_prevTicks)
-	{
-		m_prevTicks = SDL_GetTicks();
-	}
-	const float DESIRED_FPS = 60.0f;
-
-	const float MS_PER_SECOND = 1000;
-	const float DESIRED_FRAMETIME = MS_PER_SECOND / DESIRED_FPS;
-
 	auto entMap = m_level.getEntMap();
-	
-	/*float newTicks = SDL_GetTicks();
-	float frameTime = newTicks - m_prevTicks;
-	m_prevTicks = newTicks;
-	float totalDeltaTime = frameTime / DESIRED_FRAMETIME;*/
 
-	float deltaTimeMoveFactor = m_player.getDeltaFactor()/* * totalDeltaTime bugs*/;
+	/*float deltaTimeMoveFactor = m_player.getDeltaFactor();
 
 	m_player.update(deltaTimeMoveFactor, m_level.getMap(), entMap, m_badGuys, m_player);
 
 	for (int b = 0; b < m_badGuys.size(); b++) {
 		m_badGuys[b]->update(deltaTimeMoveFactor, m_level.getMap(), entMap, m_badGuys, m_player);
-	}
+	}*/
 
 	updateDamage();
 
@@ -262,6 +246,10 @@ void GameplayScreen::updateDamage()
 			//return back one iteration just in case
 			it--;
 		}
+	}
+	
+	if (m_player.getHealth() <= 0) {
+		std::cout << "YOU DEAD BOI" << std::endl;
 	}
 }
 

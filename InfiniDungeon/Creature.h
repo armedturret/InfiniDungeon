@@ -12,29 +12,33 @@
 class Player;
 class BadGuy;
 
+//idle is in between turns
+//waiting is skip a turn
+//moving and fighting are 
+enum class CreatureState{IDLE, WAITING, MOVING, FIGHTING};
+
 class Creature
 {
 public:
 	Creature();
 	~Creature();
-	virtual void update(float deltaTime,
+	void update(CreatureState turnState,
+		const float& progressThroughTurn,
+		const int& turnsSinceStart,
 		const std::vector<std::vector<int>>& map,
 		std::vector<std::vector<int>>& entMap,
 		std::vector<BadGuy*>& badGuys,
-		Player& jeff) {
-		std::cout << "Creature given no update behavior" << std::endl;
-	};
+		Player& player);
 
 	void draw(DPE::SpriteBatch& m_spriteBatch);
-
-	glm::vec2 getPosition() const { return m_position; }
 
 	int getEvade() const { return m_evade; }
 	int getHealth() const { return m_health; }
 	int getMaxHealth() const { return m_maxHealth; }
 
+	glm::vec2 getPosition() const { return m_position; }
+
 	void applyDamage(const int& damage);
-	void forceWait() { m_shouldWait = true; }
 
 	const int TILE_SIZE = 128;
 
@@ -43,8 +47,67 @@ public:
 
 protected:
 	
+	void performTurn(CreatureState turnState,
+		const float& progressThroughTurn,
+		const int& turnsSinceStart,
+		const std::vector<std::vector<int>>& map,
+		std::vector<std::vector<int>>& entMap,
+		std::vector<BadGuy*>& badGuys,
+		Player& player);
+
+	virtual void onAttack(const float& progressThroughTurn,
+		const int& turnsSinceStart,
+		const std::vector<std::vector<int>>& map,
+		std::vector<std::vector<int>>& entMap,
+		std::vector<BadGuy*>& badGuys,
+		Player& player) {
+		std::cout << "oof" << std::endl;
+	}
+
+	virtual void onMove(const float& progressThroughTurn,
+		const int& turnsSinceStart,
+		const std::vector<std::vector<int>>& map,
+		std::vector<std::vector<int>>& entMap,
+		std::vector<BadGuy*>& badGuys,
+		Player& player);
+
+	virtual void onBeginSequence(const float& progressThroughTurn,
+		const int& turnsSinceStart,
+		const std::vector<std::vector<int>>& map,
+		std::vector<std::vector<int>>& entMap,
+		std::vector<BadGuy*>& badGuys,
+		Player& player) {
+		std::cout << "oof" << std::endl;
+	}
+
+	virtual void onBeginTurn(const float& progressThroughTurn,
+		const int& turnsSinceStart,
+		const std::vector<std::vector<int>>& map,
+		std::vector<std::vector<int>>& entMap,
+		std::vector<BadGuy*>& badGuys,
+		Player& player) {
+		std::cout << "oof" << std::endl;
+	}
+
+	virtual void onIdle(const float& progressThroughTurn,
+		const int& turnsSinceStart,
+		const std::vector<std::vector<int>>& map,
+		std::vector<std::vector<int>>& entMap,
+		std::vector<BadGuy*>& badGuys,
+		Player& player) {
+	}
+
+	void setTarget(const std::vector<std::vector<int>>& map,
+		std::vector<std::vector<int>>& entMap,
+		glm::vec2 target);
+
+	void moveTowardsTile(const glm::vec2& nodePosOne,
+		const glm::vec2& nodePosTwo,
+		const std::vector<std::vector<int>>& map,
+		std::vector<std::vector<int>>& entmap,
+		int fractionBetweenTwo);
 	//returns true when arrived to next tile
-	bool moveToNextTile(std::vector<Node>& path, const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entmap, float deltaTime);
+	//bool moveToNextTile(std::vector<Node>& path, const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entmap, float deltaTime);
 	//uses raw positions and uses Bresenham
 	bool seesPoint(const std::vector<std::vector<int>>& map, const std::vector<std::vector<int>>& entmap, glm::vec2 end);
 
@@ -58,12 +121,14 @@ protected:
 	DPE::TileSheet m_tileSheet;
 	DPE::ColorRGBA8 m_color;
 
-	double m_animTime = 0.0;
+	std::vector<Node> m_path;
 
 	PathFinder m_pathFinder;
 
 	//frames in between animations
 	double m_animSpeed = 5;
+
+	float m_animTime = 0.0;
 
 	int m_evade = 0;
 
@@ -72,7 +137,6 @@ protected:
 	int m_maxHealth = 10;
 
 	bool m_shouldWait = false;
-	bool moving = false;
 
 	int m_animTile = 0;
 

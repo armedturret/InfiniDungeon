@@ -6,11 +6,88 @@
 
 Creature::Creature()
 {
+	
 }
 
 
 Creature::~Creature()
 {
+}
+
+void Creature::update(CreatureState turnState,
+	const float & progressThroughTurn,
+	const int & turnsSinceStart,
+	const std::vector<std::vector<int>>& map,
+	std::vector<std::vector<int>>& entMap,
+	std::vector<BadGuy*>& badGuys,
+	Player & player)
+{
+	if (turnState == CreatureState::IDLE) {
+		//idle animation
+		onIdle(progressThroughTurn, turnsSinceStart, map, entMap, badGuys, player);
+	}
+	else {
+		if (Random::equals(progressThroughTurn, 0.0) && turnsSinceStart == 0)
+			onBeginSequence(progressThroughTurn, turnsSinceStart, map, entMap, badGuys, player);
+		if (Random::equals(progressThroughTurn, 0.0))
+			onBeginTurn(progressThroughTurn, turnsSinceStart, map, entMap, badGuys, player);
+		performTurn(turnState, progressThroughTurn, turnsSinceStart, map, entMap, badGuys, player);
+	}
+}
+
+void Creature::performTurn(CreatureState turnState,
+	const float& progressThroughTurn,
+	const int& turnsSinceStart,
+	const std::vector<std::vector<int>>& map,
+	std::vector<std::vector<int>>& entMap,
+	std::vector<BadGuy*>& badGuys,
+	Player& player)
+{	
+	if(turnState == CreatureState::WAITING) {
+		//wait
+	}
+	else if (turnState == CreatureState::FIGHTING) {
+		onAttack(progressThroughTurn, turnsSinceStart, map, entMap, badGuys, player);
+	}
+	else if (turnState == CreatureState::MOVING) {
+		onMove(progressThroughTurn, turnsSinceStart, map, entMap, badGuys, player);
+	}
+}
+
+void Creature::onMove(const float & progressThroughTurn, const int & turnsSinceStart, const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap, std::vector<BadGuy*>& badGuys, Player & player)
+{
+	Node nodeOne = m_path[turnsSinceStart];
+	if (turnsSinceStart + 1 == m_path.size())
+		return;
+	Node nodeTwo = m_path[turnsSinceStart];
+	moveTowardsTile(nodeOne.getPosition(), nodeTwo.getPosition(), map, entMap, progressThroughTurn);
+}
+
+void Creature::setTarget(const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entMap, glm::vec2 target)
+{
+	glm::vec2 startTile = m_position;
+	startTile.x = (startTile.x - TILE_SIZE / 2.0f)/TILE_SIZE;
+	startTile.y = (startTile.y - TILE_SIZE / 2.0f)/TILE_SIZE;
+	
+	glm::vec2 targetPosition;
+	targetPosition.x = (target.x - TILE_SIZE / 2.0f) / TILE_SIZE;
+	targetPosition.y = (target.y - TILE_SIZE / 2.0f) / TILE_SIZE;
+
+	m_path = m_pathFinder.pathBetweenPoints(startTile, targetPosition, map);
+}
+
+void Creature::moveTowardsTile(const glm::vec2 & nodePosOne, const glm::vec2 & nodePosTwo, const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entmap, int fractionBetweenTwo)
+{
+	glm::vec2 startPos = nodePosOne;
+	startPos.x = startPos.x*TILE_SIZE+TILE_SIZE/2.0f;
+	startPos.y = startPos.x*TILE_SIZE+TILE_SIZE / 2.0f;
+
+	glm::vec2 endPos = nodePosTwo;
+	endPos.x = endPos.x*TILE_SIZE + TILE_SIZE / 2.0f;
+	endPos.y = endPos.x*TILE_SIZE + TILE_SIZE / 2.0f;
+
+	m_position.x = (endPos.x - startPos.x)*fractionBetweenTwo + startPos.x;
+	m_position.y = (endPos.y - startPos.y)*fractionBetweenTwo + startPos.y;
 }
 
 void Creature::draw(DPE::SpriteBatch & m_spriteBatch)
@@ -35,8 +112,8 @@ void Creature::applyDamage(const int & damage)
 		m_health = m_maxHealth;
 }
 
-bool Creature::moveToNextTile(std::vector<Node>& path, const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entmap, float deltaTime)
-{	
+/*bool Creature::moveToNextTile(std::vector<Node>& path, const std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& entmap, float deltaTime)
+{	/*
 	//increment animTime
 	m_animTime += deltaTime;
 
@@ -124,7 +201,9 @@ bool Creature::moveToNextTile(std::vector<Node>& path, const std::vector<std::ve
 		m_animTile = 0;
 
 	return false;
-}
+	
+	//return false;
+}*/
 
 bool Creature::seesPoint(const std::vector<std::vector<int>>& map, const std::vector<std::vector<int>>& entmap, glm::vec2 end)
 {

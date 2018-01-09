@@ -18,13 +18,13 @@ Player::~Player()
 {
 }
 
-void Player::update(float deltaTime,
+/*void Player::update(float deltaTime,
 	const std::vector<std::vector<int>>& map,
 	std::vector<std::vector<int>>& entMap,
 	std::vector<BadGuy*>& badGuys,
 	Player& jeff)
 {
-	if (m_shouldWait) {
+	/*if (m_shouldWait) {
 		m_waiting = true;
 	}
 	//check if it should ignore
@@ -119,7 +119,7 @@ void Player::update(float deltaTime,
 			m_animTime = 0.0;
 		}
 	}
-}
+}*/
 
 void Player::init(std::string texturePath, glm::ivec2 tileSheetSize, DPE::InputManager* inputManager, DPE::Camera2D* camera, glm::ivec2 startPos)
 {
@@ -136,6 +136,7 @@ void Player::init(std::string texturePath, glm::ivec2 tileSheetSize, DPE::InputM
 	m_position = glm::vec2(TILE_SIZE / 2.0f);
 	m_position.x += startPos.x*TILE_SIZE;
 	m_position.y += startPos.y*TILE_SIZE;
+	m_armor = Armor("Mage Cloak", "A finely decorated cloak for mage but not that good for combat.", 2);
 	m_weapon = Weapon("Deadly Spork","I dunno, you were eating a salad when stuff went down so I guess use this.",4);
 }
 
